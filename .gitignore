@@ -1,0 +1,10 @@
+# Data files (raw downloads, cached texts, and generated outputs).
+# Recreate them by running the scripts in code/.
+data/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+notebooks/
