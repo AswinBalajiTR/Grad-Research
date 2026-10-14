@@ -1,6 +1,6 @@
 # Data files (raw downloads, cached texts, and generated outputs).
 # Recreate them by running the scripts in code/.
-data/
+# data/
 
 # Python
 __pycache__/
