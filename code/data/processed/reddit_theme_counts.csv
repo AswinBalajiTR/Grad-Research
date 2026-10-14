@@ -1,0 +1,53 @@
+month,event_id,theme,comments
+2025-05,event_03_20250528,H-1B and employment,1
+2025-05,event_03_20250528,Other discussion,2
+2025-05,event_03_20250528,Travel and entry,2
+2025-05,event_03_20250528,University and enrollment,1
+2025-06,event_05_20250604,"OPT, CPT and work authorization",2
+2025-06,event_05_20250604,Other discussion,24
+2025-06,event_05_20250604,Safety and uncertainty,4
+2025-06,event_05_20250604,Travel and entry,20
+2025-06,event_05_20250604,University and enrollment,2
+2025-06,event_05_20250604,Visa status and screening,19
+2025-06,event_06_20250618,Financial pressure,1
+2025-06,event_06_20250618,Other discussion,12
+2025-06,event_06_20250618,Travel and entry,1
+2025-06,event_06_20250618,Visa status and screening,6
+2025-07,event_06_20250618,Other discussion,2
+2025-07,event_08_20250725,Financial pressure,1
+2025-07,event_08_20250725,H-1B and employment,1
+2025-07,event_08_20250725,Other discussion,2
+2025-07,event_08_20250725,Visa status and screening,3
+2025-09,event_05_20250604,Other discussion,1
+2025-09,event_13_20250919,H-1B and employment,9
+2025-09,event_13_20250919,Other discussion,6
+2025-09,event_13_20250919,Travel and entry,7
+2025-09,event_13_20250919,Visa status and screening,6
+2025-12,event_14_20250924,Financial pressure,1
+2025-12,event_14_20250924,H-1B and employment,4
+2025-12,event_14_20250924,Other discussion,16
+2025-12,event_14_20250924,Visa status and screening,2
+2025-12,event_18_20251216,"OPT, CPT and work authorization",1
+2025-12,event_18_20251216,Other discussion,5
+2025-12,event_18_20251216,Travel and entry,4
+2025-12,event_18_20251216,Visa status and screening,3
+2026-04,event_05_20250604,Other discussion,1
+2026-06,event_09_20250828,Other discussion,17
+2026-07,event_09_20250828,"OPT, CPT and work authorization",1
+2026-07,event_09_20250828,Safety and uncertainty,1
+2026-07,event_09_20250828,Travel and entry,2
+2026-07,event_09_20250828,University and enrollment,2
+2026-07,event_09_20250828,Visa status and screening,2
+2026-09,event_09_20250828,Financial pressure,1
+2026-09,event_09_20250828,H-1B and employment,1
+2026-09,event_09_20250828,"OPT, CPT and work authorization",2
+2026-09,event_09_20250828,Other discussion,4
+2026-09,event_09_20250828,Travel and entry,1
+2026-09,event_09_20250828,University and enrollment,1
+2026-09,event_09_20250828,Visa status and screening,3
+2026-09,event_25_20260720,Financial pressure,3
+2026-09,event_25_20260720,H-1B and employment,2
+2026-09,event_25_20260720,Other discussion,12
+2026-09,event_25_20260720,Safety and uncertainty,1
+2026-09,event_25_20260720,University and enrollment,1
+2026-09,event_25_20260720,Visa status and screening,1

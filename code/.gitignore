@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.py[cod]
+.venv/
+data/raw/reddit/runs/
+data/raw/*.csv
+data/raw/*.xlsx
+data/processed/youtube_comments.csv
+data/processed/youtube_videos.csv
+data/processed/h1b_filings_2025_to_latest.csv

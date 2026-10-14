@@ -1,0 +1,33 @@
+event_id,post_id,comment_id,sentiment,review_note
+event_05_20250604,1l3mpgm,mw2hilz,neutral,Travel advice without expressed policy judgment
+event_05_20250604,1l3mpgm,mxgfc3l,neutral,"Practical reassurance, no evaluation of policy"
+event_05_20250604,1l3mpgm,mzlnkxg,neutral,"Thanks another commenter, not the policy"
+event_05_20250604,1l3qt1p,mw4qg8z,neutral,States a restriction without author evaluation
+event_05_20250604,1l3qt1p,mw5ql8p,neutral,Predicts an outcome without expressed evaluation
+event_05_20250604,1l4ev99,mw9inst,neutral,"Factual exception and encouragement, no policy evaluation"
+event_05_20250604,1l4siz8,mwblpv1,neutral,Explains legal wording without expressed evaluation
+event_05_20250604,1l4siz8,mwbndvl,neutral,Explains entry conditions without expressed evaluation
+event_05_20250604,1l4siz8,mwllgfk,neutral,"Explains an exception, no policy evaluation"
+event_05_20250604,1l4xmvm,mwgh7na,neutral,Practical travel advice without expressed evaluation
+event_05_20250604,1l4xmvm,mwkxpe8,neutral,"Corrects an exception claim, no policy evaluation"
+event_06_20250618,1lkxi2b,mzvo7hh,neutral,"Complaint about Facebook moderation, not visa policy"
+event_06_20250618,1lkxi2b,mzvovfe,neutral,"Complaint about Facebook moderation, not visa policy"
+event_06_20250618,1lkxi2b,mzvtb51,neutral,"Advice about account deletion, no policy evaluation"
+event_06_20250618,1lkxi2b,mzwb1fr,neutral,"Complaint about platform moderation, not visa policy"
+event_06_20250618,1lkxi2b,mzxh4m6,neutral,"Complaint about Facebook moderation, not visa policy"
+event_06_20250618,1lkxi2b,mzzbir6,neutral,"Complaint about Facebook moderation, not visa policy"
+event_06_20250618,1lkxi2b,n00gqs8,neutral,"Complaint about Facebook moderation, not visa policy"
+event_06_20250618,1lkxi2b,n126gal,neutral,"Complaint about platform moderation, not visa policy"
+event_08_20250725,1maa5z4,n5d921t,unclassifiable,One-word reply lacks enough context to identify reaction target
+event_09_20250828,1u9p3tb,oy44y2o,neutral,Explains status rule without author evaluation
+event_09_20250828,1w6jhfc,p7nmb17,neutral,Shares quoted news article; quoted opinion is not author sentiment
+event_09_20250828,1w6jhfc,p7oect3,neutral,"Thanks another commenter, not the policy"
+event_13_20250919,1nlimos,nf6i9q7,neutral,Passes along travel advice without author evaluation
+event_13_20250919,1nlimos,nf6qjsk,neutral,Hypothetical question without expressed evaluation
+event_13_20250919,1nlimos,nf6wisa,neutral,Reports possible border consequence without author evaluation
+event_13_20250919,1nlimos,nf87h9i,neutral,Reports entry condition without author evaluation
+event_13_20250919,1nlimos,nf8tlov,neutral,"Anger directed at workers, not an expressed policy reaction"
+event_13_20250919,1nlimos,nfa7qes,neutral,"Rebuts another commenter about H-1B program, not the new restriction"
+event_25_20260720,1w8038p,p7yujhs,neutral,Summarizes eligibility criteria without author evaluation
+event_25_20260720,1w8038p,p811gmm,neutral,Explains possible benefit effect without author evaluation
+event_25_20260720,1w8038p,p82n55m,unclassifiable,"Moderation notice, not an author policy reaction"

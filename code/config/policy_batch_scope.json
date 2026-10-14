@@ -1,0 +1,1810 @@
+{
+  "source_csv": "/private/tmp/grad-research-integration/code/config/policy_events_to_verify.csv",
+  "scope": "event_date through extended_end, inclusive; constant subreddit panel",
+  "subreddits": [
+    "f1visa",
+    "usvisascheduling",
+    "Indians_StudyAbroad",
+    "InternationalStudents",
+    "studyAbroad",
+    "gradadmissions",
+    "IntltoUSA",
+    "immigration",
+    "USCIS",
+    "h1b"
+  ],
+  "counts": {
+    "events": 32,
+    "unverified_events": 32,
+    "one_query_per_event_subreddit": 320,
+    "monthly_query_floor": 3400,
+    "tavily_free_credits_per_month": 1000,
+    "tavily_payg_usd_per_credit": 0.008,
+    "monthly_query_cost_usd_if_no_free_credits": 27.2,
+    "monthly_query_cost_usd_after_1000_free_credits": 19.2
+  },
+  "caveats": [
+    "A search result limit and search-engine indexing prevent claims of exhaustive Reddit coverage.",
+    "All source rows are unverified in the supplied file; verify event scope and dates before paid scraping.",
+    "The May 27, 2025 student visa appointment suspension is absent from this source file.",
+    "Apify post and comment costs are additional and depend on result volume."
+  ],
+  "events": [
+    {
+      "event_id": "event_01_20250218",
+      "event_date": "2025-02-18",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Interview Waiver Update",
+      "topic": "Visa interviews",
+      "india_relevance": "direct",
+      "source_url": "https://travel.state.gov/content/travel/en/News/visas-news/interview-waiver-update-feb-18-2025.html",
+      "source_id": "https://travel.state.gov/content/travel/en/News/visas-news/interview-waiver-update-feb-18-2025.html",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-02-18",
+          "end_date_inclusive": "2025-02-28"
+        },
+        {
+          "start_date": "2025-03-01",
+          "end_date_inclusive": "2025-03-31"
+        },
+        {
+          "start_date": "2025-04-01",
+          "end_date_inclusive": "2025-04-30"
+        },
+        {
+          "start_date": "2025-05-01",
+          "end_date_inclusive": "2025-05-31"
+        },
+        {
+          "start_date": "2025-06-01",
+          "end_date_inclusive": "2025-06-30"
+        },
+        {
+          "start_date": "2025-07-01",
+          "end_date_inclusive": "2025-07-31"
+        },
+        {
+          "start_date": "2025-08-01",
+          "end_date_inclusive": "2025-08-31"
+        },
+        {
+          "start_date": "2025-09-01",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_02_20250423",
+      "event_date": "2025-04-23",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Reforming Accreditation To Strengthen Higher Education",
+      "topic": "",
+      "india_relevance": "indirect",
+      "source_url": "https://www.federalregister.gov/documents/2025/04/28/2025-07376/reforming-accreditation-to-strengthen-higher-education",
+      "source_id": "2025-07376",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-04-23",
+          "end_date_inclusive": "2025-04-30"
+        },
+        {
+          "start_date": "2025-05-01",
+          "end_date_inclusive": "2025-05-31"
+        },
+        {
+          "start_date": "2025-06-01",
+          "end_date_inclusive": "2025-06-30"
+        },
+        {
+          "start_date": "2025-07-01",
+          "end_date_inclusive": "2025-07-31"
+        },
+        {
+          "start_date": "2025-08-01",
+          "end_date_inclusive": "2025-08-31"
+        },
+        {
+          "start_date": "2025-09-01",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_03_20250528",
+      "event_date": "2025-05-28",
+      "end_date_inclusive": "2026-10-01",
+      "title": "New Visa Policies Put America First, Not China",
+      "topic": "Visa revocations",
+      "india_relevance": "indirect",
+      "source_url": "https://www.state.gov/releases/2025/05/new-visa-policies-put-america-first-not-china/",
+      "source_id": "https://www.state.gov/releases/2025/05/new-visa-policies-put-america-first-not-china/",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-05-28",
+          "end_date_inclusive": "2025-05-31"
+        },
+        {
+          "start_date": "2025-06-01",
+          "end_date_inclusive": "2025-06-30"
+        },
+        {
+          "start_date": "2025-07-01",
+          "end_date_inclusive": "2025-07-31"
+        },
+        {
+          "start_date": "2025-08-01",
+          "end_date_inclusive": "2025-08-31"
+        },
+        {
+          "start_date": "2025-09-01",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_04_20250604",
+      "event_date": "2025-06-04",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Enhancing National Security by Addressing Risks at Harvard University",
+      "topic": "Universities",
+      "india_relevance": "indirect",
+      "source_url": "https://www.federalregister.gov/documents/2025/06/10/2025-10668/enhancing-national-security-by-addressing-risks-at-harvard-university",
+      "source_id": "2025-10668",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-06-04",
+          "end_date_inclusive": "2025-06-30"
+        },
+        {
+          "start_date": "2025-07-01",
+          "end_date_inclusive": "2025-07-31"
+        },
+        {
+          "start_date": "2025-08-01",
+          "end_date_inclusive": "2025-08-31"
+        },
+        {
+          "start_date": "2025-09-01",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_05_20250604",
+      "event_date": "2025-06-04",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Restricting the Entry of Foreign Nationals To Protect the United States From Foreign Terrorists and Other National Security and Public Safety Threats",
+      "topic": "Travel and entry bans",
+      "india_relevance": "indirect",
+      "source_url": "https://www.federalregister.gov/documents/2025/06/10/2025-10669/restricting-the-entry-of-foreign-nationals-to-protect-the-united-states-from-foreign-terrorists-and",
+      "source_id": "2025-10669",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-06-04",
+          "end_date_inclusive": "2025-06-30"
+        },
+        {
+          "start_date": "2025-07-01",
+          "end_date_inclusive": "2025-07-31"
+        },
+        {
+          "start_date": "2025-08-01",
+          "end_date_inclusive": "2025-08-31"
+        },
+        {
+          "start_date": "2025-09-01",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_06_20250618",
+      "event_date": "2025-06-18",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Announcement of Expanded Screening and Vetting for Visa Applicants",
+      "topic": "Vetting and social media",
+      "india_relevance": "indirect",
+      "source_url": "https://www.state.gov/releases/2025/06/announcement-of-expanded-screening-and-vetting-for-visa-applicants/",
+      "source_id": "https://www.state.gov/releases/2025/06/announcement-of-expanded-screening-and-vetting-for-visa-applicants/",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-06-18",
+          "end_date_inclusive": "2025-06-30"
+        },
+        {
+          "start_date": "2025-07-01",
+          "end_date_inclusive": "2025-07-31"
+        },
+        {
+          "start_date": "2025-08-01",
+          "end_date_inclusive": "2025-08-31"
+        },
+        {
+          "start_date": "2025-09-01",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_07_20250723",
+      "event_date": "2025-07-23",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Investigation of Harvard University Participation in the Exchange Visitor Program",
+      "topic": "Universities",
+      "india_relevance": "indirect",
+      "source_url": "https://www.state.gov/releases/2025/07/investigation-of-harvard-university-participation-in-the-exchange-visitor-program/",
+      "source_id": "https://www.state.gov/releases/2025/07/investigation-of-harvard-university-participation-in-the-exchange-visitor-program/",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-07-23",
+          "end_date_inclusive": "2025-07-31"
+        },
+        {
+          "start_date": "2025-08-01",
+          "end_date_inclusive": "2025-08-31"
+        },
+        {
+          "start_date": "2025-09-01",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_08_20250725",
+      "event_date": "2025-07-25",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Interview Waiver Update July 25, 2025",
+      "topic": "Visa interviews",
+      "india_relevance": "direct",
+      "source_url": "https://travel.state.gov/content/travel/en/News/visas-news/interview-waiver-update-july-25-2025.html",
+      "source_id": "https://travel.state.gov/content/travel/en/News/visas-news/interview-waiver-update-july-25-2025.html",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-07-25",
+          "end_date_inclusive": "2025-07-31"
+        },
+        {
+          "start_date": "2025-08-01",
+          "end_date_inclusive": "2025-08-31"
+        },
+        {
+          "start_date": "2025-09-01",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_09_20250828",
+      "event_date": "2025-08-28",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Establishing a Fixed Time Period of Admission and an Extension of Stay Procedure for Nonimmigrant Academic Students, Exchange Visitors, and Representatives of Foreign Information Media",
+      "topic": "Student status",
+      "india_relevance": "indirect",
+      "source_url": "https://www.federalregister.gov/documents/2025/08/28/2025-16554/establishing-a-fixed-time-period-of-admission-and-an-extension-of-stay-procedure-for-nonimmigrant",
+      "source_id": "2025-16554",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-08-28",
+          "end_date_inclusive": "2025-08-31"
+        },
+        {
+          "start_date": "2025-09-01",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_10_20250828",
+      "event_date": "2025-08-28",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Adjudicating Applicants in Their Country of Residence - August 28, 2025",
+      "topic": "Visa interviews",
+      "india_relevance": "direct",
+      "source_url": "https://travel.state.gov/content/travel/en/News/visas-news/adjudicating-applicants-in-their-country-of-residence-aug-28-2025.html",
+      "source_id": "https://travel.state.gov/content/travel/en/News/visas-news/adjudicating-applicants-in-their-country-of-residence-aug-28-2025.html",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-08-28",
+          "end_date_inclusive": "2025-08-31"
+        },
+        {
+          "start_date": "2025-09-01",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_11_20250906",
+      "event_date": "2025-09-06",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Adjudicating Nonimmigrant Visa Applicants in Their Country of Residence - September 6, 2025",
+      "topic": "Visa interviews",
+      "india_relevance": "direct",
+      "source_url": "https://travel.state.gov/content/travel/en/News/visas-news/adjudicating-nonimmigrant-visa-applicants-in-their-country-of-residence-sep-6-2025.html",
+      "source_id": "https://travel.state.gov/content/travel/en/News/visas-news/adjudicating-nonimmigrant-visa-applicants-in-their-country-of-residence-sep-6-2025.html",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-09-06",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_12_20250918",
+      "event_date": "2025-09-18",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Interview Waiver Update September 18, 2025",
+      "topic": "Visa interviews",
+      "india_relevance": "direct",
+      "source_url": "https://travel.state.gov/content/travel/en/News/visas-news/interview-waiver-update-sept-18-2025.html",
+      "source_id": "https://travel.state.gov/content/travel/en/News/visas-news/interview-waiver-update-sept-18-2025.html",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-09-18",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_13_20250919",
+      "event_date": "2025-09-19",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Restriction on Entry of Certain Nonimmigrant Workers",
+      "topic": "H-1B / work after graduation",
+      "india_relevance": "direct",
+      "source_url": "https://www.federalregister.gov/documents/2025/09/24/2025-18601/restriction-on-entry-of-certain-nonimmigrant-workers",
+      "source_id": "2025-18601",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-09-19",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_14_20250924",
+      "event_date": "2025-09-24",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Weighted Selection Process for Registrants and Petitioners Seeking To File Cap-Subject H-1B Petitions",
+      "topic": "H-1B / work after graduation",
+      "india_relevance": "direct",
+      "source_url": "https://www.federalregister.gov/documents/2025/09/24/2025-18473/weighted-selection-process-for-registrants-and-petitioners-seeking-to-file-cap-subject-h-1b",
+      "source_id": "2025-18473",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-09-24",
+          "end_date_inclusive": "2025-09-30"
+        },
+        {
+          "start_date": "2025-10-01",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_15_20251010",
+      "event_date": "2025-10-10",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Adjudicating Nonimmigrant Visa (NIV) Applicants in Their Country of Residence",
+      "topic": "Visa interviews",
+      "india_relevance": "direct",
+      "source_url": "https://travel.state.gov/content/travel/en/News/visas-news/adjudicating-niv-applicants-in-their-country-of-residence.html",
+      "source_id": "https://travel.state.gov/content/travel/en/News/visas-news/adjudicating-niv-applicants-in-their-country-of-residence.html",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-10-10",
+          "end_date_inclusive": "2025-10-31"
+        },
+        {
+          "start_date": "2025-11-01",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_16_20251103",
+      "event_date": "2025-11-03",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Collection and Use of Biometrics by U.S. Citizenship and Immigration Services",
+      "topic": "",
+      "india_relevance": "indirect",
+      "source_url": "https://www.federalregister.gov/documents/2025/11/03/2025-19747/collection-and-use-of-biometrics-by-us-citizenship-and-immigration-services",
+      "source_id": "2025-19747",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-11-03",
+          "end_date_inclusive": "2025-11-30"
+        },
+        {
+          "start_date": "2025-12-01",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_17_20251203",
+      "event_date": "2025-12-03",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Announcement of Expanded Screening and Vetting for H-1B and Dependent H-4 Visa Applicants",
+      "topic": "Vetting and social media",
+      "india_relevance": "direct",
+      "source_url": "https://travel.state.gov/content/travel/en/News/visas-news/announcement-of-expanded-screening-and-vetting-for-h-1b-and-dependent-h-4-visa-applicants.html",
+      "source_id": "https://travel.state.gov/content/travel/en/News/visas-news/announcement-of-expanded-screening-and-vetting-for-h-1b-and-dependent-h-4-visa-applicants.html",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-12-03",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_18_20251216",
+      "event_date": "2025-12-16",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Restricting and Limiting the Entry of Foreign Nationals To Protect the Security of the United States",
+      "topic": "Travel and entry bans",
+      "india_relevance": "indirect",
+      "source_url": "https://www.federalregister.gov/documents/2025/12/19/2025-23570/restricting-and-limiting-the-entry-of-foreign-nationals-to-protect-the-security-of-the-united-states",
+      "source_id": "2025-23570",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-12-16",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_19_20251229",
+      "event_date": "2025-12-29",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Weighted Selection Process for Registrants and Petitioners Seeking To File Cap-Subject H-1B Petitions",
+      "topic": "H-1B / work after graduation",
+      "india_relevance": "direct",
+      "source_url": "https://www.federalregister.gov/documents/2025/12/29/2025-23853/weighted-selection-process-for-registrants-and-petitioners-seeking-to-file-cap-subject-h-1b",
+      "source_id": "2025-23853",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2025-12-29",
+          "end_date_inclusive": "2025-12-31"
+        },
+        {
+          "start_date": "2026-01-01",
+          "end_date_inclusive": "2026-01-31"
+        },
+        {
+          "start_date": "2026-02-01",
+          "end_date_inclusive": "2026-02-28"
+        },
+        {
+          "start_date": "2026-03-01",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_20_20260325",
+      "event_date": "2026-03-25",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Announcement of Expanded Screening and Vetting for Visa Applicants",
+      "topic": "Vetting and social media",
+      "india_relevance": "indirect",
+      "source_url": "https://travel.state.gov/content/travel/en/News/visas-news/announcement-of-expanded-screening-and-vetting-for-visa-applicants.html",
+      "source_id": "https://travel.state.gov/content/travel/en/News/visas-news/announcement-of-expanded-screening-and-vetting-for-visa-applicants.html",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2026-03-25",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_21_20260327",
+      "event_date": "2026-03-27",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Improving Wage Protections for the Temporary and Permanent Employment of Certain Foreign Nationals in the United States",
+      "topic": "H-1B / work after graduation",
+      "india_relevance": "direct",
+      "source_url": "https://www.federalregister.gov/documents/2026/03/27/2026-06017/improving-wage-protections-for-the-temporary-and-permanent-employment-of-certain-foreign-nationals",
+      "source_id": "2026-06017",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2026-03-27",
+          "end_date_inclusive": "2026-03-31"
+        },
+        {
+          "start_date": "2026-04-01",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_22_20260422",
+      "event_date": "2026-04-22",
+      "end_date_inclusive": "2026-10-01",
+      "title": "u s expands social media screening for visa applicants",
+      "topic": "Vetting and social media",
+      "india_relevance": "indirect",
+      "source_url": "https://www.state.gov/releases/office-of-the-spokesperson/2026/03/u-s-expands-social-media-screening-for-visa-applicants/",
+      "source_id": "https://www.state.gov/releases/office-of-the-spokesperson/2026/03/u-s-expands-social-media-screening-for-visa-applicants/",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2026-04-22",
+          "end_date_inclusive": "2026-04-30"
+        },
+        {
+          "start_date": "2026-05-01",
+          "end_date_inclusive": "2026-05-31"
+        },
+        {
+          "start_date": "2026-06-01",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_23_20260605",
+      "event_date": "2026-06-05",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Clarification of Discretionary Employment Authorization for Certain Aliens",
+      "topic": "",
+      "india_relevance": "indirect",
+      "source_url": "https://www.federalregister.gov/documents/2026/06/05/2026-11285/clarification-of-discretionary-employment-authorization-for-certain-aliens",
+      "source_id": "2026-11285",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2026-06-05",
+          "end_date_inclusive": "2026-06-30"
+        },
+        {
+          "start_date": "2026-07-01",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_24_20260717",
+      "event_date": "2026-07-17",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Establishing a Fixed Time Period of Admission and an Extension of Stay Procedure for Nonimmigrant Academic Students, Exchange Visitors, and Representatives of Foreign Information Media",
+      "topic": "Student status",
+      "india_relevance": "indirect",
+      "source_url": "https://www.federalregister.gov/documents/2026/07/17/2026-14439/establishing-a-fixed-time-period-of-admission-and-an-extension-of-stay-procedure-for-nonimmigrant",
+      "source_id": "2026-14439",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2026-07-17",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_25_20260720",
+      "event_date": "2026-07-20",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Public Charge Ground of Inadmissibility",
+      "topic": "",
+      "india_relevance": "indirect",
+      "source_url": "https://www.federalregister.gov/documents/2026/07/20/2026-14539/public-charge-ground-of-inadmissibility",
+      "source_id": "2026-14539",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2026-07-20",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_26_20260730",
+      "event_date": "2026-07-30",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Exchange Visitor Program-Termination of Program Participation, Extension of Program and Reinstatement to Valid Program Status",
+      "topic": "Student status",
+      "india_relevance": "indirect",
+      "source_url": "https://www.federalregister.gov/documents/2026/07/30/2026-15450/exchange-visitor-program-termination-of-program-participation-extension-of-program-and-reinstatement",
+      "source_id": "2026-15450",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2026-07-30",
+          "end_date_inclusive": "2026-07-31"
+        },
+        {
+          "start_date": "2026-08-01",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_27_20260810",
+      "event_date": "2026-08-10",
+      "end_date_inclusive": "2026-10-01",
+      "title": "9-11 Response and Biometric Entry-Exit Fee for H-1B and L-1 Visas",
+      "topic": "H-1B / work after graduation",
+      "india_relevance": "direct",
+      "source_url": "https://www.federalregister.gov/documents/2026/08/10/2026-16231/9-11-response-and-biometric-entry-exit-fee-for-h-1b-and-l-1-visas",
+      "source_id": "2026-16231",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2026-08-10",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_28_20260810",
+      "event_date": "2026-08-10",
+      "end_date_inclusive": "2026-10-01",
+      "title": "State Department Revokes More Than 175,000 Visas",
+      "topic": "Visa revocations",
+      "india_relevance": "indirect",
+      "source_url": "https://www.state.gov/releases/office-of-the-spokesperson/2026/08/state-department-revokes-more-than-175000-visas/",
+      "source_id": "https://www.state.gov/releases/office-of-the-spokesperson/2026/08/state-department-revokes-more-than-175000-visas/",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2026-08-10",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_29_20260825",
+      "event_date": "2026-08-25",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Fee for Certain H-1B Petitions",
+      "topic": "H-1B / work after graduation",
+      "india_relevance": "direct",
+      "source_url": "https://www.federalregister.gov/documents/2026/08/25/2026-17324/fee-for-certain-h-1b-petitions",
+      "source_id": "2026-17324",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2026-08-25",
+          "end_date_inclusive": "2026-08-31"
+        },
+        {
+          "start_date": "2026-09-01",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_30_20260911",
+      "event_date": "2026-09-11",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Eliminating the Discretionary 60-Day Grace Period",
+      "topic": "H-1B / work after graduation",
+      "india_relevance": "direct",
+      "source_url": "https://www.federalregister.gov/documents/2026/09/11/2026-18631/eliminating-the-discretionary-60-day-grace-period",
+      "source_id": "2026-18631",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2026-09-11",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_31_20260918",
+      "event_date": "2026-09-18",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Restriction on Entry of Certain Nonimmigrant Workers",
+      "topic": "H-1B / work after graduation",
+      "india_relevance": "direct",
+      "source_url": "https://www.federalregister.gov/documents/2026/09/23/2026-19554/restriction-on-entry-of-certain-nonimmigrant-workers",
+      "source_id": "2026-19554",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2026-09-18",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    },
+    {
+      "event_id": "event_32_20260918",
+      "event_date": "2026-09-18",
+      "end_date_inclusive": "2026-10-01",
+      "title": "Enhancing Program Integrity and Interagency Coordination in the Administration of the H-1B Nonimmigrant Visa Program",
+      "topic": "H-1B / work after graduation",
+      "india_relevance": "direct",
+      "source_url": "https://www.federalregister.gov/documents/2026/09/23/2026-19555/enhancing-program-integrity-and-interagency-coordination-in-the-administration-of-the-h-1b",
+      "source_id": "2026-19555",
+      "source_verified": false,
+      "monthly_slices": [
+        {
+          "start_date": "2026-09-18",
+          "end_date_inclusive": "2026-09-30"
+        },
+        {
+          "start_date": "2026-10-01",
+          "end_date_inclusive": "2026-10-01"
+        }
+      ]
+    }
+  ]
+}
