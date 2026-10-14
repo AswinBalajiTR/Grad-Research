@@ -15,4 +15,4 @@ Tavily returned results from other subreddits even when the query contained `sit
 
 **Verification limit:** Reddit's `.json` endpoint returned a network-security block in this environment. Therefore the post creation timestamps, full post text, and comments have **not** been verified or downloaded. The table's judgments are provisional and come from Tavily titles/snippets. Search-index coverage is incomplete, so these six URLs are not a census of r/f1visa posts in the window.
 
-The ignored raw pilot files are in [`data/raw/reddit/pilot_may27_f1visa/`](data/raw/reddit/pilot_may27_f1visa/). Once Reddit access works in a permitted environment, run the collector with this pilot policy or feed its `candidate_urls.csv` to `--candidate-file` for a verification pass.
+The raw pilot response files were removed from the branch. The six candidate URLs remain listed above. Once Reddit access works in a permitted environment, run the collector with this pilot policy or place verified URLs in a new candidate file for a verification pass.
