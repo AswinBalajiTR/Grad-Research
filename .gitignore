@@ -1,10 +1,21 @@
-# Data files (raw downloads, cached texts, and generated outputs).
-# Recreate them by running the scripts in code/.
-# data/
-
 # Python
-__pycache__/
 *.pyc
+.DS_Store
+.Rhistory
+__pycache__/
+*.py[cod]
+.pytest_cache/
 .venv/
 
-notebooks/
+# Large downloads and generated research outputs.
+/data/reddit/raw/
+/data/reddit/interim/
+/data/reddit/outputs/
+/data/reddit/processed/policy_*/
+/data/youtube/raw/
+/data/youtube/processed/
+/data/h1b/raw/
+/data/h1b/processed/
+/data/university/outputs/
+/data/university/interim/intake_observations.csv
+/notebooks

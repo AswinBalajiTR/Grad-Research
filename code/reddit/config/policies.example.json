@@ -1,0 +1,17 @@
+{
+  "policies": [
+    {
+      "event_id": "2025-05-27-visa-interview-pause",
+      "policy_name": "Suspension of new student visa interview appointments",
+      "announcement_date": "2025-05-27",
+      "days_after": 7,
+      "keywords": [
+        "student visa appointments",
+        "visa interview appointments",
+        "F1 visa slots",
+        "visa appointments paused"
+      ],
+      "subreddits": ["f1visa", "Indians_StudyAbroad", "gradadmissions", "usvisascheduling"]
+    }
+  ]
+}

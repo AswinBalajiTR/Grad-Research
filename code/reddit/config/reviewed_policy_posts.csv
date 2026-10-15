@@ -1,0 +1,8 @@
+post_id,event_id,decision,review_note
+1l3mpgm,event_05_20250604,include,June 2025 travel ban summary posted after announcement
+1lkxi2b,event_06_20250618,include,F M J social media screening discussion
+1nlimos,event_13_20250919,include,September 2025 H-1B fee announcement discussion
+1ptw6ky,event_14_20250924,include,Weighted selection discussion after proposal announcement
+1u9p3tb,event_09_20250828,include,Duration of status discussion; post was later edited after final rule
+1w8038p,event_25_20260720,include,Public charge discussion after July 2026 event
+1qwvst1,event_17_20251203,exclude,Original post deleted and subject cannot be verified from scraped text
