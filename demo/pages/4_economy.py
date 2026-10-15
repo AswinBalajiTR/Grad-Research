@@ -1,12 +1,10 @@
-"""Dashboard of the economic indicators since 2022: international enrollment,
-student visas, arrivals and SEVIS counts, rents near campus, and university
-employment, with the policy events, all as actual values.
-
-Run the build and fetch scripts first, then:
-    streamlit run code/economic_indicators/dashboard.py
+"""Economic indicators since 2022
+Run: streamlit run demo/app.py
 """
 
+import sys
 from datetime import date
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -15,9 +13,12 @@ import plotly.graph_objects as go
 import streamlit as st
 from plotly.subplots import make_subplots
 
-from common import OUT, ROOT, STOP_DATE
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "code/economic_indicators"))
+from common import ROOT, STOP_DATE  # noqa: E402
 
-st.set_page_config(page_title="International students and local economies", page_icon="📈", layout="wide")
+# The processed files now live in data/economic_indicators and data/policy_timeline.
+OUT = ROOT / "data" / "economic_indicators"
+EVENTS_PATH = ROOT / "data" / "policy_timeline" / "policy_events_to_verify.csv"
 
 # ---------------------------------------------------------------- palette
 # Reference palette from the data-viz guidelines: categorical slots in fixed
@@ -88,10 +89,9 @@ def load_table(name, **kw):
 
 @st.cache_data
 def load_events():
-    path = ROOT / "data" / "processed" / "policy_events_to_verify.csv"
-    if not path.exists():
+    if not EVENTS_PATH.exists():
         return pd.DataFrame(columns=["event_date", "title", "topic"])
-    ev = pd.read_csv(path, encoding="utf-8-sig")
+    ev = pd.read_csv(EVENTS_PATH, encoding="utf-8-sig")
     ev["event_date"] = pd.to_datetime(ev["event_date"], errors="coerce")
     ev["topic"] = ev["topic"].fillna("Other / unassigned")
     return ev.dropna(subset=["event_date"])
@@ -215,8 +215,9 @@ COUNTRIES = {
     "Turkey": ("Turkey", "Turkey", "TR"), "Brazil": ("Brazil", "Brazil", "BR"), "Colombia": ("Colombia", "Colombia", "CO"),
     "Mexico": ("Mexico", "Mexico Excluding Land", "MX"),
 }
+# H-1B issuances are left out: the H-1B page covers that pathway.
 VISA_CLASSES = {"f1_issuances": "F-1 students", "j1_issuances": "J-1 exchange visitors",
-                "h1b_issuances": "H-1B workers", "b1_b2_issuances": "B1/B2 business and tourism"}
+                "b1_b2_issuances": "B1/B2 business and tourism"}
 
 
 @st.cache_data
@@ -286,44 +287,8 @@ with T["International students"]:
             "ug_last": wide[("undergrad_intl_enrollment", y1)], "enroll_last": wide[("enrollment", y1)],
         }), how="inner")
 
-        with st.expander("Filters"):
-            f1, f2 = st.columns(2)
-            sectors = f1.multiselect("Sector", sorted(df.sector_name.unique()), default=sorted(df.sector_name.unique()))
-            states = f2.multiselect("States (empty = all)", sorted(df.state.dropna().unique()))
-        d = df[df.sector_name.isin(sectors)]
-        if states:
-            d = d[d.state.isin(states)]
-
-        st.markdown("#### Where international students are")
-        g = d.dropna(subset=["latitude", "longitude"])
-        g = g[g.intl_last > 0]  # a campus with none has no bubble to draw
-        fig = px.scatter_geo(g, lat="latitude", lon="longitude", size="intl_last", color="share_last",
-                             scope="usa", hover_name="name", size_max=35, color_continuous_scale=SEQUENTIAL,
-                             hover_data={"intl_last": True, "enroll_last": True, "share_last": ":.1f",
-                                         "latitude": False, "longitude": False},
-                             labels={"intl_last": f"Intl students (fall {y1})", "enroll_last": "All students",
-                                     "share_last": "Intl share %"})
-        fig.update_traces(marker=dict(line=dict(width=0.5, color=P["mid"])))
-        fig.update_layout(height=520, margin=dict(l=0, r=0, t=40, b=0), geo=dict(bgcolor="rgba(0,0,0,0)"),
-                          title=f"Campuses sized by international students, colored by their share of enrollment (fall {y1})")
-        show(fig, "map_inst")
-
-        top_n = st.slider("Institutions and counties to show", 5, 30, 15)
-        top = d.sort_values("intl_last", ascending=False).head(top_n)[::-1]
-        fig = go.Figure()
-        for i, (c, name) in enumerate([("grad_last", "Graduate"), ("ug_last", "Undergraduate")]):
-            fig.add_trace(go.Bar(y=top.name, x=top[c], name=name, orientation="h", marker_color=series_color(i),
-                                 marker_line=dict(color=P["mid"], width=2), text=top[c].astype(int),
-                                 textposition="inside", insidetextanchor="middle", hovertemplate="%{x}"))
-        fig.add_trace(go.Scatter(y=top.name, x=top.intl_last, mode="text", text=top.intl_last.astype(int),
-                                 textposition="middle right", showlegend=False, hoverinfo="skip",
-                                 textfont=dict(color=P["ink2"])))
-        fig.update_layout(barmode="stack", height=max(400, 26 * len(top) + 140), hovermode="y unified",
-                          margin=dict(l=10, r=10, t=40, b=10), title=f"Largest hosts (fall {y1})",
-                          xaxis=dict(title="International students",
-                                     gridcolor=P["grid"], range=[0, top.intl_last.max() * 1.15]),
-                          legend=dict(orientation="h", y=-0.1))
-        show(fig, "inst_bar")
+        # The graduate/undergraduate "Largest hosts" chart is left out: the Enrollment page covers that split.
+        top_n = st.slider("Counties to show", 5, 30, 15)
         cexp, cnames = county_exposure()
         ctop = cexp.sort_values(ascending=False).head(top_n).rename("per_1000").to_frame()
         ctop["county"] = [cnames.get(i, i) for i in ctop.index]
@@ -345,9 +310,9 @@ with T["International students"]:
         with st.expander("Table"):
             cols = ["name", "state", "sector_name", "enroll_last", "intl_first", "intl_last", "share_last",
                     "grad_last", "ug_last", "county_name"]
-            st.dataframe(d[cols].sort_values("intl_last", ascending=False), width="stretch",
+            st.dataframe(df[cols].sort_values("intl_last", ascending=False), width="stretch",
                          column_config={"share_last": st.column_config.NumberColumn("Intl share %", format="%.1f")})
-            download(d[cols].assign(share_last=d.share_last.round(1)), "institutions_filtered.csv")
+            download(df[cols].assign(share_last=df.share_last.round(1)), "institutions_filtered.csv")
 
 
 # ================================================================= Student flows
@@ -367,19 +332,19 @@ with T["Student flows"]:
         st.markdown("#### Visas issued by class")
         cw = class_series(country)
         names = [m for m in VISA_CLASSES if m in cw]
-        fig = make_subplots(rows=2, cols=2, shared_xaxes=True, vertical_spacing=0.12, horizontal_spacing=0.08,
+        fig = make_subplots(rows=1, cols=len(names), shared_xaxes=True, horizontal_spacing=0.06,
                             subplot_titles=[VISA_CLASSES[m] for m in names])
         for k, m in enumerate(names):
             s = cw[m].dropna()
             fig.add_trace(go.Scatter(x=s.index, y=s.values, name=VISA_CLASSES[m], mode="lines+markers",
                                      showlegend=False, line=dict(width=2, color=series_color(0)),
                                      marker=dict(size=4), hovertemplate="%{y:,.0f}"),
-                          row=k // 2 + 1, col=k % 2 + 1)
+                          row=1, col=k + 1)
         fig.update_yaxes(gridcolor=P["grid"], zeroline=False, rangemode="tozero")
         fig.update_yaxes(title_text="Visas per month", col=1)
         fig.update_xaxes(showgrid=False)
         fig.update_annotations(font=dict(size=13, color=P["ink2"]))
-        fig.update_layout(height=560, hovermode="x unified", margin=dict(l=10, r=10, t=70, b=10),
+        fig.update_layout(height=380, hovermode="x unified", margin=dict(l=10, r=10, t=70, b=10),
                           title=dict(text=f"{country}: visas issued per month, by class", font=dict(size=15)))
         show(fig, "flow_classes")
 

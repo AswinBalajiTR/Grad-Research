@@ -6,7 +6,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
-
+venv/
 # Large downloads and generated research outputs.
 /data/reddit/raw/
 /data/reddit/interim/
