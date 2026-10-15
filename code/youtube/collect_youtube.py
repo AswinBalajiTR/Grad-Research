@@ -21,16 +21,19 @@ except ModuleNotFoundError:  # Allows --help and schema tests before dependencie
         pass
 
 
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DATA_ROOT = PROJECT_ROOT / "data/youtube"
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--queries-file", default="config/search_queries.txt")
+    parser.add_argument("--queries-file", default=str(PROJECT_ROOT / "code/youtube/search_queries.txt"))
     parser.add_argument("--start-date", default="2025-01-20")
     parser.add_argument("--end-date", help="Inclusive YYYY-MM-DD; default is today")
     parser.add_argument("--max-videos", type=int, default=60)
     parser.add_argument("--max-comments-per-video", type=int, default=100)
     parser.add_argument("--time-budget-seconds", type=int, default=180)
-    parser.add_argument("--output", default="data/processed/youtube_comments.csv")
-    parser.add_argument("--videos-output", default="data/processed/youtube_videos.csv")
+    parser.add_argument("--output", default=str(DATA_ROOT / "processed/youtube_comments.csv"))
+    parser.add_argument("--videos-output", default=str(DATA_ROOT / "processed/youtube_videos.csv"))
     return parser.parse_args()
 
 

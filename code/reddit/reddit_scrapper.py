@@ -387,8 +387,12 @@ def prepare_policy_scope(source: Path, destination: Path):
 
     monthly_queries = sum(len(event["monthly_slices"]) for event in events) * len(SUBREDDITS)
     one_query_per_pair = len(events) * len(SUBREDDITS)
+    try:
+        source_label = str(source.resolve().relative_to(Path(__file__).resolve().parents[2]))
+    except ValueError:
+        source_label = str(source)
     output = {
-        "source_csv": str(source.resolve()),
+        "source_csv": source_label,
         "scope": "event_date through extended_end, inclusive; constant subreddit panel",
         "subreddits": SUBREDDITS,
         "counts": {

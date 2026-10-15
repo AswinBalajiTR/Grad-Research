@@ -4,3 +4,15 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
+
+# Large downloads and generated research outputs.
+/data/reddit/raw/
+/data/reddit/interim/
+/data/reddit/outputs/
+/data/reddit/processed/policy_*/
+/data/youtube/raw/
+/data/youtube/processed/
+/data/h1b/raw/
+/data/h1b/processed/
+/data/university/outputs/
+/data/university/interim/intake_observations.csv

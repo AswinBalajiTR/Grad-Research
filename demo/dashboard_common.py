@@ -9,12 +9,15 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
-CODE_ROOT = Path(__file__).resolve().parent
-YOUTUBE_PATH = CODE_ROOT / "data/processed/youtube_comments.csv"
-H1B_PATH = CODE_ROOT / "data/processed/h1b_filings_2025_to_latest.csv"
-REDDIT_THEMES_PATH = CODE_ROOT / "data/processed/reddit_theme_counts.csv"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+CODE_ROOT = PROJECT_ROOT / "code"
+DATA_ROOT = PROJECT_ROOT / "data"
+YOUTUBE_PATH = DATA_ROOT / "youtube/processed/youtube_comments.csv"
+H1B_PATH = DATA_ROOT / "h1b/processed/h1b_filings_2025_to_latest.csv"
+REDDIT_THEMES_PATH = DATA_ROOT / "reddit/processed/reddit_theme_counts.csv"
 
-from concern_themes import THEME_PATTERNS, comment_themes
+sys.path.insert(0, str(CODE_ROOT / "reddit"))
+from concern_themes import THEME_PATTERNS, comment_themes  # noqa: E402
 
 
 @st.cache_data(show_spinner=False)
@@ -31,7 +34,7 @@ def load_data(path: Path) -> pd.DataFrame:
 def run_collector(arguments: list[str], timeout: int = 7200) -> tuple[bool, str]:
     try:
         result = subprocess.run(
-            [sys.executable, *arguments], cwd=CODE_ROOT, text=True,
+            [sys.executable, *arguments], cwd=PROJECT_ROOT, text=True,
             capture_output=True, timeout=timeout, check=False,
         )
     except subprocess.TimeoutExpired:

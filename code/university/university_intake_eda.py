@@ -1,7 +1,7 @@
 """Descriptive EDA for the project's verified university intake observations.
 
 Run from the repository root or any directory:
-    python3 code/src/university_intake_eda.py
+    python3 code/university/university_intake_eda.py
 
 Requires matplotlib. Outputs are descriptive and do not estimate policy effects.
 """
@@ -24,9 +24,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
-CODE_DIR = Path(__file__).resolve().parents[1]
-DEFAULT_INPUT = CODE_DIR / "data/interim/university_intake/intake_observations.csv"
-DEFAULT_OUTPUT = CODE_DIR / "outputs/university_intake_eda"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_INPUT = PROJECT_ROOT / "data/university/interim/intake_observations.csv"
+DEFAULT_OUTPUT = PROJECT_ROOT / "data/university/outputs/university_intake_eda"
 REQUIRED_COLUMNS = {
     "source_id", "institution", "reporting_year", "period", "cohort",
     "academic_level", "country", "metric", "value", "source_url", "quality_flag",

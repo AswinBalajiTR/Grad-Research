@@ -8,7 +8,7 @@ happened to fall 2025 international enrollment at universities that publish it.
 Reuses the source-linked counts in historical_international_eda.py, so the
 numbers here always match the CSV, summary, and findings.md outputs.
 
-Run: streamlit run code/app.py
+Run: streamlit run demo/historical_dashboard.py
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "code/university"))
 from historical_international_eda import SOURCES, make_rows, validate  # noqa: E402
 
 # Categorical slots in fixed order; DROP/GAIN are the diverging poles.
@@ -32,6 +32,7 @@ SCHOOL_COLORS = {"Ohio University": BLUE, "MIT": ORANGE, "University of Hawaiʻi
                  "University of New Mexico": "#e87ba4", "UC Berkeley": "#008300"}
 FONT = dict(family="Inter, system-ui, sans-serif", size=13)
 
+st.set_page_config(page_title="International Enrollment 2025", page_icon="🎓", layout="wide")
 
 
 @st.cache_data
@@ -341,7 +342,7 @@ chapter(3, "Not every campus moved the same way",
         f"The decline was uneven. {', '.join(overall[overall.pct < -1].sort_values('pct').label)} lost "
         f"international students, while {', '.join(overall[overall.pct.abs() <= 1].label)} held roughly steady.",
         "campuses")
-st.plotly_chart(diverging(overall), use_container_width=True)
+st.plotly_chart(diverging(overall), width="stretch")
 c1, c2 = st.columns(2, gap="large")
 with c1:
     st.markdown(
@@ -365,7 +366,7 @@ inst = e1.selectbox("Campus", by_drop, format_func=SHORT.get, key="explorer_camp
 splits = available_splits(df, inst)
 split = e2.radio("Break the change down by", splits, format_func=SPLITS.get, horizontal=True,
                  key=f"explorer_split_{inst}")
-st.plotly_chart(waterfall(df, inst, decompose(df, inst, split)), use_container_width=True)
+st.plotly_chart(waterfall(df, inst, decompose(df, inst, split)), width="stretch")
 if splits == ["total"]:
     st.caption(f"{SHORT[inst]} publishes only a campus-wide international total.")
 
@@ -378,7 +379,7 @@ unit = st.segmented_control("Show change as", ["Percent", "Students"], default="
 col_ug, col_grad = ("pct_ug", "pct_grad") if unit == "Percent" else ("diff_ug", "diff_grad")
 st.plotly_chart(paired_bars(levels.sort_values("diff_grad"),
                             [("Graduate", col_grad, GRAD_COLOR), ("Undergraduate", col_ug, UG_COLOR)],
-                            "pct" if unit == "Percent" else "count"), use_container_width=True)
+                            "pct" if unit == "Percent" else "count"), width="stretch")
 st.caption("New Mexico's undergraduate international count rose while its graduate count fell; "
            "Ohio's undergraduates fell faster in percent terms but lost fewer students.")
 
@@ -389,7 +390,7 @@ chapter(5, "Indian students fell faster than the overall total",
         "even at Berkeley, where the total barely moved.", "india")
 st.plotly_chart(paired_bars(india_vs_all.sort_values("pct_india"),
                             [("Students from India", "pct_india", INDIA_COLOR),
-                             ("All international students", "pct_all", ALL_COLOR)], "pct"), use_container_width=True)
+                             ("All international students", "pct_all", ALL_COLOR)], "pct"), width="stretch")
 
 india_campuses = india_vs_all.sort_values("pct_india").institution.tolist()
 
@@ -397,7 +398,7 @@ st.subheader("India's share of international students")
 st.markdown("Outer ring: Fall 2025. Inner ring: Fall 2024. India's share of the international student body "
             "shrank at every campus that reports it.")
 for col, inst in zip(st.columns(len(india_campuses)), india_campuses):
-    col.plotly_chart(india_share_donut(df, inst), use_container_width=True)
+    col.plotly_chart(india_share_donut(df, inst), width="stretch")
 
 st.subheader("How much of each campus's change came from India")
 offset = india_vs_all[(india_vs_all.diff_india < india_vs_all.diff_all)]
@@ -406,10 +407,10 @@ if not offset.empty:
                 "campus's entire net change: enrollment from other countries rose and partly offset it.")
 for col, inst in zip(st.columns(len(india_campuses)), india_campuses):
     col.plotly_chart(waterfall(df, inst, decompose(df, inst, "india"), height=360, title=SHORT[inst]),
-                     use_container_width=True)
+                     width="stretch")
 
 st.subheader("Students from India over time")
-st.plotly_chart(trends(df, True, 2021, country="India"), use_container_width=True)
+st.plotly_chart(trends(df, True, 2021, country="India"), width="stretch")
 st.caption("Indexed to Fall 2021 = 100 so campuses of different sizes share one scale; hover for student counts. "
            "Berkeley's 2024 value comes from its 2024 report; its 2025 report repeats an older baseline.")
 
@@ -421,7 +422,7 @@ chapter(6, "Is 2025 unusual? The long view",
 c1, c2 = st.columns([1, 2])
 indexed = c1.toggle("Index each campus to its start year", value=True)
 start_year = c2.select_slider("Start year", options=list(range(2011, 2025)), value=2019)
-st.plotly_chart(trends(df, indexed, start_year), use_container_width=True)
+st.plotly_chart(trends(df, indexed, start_year), width="stretch")
 st.caption("Series begin in different years: UH Hilo 2011, MIT 2016, Ohio and U-M Ann Arbor 2019, "
            "New Mexico and UC Berkeley 2021, Illinois Springfield 2022. "
            "In indexed mode, each line uses its own first visible year.")
@@ -433,7 +434,7 @@ with st.expander("Undergraduate and graduate over time, by campus"):
     inst = l1.selectbox("Campus", level_campuses, format_func=SHORT.get, key="level_campus")
     scopes = ["All countries"] + (["India"] if has_series(df, inst, "India", "Undergraduate") else [])
     country = l2.radio("Country scope", scopes, horizontal=True, key=f"level_scope_{inst}")
-    st.plotly_chart(level_area(df, inst, country), use_container_width=True)
+    st.plotly_chart(level_area(df, inst, country), width="stretch")
 
 # ── 7. Next ──
 chapter(7, "What comes next",
@@ -454,7 +455,7 @@ st.info("Enrollment changes can line up with rule changes in time, but they also
 with st.expander("Data & sources"):
     table = overall.rename(columns=dict(label="Campus", c24="Fall 2024", c25="Fall 2025",
                                         diff="Change", pct="% change")).drop(columns="institution")
-    st.dataframe(table, hide_index=True, use_container_width=True)
+    st.dataframe(table, hide_index=True, width="stretch")
     st.dataframe(df.drop(columns=["period", "measure", "source_definition"]),
-                 hide_index=True, use_container_width=True)
+                 hide_index=True, width="stretch")
     st.markdown("\n".join(f"- [{k}]({u})" for k, u in SOURCES.items()))

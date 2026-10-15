@@ -13,6 +13,8 @@ import pandas as pd
 import requests
 
 
+DATA_ROOT = Path(__file__).resolve().parents[2] / "data/h1b"
+
 USCIS_FY2025_URL = (
     "https://www.uscis.gov/sites/default/files/document/data/"
     "h1b_datahubexport-2025.csv"
@@ -61,7 +63,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source", choices=["uscis", "dol"], default="uscis")
     parser.add_argument("--input", help="Local CSV/XLSX exported from the official source")
     parser.add_argument("--source-url", help="Override the official download URL")
-    parser.add_argument("--output", default="data/processed/h1b_filings_2025_to_latest.csv")
+    parser.add_argument("--output", default=str(DATA_ROOT / "processed/h1b_filings_2025_to_latest.csv"))
     return parser.parse_args()
 
 
@@ -89,7 +91,7 @@ def read_source(path: str | None, url: str, excel: bool) -> pd.DataFrame:
 
 def read_dol_file(filename: str, urls: list[str]) -> pd.DataFrame:
     """Reuse a local raw download, otherwise try each current official DOL URL."""
-    raw_path = Path("data/raw") / filename
+    raw_path = DATA_ROOT / "raw" / filename
     if raw_path.exists() and raw_path.stat().st_size > 0:
         return pd.read_excel(raw_path)
 
@@ -230,7 +232,7 @@ def main() -> int:
         if args.source == "uscis" and not args.input:
             print(
                 "Export FY2025 as CSV from the USCIS H-1B Employer Data Hub, save it under "
-                "data/raw/, and rerun with --input PATH.",
+                f"{DATA_ROOT / 'raw'}/ and rerun with --input PATH.",
                 file=sys.stderr,
             )
         return 2

@@ -12,8 +12,8 @@ def load_module(name: str, relative: str):
     return module
 
 
-h1b = load_module("collect_h1b", "scripts/collect_h1b.py")
-youtube = load_module("collect_youtube", "scripts/collect_youtube.py")
+h1b = load_module("collect_h1b", "h1b/collect_h1b.py")
+youtube = load_module("collect_youtube", "youtube/collect_youtube.py")
 
 
 def test_normalize_uscis_filters_fy2025_and_calculates_totals():

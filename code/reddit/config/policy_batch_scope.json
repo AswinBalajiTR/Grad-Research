@@ -1,5 +1,5 @@
 {
-  "source_csv": "/private/tmp/grad-research-integration/code/config/policy_events_to_verify.csv",
+  "source_csv": "code/reddit/config/policy_events_to_verify.csv",
   "scope": "event_date through extended_end, inclusive; constant subreddit panel",
   "subreddits": [
     "f1visa",

@@ -5,13 +5,11 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-import sys
 from collections import Counter
 from pathlib import Path
 
-CODE_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(CODE_ROOT))
-from concern_themes import comment_themes  # noqa: E402
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+from concern_themes import comment_themes
 
 
 def aggregate(source: Path) -> tuple[Counter, int]:
@@ -34,8 +32,8 @@ def aggregate(source: Path) -> tuple[Counter, int]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", type=Path, default=CODE_ROOT / "data/processed/reddit_policy_20261013/all_reviewed_comments.jsonl")
-    parser.add_argument("--output", type=Path, default=CODE_ROOT / "data/processed/reddit_theme_counts.csv")
+    parser.add_argument("--input", type=Path, default=PROJECT_ROOT / "data/reddit/processed/policy_20261013/all_reviewed_comments.jsonl")
+    parser.add_argument("--output", type=Path, default=PROJECT_ROOT / "data/reddit/processed/reddit_theme_counts.csv")
     args = parser.parse_args()
     counts, records = aggregate(args.input)
     args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -4,7 +4,7 @@ Numbers below are transcribed from the official university tables listed in
 SOURCES. They are fall/academic-year stocks of enrolled students, not new
 arrivals, visa issuances, or estimates of policy effects.
 
-Run: python3 code/src/historical_international_eda.py
+Run: python3 code/university/historical_international_eda.py
 """
 
 from __future__ import annotations
@@ -21,9 +21,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 
-CODE = Path(__file__).resolve().parents[1]
-DATA = CODE / "data/interim/university_intake/historical_international_enrollment.csv"
-OUT = CODE / "outputs/historical_international_eda"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DATA = PROJECT_ROOT / "data/university/interim/historical_international_enrollment.csv"
+OUT = PROJECT_ROOT / "data/university/outputs/historical_international_eda"
 YEARS_OHIO = list(range(2019, 2026))
 YEARS_MIT = list(range(2016, 2026))
 YEARS_HILO = list(range(2011, 2026))

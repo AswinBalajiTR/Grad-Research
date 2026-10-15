@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "reddit"))
 from reddit_scrapper import (canonical_post, collect, load_policies, parse_reddit, search_plan,
                              build_coverage, build_search_jobs, merge_reviewed, analyze_sentiment)
 
@@ -21,7 +21,7 @@ def epoch(day):
 class RedditPipelineTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.policy = load_policies(Path(__file__).resolve().parents[1] / "config/policies.example.json")[0]
+        cls.policy = load_policies(Path(__file__).resolve().parents[1] / "reddit/config/policies.example.json")[0]
 
     def test_window_and_comment_gaps(self):
         data = [
@@ -49,7 +49,7 @@ class RedditPipelineTests(unittest.TestCase):
         self.assertEqual(len(search_plan([self.policy], 20)), 16)
 
     def test_csv_to_search_to_post_and_comments(self):
-        policies = load_policies(Path(__file__).resolve().parents[1] / "config/policies.example.csv")
+        policies = load_policies(Path(__file__).resolve().parents[1] / "reddit/config/policies.example.csv")
         self.assertEqual(policies[0]["keywords"][0], "student visa appointments")
         reddit_response = [
             {"data": {"children": [{"data": {"id": "abc", "created_utc": epoch(27),
@@ -95,7 +95,7 @@ class RedditPipelineTests(unittest.TestCase):
             self.assertEqual([row["discovery_search_completed"] for row in rows], ["True", "False"])
 
     def test_search_cues_follow_source_id_when_policies_reorder(self):
-        manifest = json.loads((Path(__file__).resolve().parents[1] / "config/policy_batch_scope.json").read_text())
+        manifest = json.loads((Path(__file__).resolve().parents[1] / "reddit/config/policy_batch_scope.json").read_text())
         original = {job["title"] + job["event_date"]: job["cue"] for job in build_search_jobs(manifest)}
         manifest["events"].reverse()
         reordered = {job["title"] + job["event_date"]: job["cue"] for job in build_search_jobs(manifest)}

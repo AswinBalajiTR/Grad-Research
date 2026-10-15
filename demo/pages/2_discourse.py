@@ -30,7 +30,7 @@ with youtube_tab:
     if refresh:
         with st.spinner("Collecting YouTube comments for up to three minutes..."):
             ok, message = run_collector([
-                "scripts/collect_youtube.py", "--max-videos", str(video_limit),
+                "code/youtube/collect_youtube.py", "--max-videos", str(video_limit),
                 "--max-comments-per-video", str(comment_limit), "--time-budget-seconds", "180",
             ], timeout=240)
         (st.success if ok else st.error)("YouTube refresh completed" if ok else "YouTube refresh failed")
@@ -114,7 +114,7 @@ with reddit_tab:
     elif not {"month", "event_id", "theme", "comments"}.issubset(reddit.columns):
         st.error("Reddit theme summary must contain month, event_id, theme, and comments columns.")
     else:
-        manifest = CODE_ROOT / "config/policy_batch_scope.json"
+        manifest = CODE_ROOT / "reddit/config/policy_batch_scope.json"
         labels = {}
         if manifest.exists():
             labels = {event["event_id"]: event.get("title", event["event_id"]) for event in json.loads(manifest.read_text()).get("events", [])}

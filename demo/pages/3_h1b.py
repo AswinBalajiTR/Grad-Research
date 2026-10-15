@@ -12,7 +12,7 @@ with st.sidebar:
     st.caption("Collection starts only when you click Refresh. Large DOL workbooks can take several minutes.")
 if refresh:
     with st.spinner("Downloading and preparing H-1B disclosures..."):
-        ok, message = run_collector(["scripts/collect_h1b.py", "--source", "dol"], timeout=7200)
+        ok, message = run_collector(["code/h1b/collect_h1b.py", "--source", "dol"], timeout=7200)
     (st.success if ok else st.error)("H-1B refresh completed" if ok else "H-1B refresh failed")
     if message:
         st.code(message)
