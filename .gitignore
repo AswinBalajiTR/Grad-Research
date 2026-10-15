@@ -16,3 +16,4 @@ __pycache__/
 /data/h1b/processed/
 /data/university/outputs/
 /data/university/interim/intake_observations.csv
+/notebooks
