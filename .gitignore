@@ -19,3 +19,4 @@ venv/
 /data/university/outputs/
 /data/university/interim/intake_observations.csv
 /notebooks
+/data/raw

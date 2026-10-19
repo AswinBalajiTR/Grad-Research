@@ -58,14 +58,29 @@ STATE_FIPS = {
 SECTORS = {"1": "Public, 4-year+", "2": "Private nonprofit, 4-year+", "3": "Private for-profit, 4-year+",
            "4": "Public, 2-year", "5": "Private nonprofit, 2-year", "6": "Private for-profit, 2-year",
            "7": "Public, <2-year", "8": "Private nonprofit, <2-year", "9": "Private for-profit, <2-year"}
+HOME_STATES = ["DC", "VA"]  # default selection wherever the page picks states or places
 START, END = date(2022, 1, 1), date.fromisoformat(STOP_DATE)  # every chart covers the whole study period
 
 
 # ---------------------------------------------------------------- data
-@st.cache_data(show_spinner="Loading data")
-def load_long(name):
+def modified(name):
+    """File modification time, passed to the cached loaders so a rebuilt file is read again."""
     path = OUT / name
-    if not path.exists():
+    return path.stat().st_mtime if path.exists() else None
+
+
+def load_long(name):
+    return _load_long(name, modified(name))
+
+
+def load_table(name, **kw):
+    return _load_table(name, modified(name), **kw)
+
+
+@st.cache_data(show_spinner="Loading data")
+def _load_long(name, mtime):
+    path = OUT / name
+    if mtime is None:
         return None
     df = pd.read_csv(path, dtype={"unit_id": str, "period": str, "measure": str}, encoding="utf-8-sig")
     periods = pd.Series(df["period"].unique())
@@ -82,9 +97,8 @@ def load_long(name):
 
 
 @st.cache_data
-def load_table(name, **kw):
-    path = OUT / name
-    return pd.read_csv(path, encoding="utf-8-sig", **kw) if path.exists() else None
+def _load_table(name, mtime, **kw):
+    return pd.read_csv(OUT / name, encoding="utf-8-sig", **kw) if mtime is not None else None
 
 
 @st.cache_data
@@ -97,8 +111,10 @@ def load_events():
     return ev.dropna(subset=["event_date"])
 
 
+# The derived tables below take the source files' modification times only so the cache
+# is rebuilt when a file changes.
 @st.cache_data(show_spinner="Preparing rents")
-def zori_wide():
+def zori_wide(mtimes):
     z = load_long("zori.csv")
     if z is None:
         return None
@@ -106,7 +122,7 @@ def zori_wide():
 
 
 @st.cache_data
-def zip_exposure():
+def zip_exposure(mtimes):
     """Lookup of ZORI ZIPs with metro, campus flag, and international students nearby."""
     zips = load_table("zori_zips.csv", dtype={"zip": str})
     exp = load_long("exposure.csv")
@@ -123,7 +139,7 @@ def zip_exposure():
 
 
 @st.cache_data
-def institutions():
+def institutions(mtimes):
     inst = load_table("institutions.csv", dtype={"unitid": str, "sector": str, "county_fips": str, "cbsa": str})
     if inst is None:
         return None
@@ -132,7 +148,7 @@ def institutions():
 
 
 @st.cache_data
-def institution_years():
+def institution_years(mtimes):
     """Institution x fall wide table of enrollment measures."""
     exp = load_long("exposure.csv")
     if exp is None:
@@ -164,6 +180,15 @@ def line_chart(wide, title, unit, height=420):
     return fig
 
 
+def arrow(v, fmt):
+    """A change with an up or down arrow in front, e.g. '▲ +1.2%' or '▼ -$40' (fmt "dollars");
+    a missing value shows as '–'."""
+    if pd.isna(v):
+        return "–"
+    text = f"{'+' if v >= 0 else '-'}${abs(v):,.0f}" if fmt == "dollars" else fmt.format(v)
+    return f"{'▲' if v > 0 else '▼' if v < 0 else '•'} {text}"
+
+
 def show(fig, key=None):
     st.plotly_chart(fig, width="stretch", theme="streamlit", key=key)
 
@@ -176,17 +201,16 @@ def download(df, name, label="Download CSV"):
 EVENTS = load_events()
 
 st.title("International students and local economies, 2022 onward")
-st.caption(f"Actual values since 2022 for enrollment, student visas and arrivals, rents, and university jobs. "
-           f"Study period ends {STOP_DATE}. Each source runs to its latest release (see Data & notes).")
+
 
 TAB_NAMES = ["International students", "Student flows", "Rents near campus", "University jobs", "Policy events",
              "Data & notes"]
 T = dict(zip(TAB_NAMES, st.tabs(TAB_NAMES)))
 
-ZW = zori_wide()
-ZIPS = zip_exposure()
-INST = institutions()
-IYEARS = institution_years()
+ZW = zori_wide(modified("zori.csv"))
+ZIPS = zip_exposure((modified("zori_zips.csv"), modified("exposure.csv")))
+INST = institutions(modified("institutions.csv"))
+IYEARS = institution_years(modified("exposure.csv"))
 EXP = load_long("exposure.csv")
 QCEW = load_long("qcew.csv")
 BEA = load_long("bea_education.csv")
@@ -248,26 +272,60 @@ def class_series(country):
     return w.reindex(pd.date_range(w.index.min(), w.index.max(), freq="MS"))
 
 
-def stage_panels(raw):
-    """One panel per stage, stacked on a shared time axis, each on its own scale (the stages
-    differ by two orders of magnitude)."""
-    stages = [s for s in STAGES if s in raw]
-    fig = make_subplots(rows=len(stages), cols=1, shared_xaxes=True, vertical_spacing=0.05, subplot_titles=stages)
-    for k, s in enumerate(stages, 1):
-        v = raw[s].dropna()
-        fig.add_trace(go.Scatter(x=v.index, y=v.values, name=s, mode="lines+markers", showlegend=False,
-                                 line=dict(width=2, color=STAGE_COLORS[s]), marker=dict(size=4),
-                                 hovertemplate="%{y:,.0f}"), row=k, col=1)
-        fig.update_yaxes(title_text="Students" if s == STAGES[2] else "Per month", gridcolor=P["grid"],
-                         zeroline=False, rangemode="tozero", row=k, col=1)
-    fig.update_xaxes(showgrid=False)
-    fig.update_annotations(font=dict(size=13, color=P["ink2"]), xanchor="left", x=0)
-    return fig, len(stages)
+MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
-def county_exposure():
+def year_colors(years):
+    """A fixed color per year, so a year keeps it whatever else is picked; the latest gets the first slot."""
+    years = sorted(years)
+    return {y: series_color(len(years) - 1 - k) for k, y in enumerate(years)}
+
+
+def year_bars(fig, s, picked, colors, row, col, legend):
+    """Overlapping bars of a monthly series by month of the year, one set per picked year."""
+    for y in picked:
+        sy = s[s.index.year == y].dropna()
+        fig.add_trace(go.Bar(x=sy.index.month, y=sy.values, name=str(y), legendgroup=str(y), showlegend=legend,
+                             marker=dict(color=colors[y], opacity=0.55, line=dict(color=P["mid"], width=1)),
+                             hovertemplate=f"{y}: %{{y:,.0f}}<extra></extra>"), row=row, col=col)
+    fig.update_xaxes(tickmode="array", tickvals=list(range(1, 13)), ticktext=MONTHS, range=[0.5, 12.5],
+                     showgrid=False, row=row, col=col)
+
+
+def stage_chart(raw, picked, shown):
+    """The picked stages overlapping for every month of the picked years, in one chart.
+    SEVIS (a running total) goes on a right-hand axis when shown with the monthly counts."""
+    # Only months of the picked years that have data for a shown stage, on a category axis, so the
+    # years left out take no room on the chart.
+    d = raw.loc[raw.index.year.isin(picked), shown].dropna(how="all")
+    months = d.index.strftime("%b %Y")
+    right = STAGES[2] in shown and len(shown) > 1
+    fig = make_subplots(specs=[[{"secondary_y": right}]])
+    # Drawn last stage first, so the usually smaller monthly visa bars sit on top; the legend keeps
+    # the funnel order. One shared offsetgroup puts the bars at the same spot on both axes.
+    for s in shown[::-1]:
+        fig.add_trace(go.Bar(x=months, y=d[s], name=s, offsetgroup="stages", legendrank=STAGES.index(s),
+                             marker=dict(color=STAGE_COLORS[s], opacity=0.6, line=dict(color=P["mid"], width=1)),
+                             hovertemplate="%{y:,.0f}"), secondary_y=right and s == STAGES[2])
+    monthly = [s for s in shown if s != STAGES[2]]
+    fig.update_yaxes(title_text="Per month" if monthly else "Students", gridcolor=P["grid"], zeroline=False,
+                     rangemode="tozero", secondary_y=False)
+    if right:
+        fig.update_yaxes(title_text="Active students (SEVIS)", showgrid=False, zeroline=False, rangemode="tozero",
+                         secondary_y=True)
+    fig.update_xaxes(type="category", categoryorder="array", categoryarray=list(months), tickangle=-45,
+                     showgrid=False)
+    # A dotted line where each new year starts.
+    for k in np.flatnonzero(np.diff(d.index.year)) + 1:
+        fig.add_vline(x=k - 0.5, line=dict(color=P["muted"], width=1, dash="dot"))
+    fig.update_layout(barmode="overlay", bargap=0.2,
+                      legend=dict(orientation="h", yanchor="bottom", y=1.02, x=1, xanchor="right"))
+    return fig
+
+
+def county_exposure(year):
     c = EXP[(EXP.unit_type == "county") & (EXP.measure == "intl_per_1000_residents")]
-    c = c[c.period == c.period.max()]
+    c = c[c.period == f"{year}-fall"]
     return c.set_index("unit_id")["value"], dict(zip(c.unit_id, c.unit_name))
 
 
@@ -277,7 +335,8 @@ with T["International students"]:
         st.warning("Run build_exposure.py first.")
     else:
         years = sorted(IYEARS.year.unique())
-        y0, y1 = years[0], years[-1]
+        # Fall 2021 is only for the county chart; the table keeps to the study period.
+        y0, y1 = min(y for y in years if y >= START.year), years[-1]
         wide = IYEARS.pivot_table(index="unit_id", columns="year",
                                   values=["intl_enrollment", "enrollment", "intl_share", "grad_intl_enrollment",
                                           "undergrad_intl_enrollment"])
@@ -288,24 +347,40 @@ with T["International students"]:
         }), how="inner")
 
         # The graduate/undergraduate "Largest hosts" chart is left out: the Enrollment page covers that split.
-        top_n = st.slider("Counties to show", 5, 30, 15)
-        cexp, cnames = county_exposure()
-        ctop = cexp.sort_values(ascending=False).head(top_n).rename("per_1000").to_frame()
-        ctop["county"] = [cnames.get(i, i) for i in ctop.index]
-        county_intl = EXP[(EXP.unit_type == "county") & (EXP.measure == "intl_enrollment")
-                          & (EXP.period == f"{y1}-fall")].set_index("unit_id")["value"]
-        ctop["intl"] = county_intl.reindex(ctop.index).astype(int)
-        fig = px.bar(ctop[::-1], x="per_1000", y="county", orientation="h", text="per_1000",
-                     color_discrete_sequence=[series_color(0)], custom_data=["intl"],
-                     labels={"per_1000": "International students per 1,000 residents", "county": ""})
-        fig.update_traces(marker_line=dict(color=P["mid"], width=2), textposition="outside", cliponaxis=False,
-                          texttemplate="%{x:.1f}",
-                          hovertemplate="%{y}<br>%{x:.1f} per 1,000 residents<br>%{customdata[0]} international "
-                                        "students<extra></extra>")
-        fig.update_layout(height=max(400, 26 * len(ctop) + 140), margin=dict(l=10, r=10, t=40, b=10),
-                          title=f"Most dependent counties (fall {y1})",
-                          xaxis=dict(gridcolor=P["grid"], range=[0, ctop.per_1000.max() * 1.2]))
-        show(fig, "county_bar")
+        c1, c2 = st.columns([1, 2])
+        picked = c1.multiselect("Falls to compare", years[::-1], default=[y1], key="county_years")
+        top_n = c2.slider("Counties to show", 5, 30, 15)
+        if not picked:
+            st.info("Pick at least one fall.")
+        else:
+            picked = sorted(picked)
+            year_color = year_colors(years)
+            # Counties ranked by the latest fall picked, and shown for every picked fall.
+            cexp, cnames = county_exposure(picked[-1])
+            top = cexp.sort_values(ascending=False).head(top_n).index[::-1]
+            labels = [cnames.get(i, i) for i in top]
+            fig = go.Figure()
+            xmax = 0
+            for y in picked:
+                per = county_exposure(y)[0].reindex(top)
+                intl = EXP[(EXP.unit_type == "county") & (EXP.measure == "intl_enrollment")
+                           & (EXP.period == f"{y}-fall")].set_index("unit_id")["value"].reindex(top)
+                xmax = max(xmax, per.max())
+                fig.add_trace(go.Bar(x=per.values, y=labels, orientation="h", name=f"Fall {y}",
+                                     marker=dict(color=year_color[y], line=dict(color=P["mid"], width=1)),
+                                     text=per.values, texttemplate="%{x:.1f}", textposition="outside",
+                                     cliponaxis=False, customdata=intl.fillna(0).astype(int).values,
+                                     hovertemplate=f"%{{y}}<br>Fall {y}: %{{x:.1f}} per 1,000 residents<br>"
+                                                   f"%{{customdata:,}} international students<extra></extra>"))
+            fig.update_layout(barmode="group", bargap=0.25, bargroupgap=0.05,
+                              height=max(400, (10 + 14 * len(picked)) * len(top) + 160),
+                              margin=dict(l=10, r=10, t=40, b=10), hovermode="closest",
+                              title=f"Most dependent counties (ranked by fall {picked[-1]})",
+                              legend=dict(orientation="h", yanchor="bottom", y=1.0, x=1, xanchor="right",
+                                          traceorder="reversed"),
+                              xaxis=dict(title="International students per 1,000 residents", gridcolor=P["grid"],
+                                         range=[0, xmax * 1.2]))
+            show(fig, "county_bar")
 
         with st.expander("Table"):
             cols = ["name", "state", "sector_name", "enroll_last", "intl_first", "intl_last", "share_last",
@@ -320,33 +395,48 @@ with T["Student flows"]:
     if VISA is None or SEVIS is None:
         st.warning("Run fetch_visa_issuances.py, fetch_i94_arrivals.py and fetch_sevis.py first.")
     else:
-        country = st.selectbox("Country", list(COUNTRIES), index=1, key="flow_country")
+        c1, c2 = st.columns([1, 2])
+        country = c1.selectbox("Country", list(COUNTRIES), index=1, key="flow_country")
         raw = stage_series(country)
-
-        st.markdown("#### Visa issued → arrival → enrolled")
-        fig, n = stage_panels(raw)
-        fig.update_layout(height=220 * n + 80, hovermode="x unified", margin=dict(l=10, r=10, t=70, b=10),
-                          title=dict(text=f"{country}: students at each stage, by month", font=dict(size=15)))
-        show(fig, "flow_funnel")
-
-        st.markdown("#### Visas issued by class")
         cw = class_series(country)
-        names = [m for m in VISA_CLASSES if m in cw]
-        fig = make_subplots(rows=1, cols=len(names), shared_xaxes=True, horizontal_spacing=0.06,
-                            subplot_titles=[VISA_CLASSES[m] for m in names])
-        for k, m in enumerate(names):
-            s = cw[m].dropna()
-            fig.add_trace(go.Scatter(x=s.index, y=s.values, name=VISA_CLASSES[m], mode="lines+markers",
-                                     showlegend=False, line=dict(width=2, color=series_color(0)),
-                                     marker=dict(size=4), hovertemplate="%{y:,.0f}"),
-                          row=1, col=k + 1)
-        fig.update_yaxes(gridcolor=P["grid"], zeroline=False, rangemode="tozero")
-        fig.update_yaxes(title_text="Visas per month", col=1)
-        fig.update_xaxes(showgrid=False)
-        fig.update_annotations(font=dict(size=13, color=P["ink2"]))
-        fig.update_layout(height=380, hovermode="x unified", margin=dict(l=10, r=10, t=70, b=10),
-                          title=dict(text=f"{country}: visas issued per month, by class", font=dict(size=15)))
-        show(fig, "flow_classes")
+        flow_years = sorted(set(raw.dropna(how="all").index.year) | set(cw.dropna(how="all").index.year))
+        picked = sorted(c2.multiselect("Years to compare", flow_years[::-1], default=flow_years[-2:][::-1],
+                                       key="flow_years"))
+        colors = year_colors(flow_years)
+
+        if not picked:
+            st.info("Pick at least one year.")
+        else:
+            st.markdown("#### Visa issued → arrival → enrolled")
+            stages = [s for s in STAGES if s in raw]
+            shown = st.pills("Show", stages, selection_mode="multi", default=stages, key="flow_stages")
+            shown = [s for s in stages if s in (shown or [])]  # keep the funnel order whatever the click order
+            if not shown:
+                st.info("Pick at least one measure.")
+            else:
+                fig = stage_chart(raw, picked, shown)
+                fig.update_layout(height=480, hovermode="x unified", margin=dict(l=10, r=10, t=70, b=10),
+                                  title=dict(text=f"{country}: visas issued, arrivals and active students, "
+                                                  "by month", font=dict(size=15)))
+                show(fig, "flow_one")
+                if STAGES[2] in shown and len(shown) > 1:
+                    st.caption("Active students (SEVIS) are read on the right axis: they are a running total, "
+                               "far larger than the monthly visa and arrival counts.")
+
+            st.markdown("#### Visas issued by class")
+            names = [m for m in VISA_CLASSES if m in cw]
+            fig = make_subplots(rows=1, cols=len(names), horizontal_spacing=0.06,
+                                subplot_titles=[VISA_CLASSES[m] for m in names])
+            for k, m in enumerate(names):
+                year_bars(fig, cw[m], picked, colors, 1, k + 1, legend=k == 0)
+            fig.update_yaxes(gridcolor=P["grid"], zeroline=False, rangemode="tozero")
+            fig.update_yaxes(title_text="Visas per month", col=1)
+            fig.update_annotations(font=dict(size=13, color=P["ink2"]))
+            fig.update_layout(height=400, hovermode="x unified", barmode="overlay",
+                              margin=dict(l=10, r=10, t=70, b=10),
+                              legend=dict(orientation="h", yanchor="bottom", y=1.1, x=1, xanchor="right"),
+                              title=dict(text=f"{country}: visas issued per month, by class", font=dict(size=15)))
+            show(fig, "flow_classes")
 
         with st.expander("Table"):
             tbl = raw.join(class_series(country).rename(columns=VISA_CLASSES)).rename_axis("month")
@@ -382,7 +472,8 @@ with T["Rents near campus"]:
         labels = {z: f"{z} – {p}" for z, p in zip(zl.index, place)}
         # ZIPs near a campus first, those with the most international students nearby at the top.
         options = list(zl.sort_values(["near_campus", "intl_nearby"], ascending=False).index)
-        default = [z for z in ["48104", "61820", "14850", "16801", "47906", "02138"] if z in labels]
+        # Default: the three ZIPs with the most international students nearby in each home state.
+        default = [z for s in HOME_STATES for z in [o for o in options if zl.state.get(o) == s][:3]]
         picks = st.multiselect("ZIP codes (up to 8; type a ZIP or city)", options, default=default,
                                format_func=labels.get, max_selections=8)
         if not picks:
@@ -391,22 +482,77 @@ with T["Rents near campus"]:
             short = {z: f"{z} {place.get(z, '')}".strip() for z in picks}
             w = ZW[picks]
 
+            r1, r2 = st.columns([2, 1])
+            view = r1.segmented_control("Show", ["Monthly rent", "Change from a year earlier"],
+                                        default="Monthly rent", key="rent_view") or "Monthly rent"
+            trend = view == "Monthly rent" and r2.toggle("Trend lines", value=True, key="rent_trend")
+            yoy = view != "Monthly rent"
+
             fig = go.Figure()
+            summary, trend_labels = [], []
             for i, z in enumerate(picks):
                 s = w[z].dropna()
                 unis = unis_hover.get(z)
                 listing = (f"<br><br>Universities within {radius} miles:<br>{unis}" if isinstance(unis, str)
                            else f"<br><br>No university with international students within {radius} miles")
-                fig.add_trace(go.Scatter(x=s.index, y=s.values, name=short[z], mode="lines",
+                # Straight-line fit over the whole period; the slope is the average change per year.
+                months = (s.index.year - s.index[0].year) * 12 + (s.index.month - s.index[0].month)
+                slope, icept = np.polyfit(months, s.values, 1) if len(s) > 1 else (0.0, s.iloc[0])
+                year_ago = s.shift(12, freq="MS").reindex(s.index)
+                pct = (s / year_ago - 1) * 100
+                summary.append({"ZIP": short[z], f"Rent {s.index[-1]:%b %Y}": f"${s.iloc[-1]:,.0f}",
+                                "Last 12 months": arrow(pct.iloc[-1], "{:+.1f}%"),
+                                "Trend per year": arrow(slope * 12, "dollars"),
+                                f"Since {s.index[0]:%b %Y}": arrow((s.iloc[-1] / s.iloc[0] - 1) * 100, "{:+.1f}%")})
+                if yoy:
+                    p = pct.dropna()
+                    fig.add_trace(go.Scatter(x=p.index, y=p.values, name=short[z], mode="lines",
+                                             line=dict(width=2, color=series_color(i)),
+                                             hovertemplate=f"<b>{short[z]}</b><br>%{{x|%b %Y}}: %{{y:+.1f}}% "
+                                                           f"from a year earlier{listing}<extra></extra>"))
+                    continue
+                fig.add_trace(go.Scatter(x=s.index, y=s.values, name=short[z], mode="lines", legendgroup=z,
                                          line=dict(width=2, color=series_color(i)),
                                          hovertemplate=f"<b>{short[z]}</b><br>%{{x|%b %Y}}: $%{{y:,.2f}}"
                                                        f"{listing}<extra></extra>"))
-            fig.update_layout(height=460, hovermode="closest", title="Monthly rent (hover a line for the "
-                                                                    "universities nearby)",
-                              margin=dict(l=10, r=10, t=40, b=70), yaxis=dict(title="Rent ($ per month)",
-                                                                              gridcolor=P["grid"]),
+                if trend:
+                    fig.add_trace(go.Scatter(x=s.index, y=icept + slope * months, mode="lines", legendgroup=z,
+                                             showlegend=False, line=dict(width=1.5, dash="dash", color=series_color(i)),
+                                             hovertemplate=f"<b>{short[z]}</b> trend: {slope * 12:+,.0f} $ per year"
+                                                           "<extra></extra>"))
+                    # An arrowhead along the last year of the trend line, labelled with the change per year.
+                    k = max(0, len(s) - 13)
+                    fig.add_annotation(x=s.index[-1], y=icept + slope * months[-1], ax=s.index[k],
+                                       ay=icept + slope * months[k], xref="x", yref="y", axref="x", ayref="y",
+                                       text="", showarrow=True, arrowhead=2, arrowsize=1.3, arrowwidth=2.5,
+                                       arrowcolor=series_color(i))
+                    trend_labels.append((icept + slope * months[-1], s.index[-1], series_color(i),
+                                         f"{'▲' if slope > 0 else '▼'} {'+' if slope >= 0 else '-'}"
+                                         f"${abs(slope * 12):,.0f}/yr"))
+            if trend_labels:
+                # Labels at the end of the trend lines, nudged apart so close ones do not overlap.
+                lo, hi = w.min().min(), w.max().max()
+                gap, prev = (hi - lo) * 0.06, -np.inf
+                for y, x, color, text in sorted(trend_labels):
+                    prev = max(y, prev + gap)
+                    fig.add_annotation(x=x, y=prev, xanchor="left", xshift=8, text=text, showarrow=False,
+                                       font=dict(size=12, color=color))
+            if yoy:
+                fig.add_hline(y=0, line=dict(color=P["muted"], width=1))
+            fig.update_layout(height=460, hovermode="closest",
+                              title=("Rent change from the same month a year earlier" if yoy else
+                                     "Monthly rent" + (" with straight-line trends" if trend else "")) +
+                                    " (hover a line for the universities nearby)",
+                              margin=dict(l=10, r=100 if trend else 10, t=40, b=70),
+                              yaxis=dict(title="Change from a year earlier (%)" if yoy else "Rent ($ per month)",
+                                         gridcolor=P["grid"], ticksuffix="%" if yoy else ""),
                               legend=dict(orientation="h", yanchor="top", y=-0.16, x=0))
             show(fig, "rent_lines")
+            with st.expander("Table: rent trend by ZIP"):
+                st.dataframe(pd.DataFrame(summary).set_index("ZIP"), width="stretch")
+                st.caption("▲ rent went up, ▼ rent went down. Trend per year: the slope of a straight line "
+                           "fitted to each ZIP's monthly rent over the whole period. Last 12 months compares the "
+                           "latest month with the same month a year earlier.")
 
             ramp = BLUE_RAMP[3:] if MODE == "light" else BLUE_RAMP[:-2]
 
@@ -462,10 +608,8 @@ with T["University jobs"]:
         sm = s1.selectbox("Universities", list(state_series), format_func=state_series.get)
         sw = to_wide(BLS, sm, "state")
         sw.columns = [STATE_FIPS.get(c, c) for c in sw.columns]
-        top_states = (INST.groupby("state").intl_enrollment.sum().sort_values(ascending=False).index.tolist()
-                      if INST is not None else [])
         pick = s2.multiselect("States (up to 8)", sorted(sw.columns), max_selections=8,
-                              default=[s for s in top_states if s in sw.columns][:6])
+                              default=[s for s in HOME_STATES if s in sw.columns])
         if pick:
             show(line_chart(sw[pick], f"{state_series[sm]}, by state", "Jobs (thousands)"), "jobs_states")
         st.caption("Not seasonally adjusted: jobs dip each summer, so compare the same month across years. A state is "
@@ -529,10 +673,11 @@ with T["Policy events"]:
     fig.update_layout(height=360, title="Events per quarter", margin=dict(l=10, r=10, t=40, b=10),
                       yaxis=dict(gridcolor=P["grid"]), legend=dict(orientation="h", y=-0.2))
     show(fig, "ev_count")
-    st.dataframe(ev[["event_date", "topic", "title", "source", "doc_type", "url"]].sort_values("event_date"),
-                 width="stretch", hide_index=True,
-                 column_config={"url": st.column_config.LinkColumn("Link"),
-                                "event_date": st.column_config.DateColumn("Date")})
+    with st.expander("Table: policy events"):
+        st.dataframe(ev[["event_date", "topic", "title", "source", "doc_type", "url"]].sort_values("event_date"),
+                     width="stretch", hide_index=True,
+                     column_config={"url": st.column_config.LinkColumn("Link"),
+                                    "event_date": st.column_config.DateColumn("Date")})
 
 
 # ================================================================= Data & notes
@@ -553,15 +698,16 @@ with T["Data & notes"]:
     if q:
         d = d[d.unit_name.fillna("").str.contains(q, case=False) | d.unit_id.str.contains(q, case=False)]
     d = d[(d.date >= pd.Timestamp(START)) & (d.date <= pd.Timestamp(END))]
-    st.caption(f"{len(d):,} rows (first 5,000 shown)")
-    st.dataframe(d.drop(columns=["date"]).head(5000), width="stretch", hide_index=True)
-    download(d.drop(columns=["date"]), f"{name.split(' (')[0].lower().replace(' ', '_')}_filtered.csv")
+    with st.expander(f"Table: {len(d):,} rows (first 5,000 shown)"):
+        st.dataframe(d.drop(columns=["date"]).head(5000), width="stretch", hide_index=True)
+        download(d.drop(columns=["date"]), f"{name.split(' (')[0].lower().replace(' ', '_')}_filtered.csv")
 
     st.markdown("""
 #### Notes and caveats
 - **IPEDS** enrollment is available for fall 2022 and fall 2023 only; fall 2024 and fall 2025 are not
   published yet, so the enrollment decline itself is not visible here. Students on OPT are not counted.
-- **County dependence** uses fall 2023: international students per 1,000 residents.
+- **County dependence** is international students per 1,000 residents, for each fall from 2021 to 2023
+  (fall 2021 is a pre-study baseline and appears only in that chart).
 - **Zillow ZORI** is a smoothed index of asking rents; small towns may have no ZIP coverage.
 - **QCEW** is in the dataset browser only. BLS suppresses cells that would reveal one employer, which hides
   the university sector in many college towns.
@@ -577,5 +723,6 @@ with T["Data & notes"]:
   and November in 2022), currently to September 2026. SEVIS counts were questioned in 2025 and some months
   look wrong (India drops to 275,009 in November 2023, then recovers), so check sudden jumps against
   visas and arrivals.
-- All charts show actual values; none is indexed or compared with a baseline.
+- All charts show actual values, except the rent chart's optional change-from-a-year-earlier view and
+  its straight-line trends.
 """)

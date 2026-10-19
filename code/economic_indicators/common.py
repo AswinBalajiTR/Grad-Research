@@ -11,7 +11,7 @@ import requests
 
 ROOT = Path(__file__).resolve().parents[2]
 RAW = ROOT / "data" / "raw" / "economic_indicators"
-OUT = ROOT / "data" / "processed" / "economic_indicators"
+OUT = ROOT / "data" / "economic_indicators"  # where the dashboard reads them
 START_YEAR = 2022
 STOP_DATE = "2026-10-01"  # end of the study, as in proposal/analysis_windows.md
 

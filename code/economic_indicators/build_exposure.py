@@ -9,7 +9,7 @@ Sources:
   Census ZCTA Gazetteer (ZIP centroids):
     https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html
 
-Outputs (data/processed/economic_indicators/):
+Outputs (data/economic_indicators/):
   institutions.csv  one row per institution: location and international share in --exposure-year
   campus_zips.csv   ZIPs (ZCTAs) whose centroid is within --radius miles of a campus
   exposure.csv      long format, every fall from 2022 to --stop: institution, county, and ZIP measures
@@ -35,6 +35,8 @@ LEVELS = {"1": "total", "2": "undergrad", "12": "grad"}
 # IPEDS sector 0 is an administrative unit (a system office), not a campus.
 ADMIN_SECTOR = "0"
 EARTH_RADIUS_MI = 3958.8
+# Enrollment starts a year before the other sources so fall 2021 gives a pre-study baseline.
+IPEDS_START_YEAR = START_YEAR - 1
 
 
 def latest_release(make_url, name, first_year):
@@ -158,7 +160,7 @@ def main():
     insts = institutions()
     enroll = {}
     # IPEDS fall enrollment is counted as of October 15 (or the school's official fall date).
-    falls = [y for y in range(START_YEAR, stop.year + 1) if date(y, 10, 15) <= stop]
+    falls = [y for y in range(IPEDS_START_YEAR, stop.year + 1) if date(y, 10, 15) <= stop]
     for year in falls:
         data = fall_enrollment(year)
         if data is None:
