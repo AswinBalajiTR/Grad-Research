@@ -6,10 +6,10 @@ import streamlit as st
 from dashboard_common import H1B_PATH, load_data, run_collector, find_col, compact_number, annualized_wage
 
 st.title("H-1B filings")
-st.caption("Employer filing activity from January 2025 through the latest available local disclosure file.")
+st.caption("Employer filings · 2025 onward")
 with st.sidebar:
     refresh = st.button("Refresh H-1B data", use_container_width=True)
-    st.caption("Collection starts only when you click Refresh. Large DOL workbooks can take several minutes.")
+    st.caption("Manual refresh · may take minutes")
 if refresh:
     with st.spinner("Downloading and preparing H-1B disclosures..."):
         ok, message = run_collector(["code/h1b/collect_h1b.py", "--source", "dol"], timeout=7200)
@@ -37,7 +37,7 @@ else:
                 f"Current H-1B file begins {earliest_decision.date()}. Click Refresh H-1B data to add the corrected FY2025 Q2 and Q3 files."
             )
 
-    with st.expander("Filters", expanded=True):
+    with st.expander("Filters"):
         f1, f2, f3 = st.columns(3)
         if state_col:
             states = sorted(view[state_col].dropna().astype(str).unique())
@@ -88,7 +88,9 @@ else:
         m4.metric("Filtered rows", compact_number(len(view)))
     annual_wages = annualized_wage(view)
     plausible_wages = annual_wages.loc[annual_wages.between(10_000, 2_000_000)]
-    m5.metric("Median offered annual wage", f"${plausible_wages.median():,.0f}" if len(plausible_wages) else "n.a.")
+    m5.metric("Median wage", f"${plausible_wages.median():,.0f}" if len(plausible_wages) else "n.a.")
+
+    chart_tabs = st.tabs(["Filings", "Outcomes", "States", "Occupations", "Wages"])
 
     if decision_col:
         monthly = (
@@ -97,12 +99,12 @@ else:
             .groupby("month", as_index=False)["_filings"]
             .sum()
         )
-        st.markdown("### H-1B EDA 1 of 5: Employment-pathway demand over time")
-        st.caption("Monthly LCA decisions show employer demand for the H-1B pathway, not the number of international students hired.")
-        st.plotly_chart(
-            px.line(monthly, x="month", y="_filings", markers=True, labels={"_filings": "Filings"}),
-            use_container_width=True,
-        )
+        with chart_tabs[0]:
+            st.caption("Monthly LCA decisions · not student hires")
+            st.plotly_chart(
+                px.line(monthly, x="month", y="_filings", markers=True, labels={"_filings": "Filings"}),
+                use_container_width=True,
+            )
 
     if decision_col and status_col:
         status_values = view[status_col].fillna("").astype(str).str.upper()
@@ -121,21 +123,21 @@ else:
             .sum()
         )
         outcome_month["share"] = outcome_month["_filings"] / outcome_month.groupby("month")["_filings"].transform("sum")
-        st.markdown("### H-1B EDA 2 of 5: Filing outcomes over time")
-        st.caption("Shows whether the mix of certified, denied and withdrawn LCAs changes across months.")
-        st.plotly_chart(
-            px.area(
-                outcome_month,
-                x="month",
-                y="share",
-                color="outcome",
-                groupnorm=None,
-                range_y=[0, 1],
-                color_discrete_map={"Certified": "#238B45", "Denied": "#C0392B", "Withdrawn": "#D4A017", "Other": "#7F8C8D"},
-                labels={"share": "Share of monthly filings"},
-            ),
-            use_container_width=True,
-        )
+        with chart_tabs[1]:
+            st.caption("Certified · denied · withdrawn")
+            st.plotly_chart(
+                px.area(
+                    outcome_month,
+                    x="month",
+                    y="share",
+                    color="outcome",
+                    groupnorm=None,
+                    range_y=[0, 1],
+                    color_discrete_map={"Certified": "#238B45", "Denied": "#C0392B", "Withdrawn": "#D4A017", "Other": "#7F8C8D"},
+                    labels={"share": "Share of monthly filings"},
+                ),
+                use_container_width=True,
+            )
 
     if state_col:
         state_summary = (
@@ -146,20 +148,20 @@ else:
         )
         state_summary["share"] = state_summary["_filings"] / state_summary["_filings"].sum()
         top_five_share = state_summary.head(5)["share"].sum()
-        st.markdown("### H-1B EDA 3 of 5: Geographic concentration of opportunity")
-        st.caption(f"The five largest employer states account for {top_five_share:.1%} of filtered filings.")
-        st.plotly_chart(
-            px.choropleth(
-                state_summary,
-                locations=state_col,
-                locationmode="USA-states",
-                color="share",
-                scope="usa",
-                color_continuous_scale="Blues",
-                labels={"share": "Share of filings", state_col: "State"},
-            ),
-            use_container_width=True,
-        )
+        with chart_tabs[2]:
+            st.caption(f"Top five states · {top_five_share:.1%} of filings")
+            st.plotly_chart(
+                px.choropleth(
+                    state_summary,
+                    locations=state_col,
+                    locationmode="USA-states",
+                    color="share",
+                    scope="usa",
+                    color_continuous_scale="Blues",
+                    labels={"share": "Share of filings", state_col: "State"},
+                ),
+                use_container_width=True,
+            )
 
     occupation_col = find_col(view, ["soc_title", "job_title"])
     if occupation_col:
@@ -170,18 +172,17 @@ else:
             .nlargest(20, "_filings")
         )
         occupation_summary["share"] = occupation_summary["_filings"] / total if total else 0
-        st.markdown("### H-1B EDA 4 of 5: Occupational pathways available to graduates")
-        st.caption("Highlights which occupations dominate employer filings and how concentrated the pathway is by field.")
-        st.plotly_chart(
-            px.bar(
-                occupation_summary,
-                x="share",
-                y=occupation_col,
-                orientation="h",
-                labels={"share": "Share of filtered filings", occupation_col: "Occupation"},
-            ).update_layout(yaxis={"categoryorder": "total ascending"}),
-            use_container_width=True,
-        )
+        with chart_tabs[3]:
+            st.plotly_chart(
+                px.bar(
+                    occupation_summary,
+                    x="share",
+                    y=occupation_col,
+                    orientation="h",
+                    labels={"share": "Share of filtered filings", occupation_col: "Occupation"},
+                ).update_layout(yaxis={"categoryorder": "total ascending"}),
+                use_container_width=True,
+            )
 
         wage_frame = pd.DataFrame(
             {
@@ -198,26 +199,26 @@ else:
         )
         wage_summary["upper"] = wage_summary["p75"] - wage_summary["median"]
         wage_summary["lower"] = wage_summary["median"] - wage_summary["p25"]
-        st.markdown("### H-1B EDA 5 of 5: Wage access by major occupation")
-        st.caption("Dots are median annualized offered wages; error bars show the 25th–75th percentile range.")
-        st.plotly_chart(
-            px.scatter(
-                wage_summary,
-                x="median",
-                y="occupation",
-                size="filings",
-                error_x="upper",
-                error_x_minus="lower",
-                labels={"median": "Annualized offered wage (USD)", "occupation": "Occupation", "filings": "Filings"},
-            ),
-            use_container_width=True,
-        )
+        with chart_tabs[4]:
+            st.caption("Dots = median wage · lines = middle 50%")
+            st.plotly_chart(
+                px.scatter(
+                    wage_summary,
+                    x="median",
+                    y="occupation",
+                    size="filings",
+                    error_x="upper",
+                    error_x_minus="lower",
+                    labels={"median": "Annualized offered wage (USD)", "occupation": "Occupation", "filings": "Filings"},
+                ),
+                use_container_width=True,
+            )
 
-    st.subheader("H-1B records")
-    st.dataframe(view.head(10000), hide_index=True, use_container_width=True)
-    st.download_button(
-        "Download filtered H-1B CSV",
-        view.to_csv(index=False).encode("utf-8"),
-        file_name="h1b_filtered.csv",
-        mime="text/csv",
-    )
+    with st.expander("H-1B records"):
+        st.dataframe(view.head(10000), hide_index=True, use_container_width=True)
+        st.download_button(
+            "Download filtered CSV",
+            view.to_csv(index=False).encode("utf-8"),
+            file_name="h1b_filtered.csv",
+            mime="text/csv",
+        )
