@@ -3,6 +3,7 @@ Run: streamlit run demo/app.py
 """
 
 import sys
+import textwrap
 from datetime import date
 from pathlib import Path
 
@@ -187,6 +188,35 @@ def arrow(v, fmt):
         return "–"
     text = f"{'+' if v >= 0 else '-'}${abs(v):,.0f}" if fmt == "dollars" else fmt.format(v)
     return f"{'▲' if v > 0 else '▼' if v < 0 else '•'} {text}"
+
+
+# Rent trend windows: months back from the latest month (None = the whole period).
+TREND_WINDOWS = {"Last 3 months": 3, "Last 6 months": 6, "Last 12 months": 12, "Last 24 months": 24,
+                 "Whole period": None}
+FLAT = 12  # dollars per year; a slope smaller than this counts as flat
+
+
+def fit(x, y):
+    """(slope, intercept) of a least-squares straight line; flat when there is one point."""
+    return tuple(np.polyfit(x, y, 1)) if len(y) > 1 else (0.0, float(y[0]))
+
+
+def trend_sentence(window, recent):
+    """One line naming the ZIPs rising, flat and falling over the window, fastest first."""
+    def names(rows):
+        return ", ".join(f"{z} ({'+' if v >= 0 else '-'}${abs(v):,.0f}/yr)" for v, z in rows)
+    up = sorted([r for r in recent if r[0] >= FLAT], reverse=True)
+    down = sorted(r for r in recent if r[0] <= -FLAT)
+    flat = [r for r in recent if abs(r[0]) < FLAT]
+    parts = [f"**Rising:** {names(up)}" if up else "", f"**Falling:** {names(down)}" if down else "",
+             f"**Flat:** {names(flat)}" if flat else ""]
+    return f"{window}: " + " · ".join(p for p in parts if p)
+
+
+def wrap(text, width=70):
+    """Hover text broken into lines of about `width` characters, so the hover box grows
+    downwards to fit the whole text instead of running off the chart."""
+    return "<br>&nbsp;&nbsp;".join(textwrap.wrap(str(text), width)) or ""
 
 
 def show(fig, key=None):
@@ -482,28 +512,38 @@ with T["Rents near campus"]:
             short = {z: f"{z} {place.get(z, '')}".strip() for z in picks}
             w = ZW[picks]
 
-            r1, r2 = st.columns([2, 1])
+            r1, r2, r3 = st.columns([2, 1, 1])
             view = r1.segmented_control("Show", ["Monthly rent", "Change from a year earlier"],
                                         default="Monthly rent", key="rent_view") or "Monthly rent"
-            trend = view == "Monthly rent" and r2.toggle("Trend lines", value=True, key="rent_trend")
             yoy = view != "Monthly rent"
+            trend = not yoy and r2.toggle("Trend lines", value=True, key="rent_trend")
+            window = r3.selectbox("Trend over", list(TREND_WINDOWS), index=0, key="rent_window", disabled=not trend,
+                                  help="The arrow is a straight line fitted to the rent over these months; "
+                                       "its slope is shown as dollars per year.")
+            n_months = TREND_WINDOWS[window]
 
             fig = go.Figure()
-            summary, trend_labels = [], []
+            summary, trend_labels, recent = [], [], []
             for i, z in enumerate(picks):
                 s = w[z].dropna()
                 unis = unis_hover.get(z)
                 listing = (f"<br><br>Universities within {radius} miles:<br>{unis}" if isinstance(unis, str)
                            else f"<br><br>No university with international students within {radius} miles")
-                # Straight-line fit over the whole period; the slope is the average change per year.
                 months = (s.index.year - s.index[0].year) * 12 + (s.index.month - s.index[0].month)
-                slope, icept = np.polyfit(months, s.values, 1) if len(s) > 1 else (0.0, s.iloc[0])
+                slope, icept = fit(months, s.values)
+                # The same fit over the chosen recent window only (n months back from the latest).
+                k = 0 if n_months is None else max(0, len(s) - 1 - n_months)
+                w_slope, w_icept = fit(months[k:], s.values[k:])
                 year_ago = s.shift(12, freq="MS").reindex(s.index)
                 pct = (s / year_ago - 1) * 100
-                summary.append({"ZIP": short[z], f"Rent {s.index[-1]:%b %Y}": f"${s.iloc[-1]:,.0f}",
-                                "Last 12 months": arrow(pct.iloc[-1], "{:+.1f}%"),
-                                "Trend per year": arrow(slope * 12, "dollars"),
-                                f"Since {s.index[0]:%b %Y}": arrow((s.iloc[-1] / s.iloc[0] - 1) * 100, "{:+.1f}%")})
+                row = {"ZIP": short[z], f"Rent {s.index[-1]:%b %Y}": f"${s.iloc[-1]:,.0f}",
+                       "Last 12 months": arrow(pct.iloc[-1], "{:+.1f}%"),
+                       "Trend, whole period": arrow(slope * 12, "dollars")}
+                if n_months is not None:
+                    row[f"Trend, {window.lower()}"] = arrow(w_slope * 12, "dollars")
+                row[f"Since {s.index[0]:%b %Y}"] = arrow((s.iloc[-1] / s.iloc[0] - 1) * 100, "{:+.1f}%")
+                summary.append(row)
+                recent.append((w_slope * 12, short[z]))
                 if yoy:
                     p = pct.dropna()
                     fig.add_trace(go.Scatter(x=p.index, y=p.values, name=short[z], mode="lines",
@@ -516,19 +556,21 @@ with T["Rents near campus"]:
                                          hovertemplate=f"<b>{short[z]}</b><br>%{{x|%b %Y}}: $%{{y:,.2f}}"
                                                        f"{listing}<extra></extra>"))
                 if trend:
-                    fig.add_trace(go.Scatter(x=s.index, y=icept + slope * months, mode="lines", legendgroup=z,
-                                             showlegend=False, line=dict(width=1.5, dash="dash", color=series_color(i)),
-                                             hovertemplate=f"<b>{short[z]}</b> trend: {slope * 12:+,.0f} $ per year"
-                                                           "<extra></extra>"))
-                    # An arrowhead along the last year of the trend line, labelled with the change per year.
-                    k = max(0, len(s) - 13)
-                    fig.add_annotation(x=s.index[-1], y=icept + slope * months[-1], ax=s.index[k],
-                                       ay=icept + slope * months[k], xref="x", yref="y", axref="x", ayref="y",
-                                       text="", showarrow=True, arrowhead=2, arrowsize=1.3, arrowwidth=2.5,
-                                       arrowcolor=series_color(i))
-                    trend_labels.append((icept + slope * months[-1], s.index[-1], series_color(i),
-                                         f"{'▲' if slope > 0 else '▼'} {'+' if slope >= 0 else '-'}"
-                                         f"${abs(slope * 12):,.0f}/yr"))
+                    if n_months is None:
+                        # Whole period: the dashed fit across the chart, with the arrow on its last year.
+                        fig.add_trace(go.Scatter(x=s.index, y=icept + slope * months, mode="lines", legendgroup=z,
+                                                 showlegend=False,
+                                                 line=dict(width=1.5, dash="dash", color=series_color(i)),
+                                                 hovertemplate=f"<b>{short[z]}</b> trend: {slope * 12:+,.0f} $ per "
+                                                               "year<extra></extra>"))
+                        k = max(0, len(s) - 13)
+                    end = w_icept + w_slope * months[-1]
+                    fig.add_annotation(x=s.index[-1], y=end, ax=s.index[k], ay=w_icept + w_slope * months[k],
+                                       xref="x", yref="y", axref="x", ayref="y", text="", showarrow=True,
+                                       arrowhead=2, arrowsize=1.3, arrowwidth=2.5, arrowcolor=series_color(i))
+                    trend_labels.append((end, s.index[-1], series_color(i),
+                                         f"{'→' if abs(w_slope * 12) < FLAT else '▲' if w_slope > 0 else '▼'} "
+                                         f"{'+' if w_slope >= 0 else '-'}${abs(w_slope * 12):,.0f}/yr"))
             if trend_labels:
                 # Labels at the end of the trend lines, nudged apart so close ones do not overlap.
                 lo, hi = w.min().min(), w.max().max()
@@ -541,18 +583,19 @@ with T["Rents near campus"]:
                 fig.add_hline(y=0, line=dict(color=P["muted"], width=1))
             fig.update_layout(height=460, hovermode="closest",
                               title=("Rent change from the same month a year earlier" if yoy else
-                                     "Monthly rent" + (" with straight-line trends" if trend else "")) +
+                                     "Monthly rent" + (f" with trends ({window.lower()})" if trend else "")) +
                                     " (hover a line for the universities nearby)",
                               margin=dict(l=10, r=100 if trend else 10, t=40, b=70),
                               yaxis=dict(title="Change from a year earlier (%)" if yoy else "Rent ($ per month)",
                                          gridcolor=P["grid"], ticksuffix="%" if yoy else ""),
                               legend=dict(orientation="h", yanchor="top", y=-0.16, x=0))
             show(fig, "rent_lines")
+            if trend:
+                st.caption(trend_sentence(window, recent))
             with st.expander("Table: rent trend by ZIP"):
                 st.dataframe(pd.DataFrame(summary).set_index("ZIP"), width="stretch")
-                st.caption("▲ rent went up, ▼ rent went down. Trend per year: the slope of a straight line "
-                           "fitted to each ZIP's monthly rent over the whole period. Last 12 months compares the "
-                           "latest month with the same month a year earlier.")
+                st.caption("▲ up, ▼ down. Trend: slope of a straight line fitted to the monthly rent, in dollars "
+                           "per year. Last 12 months: latest month against the same month a year earlier.")
 
             ramp = BLUE_RAMP[3:] if MODE == "light" else BLUE_RAMP[:-2]
 
@@ -630,7 +673,7 @@ with T["Policy events"]:
         visas = stage_series(ev_country)[STAGES[0]].dropna()
         top = visas.max() * 1.05
         fig = go.Figure()
-        by_day = ev.groupby("event_date").apply(lambda g: "<br>".join(f"• {t}: {s[:80]}" for t, s in zip(g.topic, g.title)))
+        by_day = ev.groupby("event_date").apply(lambda g: "<br>".join(wrap(f"• {t}: {s}") for t, s in zip(g.topic, g.title)))
         # Each event date is a faded dotted line drawn as a trace (shapes cannot be hovered), with
         # points all the way up so hovering anywhere along it shows that date's policies.
         faded = "rgba({},{},{},0.5)".format(*(int(P["muted"][i:i + 2], 16) for i in (1, 3, 5)))
@@ -659,7 +702,7 @@ with T["Policy events"]:
         fig.add_trace(go.Scatter(
             x=e.event_date, y=[topic] * len(e), mode="markers", name=topic, showlegend=False,
             marker=dict(size=12, color=P["ink2"], line=dict(width=2, color=P["mid"])),
-            customdata=e.title.str.slice(0, 90), hovertemplate="%{x|%d %b %Y}<br>%{customdata}<extra></extra>"))
+            customdata=e.title.map(wrap), hovertemplate="%{x|%d %b %Y}<br>%{customdata}<extra></extra>"))
     fig.update_layout(height=120 + 45 * len(order), hovermode="closest", **frame,
                       title=dict(text="Policy events by topic", font=dict(size=15)),
                       yaxis=dict(categoryorder="array", categoryarray=order[::-1], automargin=False,
