@@ -1,4 +1,4 @@
-"""Three-page research dashboard: enrollment, discourse, and post-study work."""
+"""Four-page research dashboard: enrollment, discourse, work, and economy."""
 from pathlib import Path
 import sys
 import streamlit as st

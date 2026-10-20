@@ -1,4 +1,4 @@
-# Tentative Schedule:  
+# Tentative Schedule:
 
 ## Week 1 – Project Setup & Initial Extraction
 - Proposal and research question

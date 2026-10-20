@@ -1,4 +1,4 @@
-"""Monthly nonimmigrant visas issued by the State Department, by nationality and visa class, 
+"""Monthly nonimmigrant visas issued by the State Department, by nationality and visa class,
 Source: State Department, "NIV Issuances by Nationality and Visa Class" (monthly PDF),
   https://travel.state.gov/content/travel/en/legal/visa-law0/visa-statistics/nonimmigrant-visa-statistics/monthly-nonimmigrant-visa-issuances.html
 

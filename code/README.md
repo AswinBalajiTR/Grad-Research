@@ -8,6 +8,8 @@ The code is grouped by source. Run these commands from the repository root:
 | `code/youtube/` | YouTube comment collector and search queries |
 | `code/h1b/` | USCIS and DOL H-1B collector |
 | `code/university/` | Historical enrollment and intake analysis |
+| `code/economic_indicators/` | Local economic indicator collection and exposure measures |
+| `code/policy_timeline/` | Policy event collection and review windows |
 | `code/tests/` | Collector and Reddit tests |
 
 All datasets and generated analysis files live in top-level `data/`, grouped by the same source names. The Streamlit dashboard and its pages live in top-level `demo/`.
@@ -17,7 +19,7 @@ All datasets and generated analysis files live in top-level `data/`, grouped by 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python3 -m pip install -r code/requirements.txt
+python3 -m pip install -r requirements.txt
 streamlit run demo/app.py
 ```
 
