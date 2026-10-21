@@ -16,7 +16,7 @@ from dashboard_common import (
     comment_themes, compact_number, find_col, load_data, run_collector,
 )
 
-REDDIT_COMMENTS_PATH = DATA_ROOT / "reddit/processed/policy_20261013/comment_sentiment.jsonl"
+REDDIT_COMMENTS_PATH = DATA_ROOT / "reddit/processed/reddit_reviewed_comments.jsonl"
 SENTIMENT_LABELS = {
     "negative": "Negative", "neutral": "Neutral",
     "positive": "Positive", "unclassifiable": "Unclear",
