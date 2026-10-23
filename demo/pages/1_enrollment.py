@@ -415,22 +415,20 @@ def trends(df, indexed, start_year, country="All countries"):
             continue
         y = 100 * s["count"] / s["count"].iloc[0] if indexed else s["count"]
         fig.add_trace(go.Scatter(
-            x=s["year"], y=y, name=school, mode="lines+markers",
+            x=s["year"], y=y, name=SHORT[school], mode="lines+markers",
             line=dict(color=color, width=2.5), marker=dict(size=8, line=dict(color="white", width=2)),
             customdata=s["count"],
             hovertemplate=f"<b>{school}</b><br>Fall %{{x}}: %{{customdata:,}} students"
                           + ("<br>Index: %{y:.1f}" if indexed else "") + "<extra></extra>",
         ))
-        fig.add_annotation(x=s["year"].iloc[-1], y=y.iloc[-1], text=f"{y.iloc[-1]:.0f}" if indexed
-                           else f"{s['count'].iloc[-1]:,}", xanchor="left", xshift=8, showarrow=False,
-                           font=dict(size=12))
     latest_year = int(df.year.max())
-    fig.add_vrect(x0=latest_year - .5, x1=latest_year + .5, fillcolor=DROP, opacity=.08, line_width=0,
-                  annotation_text=f"Fall {latest_year}", annotation_position="top left")
+    fig.add_vrect(x0=latest_year - .5, x1=latest_year + .5, fillcolor=DROP, opacity=.08, line_width=0)
     if indexed:
         fig.add_hline(y=100, line=dict(color=NEUTRAL, width=1, dash="dash"))
-    fig = base_layout(fig, height=420, hovermode="x unified",
-                      legend=dict(orientation="h", y=1.08, x=0))
+    fig = base_layout(fig, height=520, hovermode="x unified",
+                      margin=dict(l=10, r=10, t=20, b=130),
+                      legend=dict(orientation="h", x=0, y=-.16, xanchor="left", yanchor="top",
+                                  font=dict(size=11)))
     fig.update_xaxes(dtick=1)
     fig.update_yaxes(title="Index (first visible year = 100)" if indexed else "International students",
                      rangemode="normal" if indexed else "tozero")
@@ -452,6 +450,14 @@ def level_area(df, inst, country="All countries"):
     fig = base_layout(fig, height=340, hovermode="x unified", legend=dict(orientation="h", y=1.1, x=0))
     fig.update_xaxes(dtick=1)
     return fig
+
+
+def level_history_years(df, inst, country="All countries") -> set[int]:
+    """Years with both published level counts for one campus and country scope."""
+    rows = df[(df.institution == inst) & (df.country == country)]
+    undergraduate = set(rows.loc[rows.academic_level == "Undergraduate", "year"])
+    graduate = set(rows.loc[rows.academic_level == "Graduate", "year"])
+    return undergraduate & graduate
 
 
 # ── Page ─────────────────────────────────────────────────────────────────────
@@ -480,6 +486,7 @@ with st.sidebar:
     selected_schools = st.multiselect(
         "Universities to compare", list(SCHOOL_COLORS), default=list(SCHOOL_COLORS),
         format_func=SHORT.get, key="enrollment_universities")
+    st.caption("Applies to every enrollment tab. Choose Fall years within each tab.")
     with st.expander("About these data"):
         st.markdown("- **Measure:** fall international headcount\n"
                     "- **Includes:** new and continuing students\n"
@@ -504,23 +511,86 @@ if len(default_pair) < 2:
 st.caption(f"{len(selected_schools)} selected universities · choose Fall years within each tab")
 
 section_tabs = st.tabs([
-    "Research overview", "Campuses", "By level", "India", "Year trends",
+    "Research context", "Fall snapshot", "Campuses", "By level", "India", "Year trends",
 ])
 
 with section_tabs[0]:
-    chapter(1, "About the research", "", "research-overview")
-    st.write("This research studies how U.S. visa, travel, and work policies relate to international students. "
-             "The dashboard brings together online discussions, university enrollment, H-1B filings, "
-             "and local economic data. Selected universities are case studies, not a national estimate.")
-    with st.expander("Tracked campuses"):
-        st.caption(", ".join(SHORT[school] for school in selected_schools))
+    chapter(1, "Enrollment's role in the study", "", "context")
+    st.markdown("""
+The study asks how students' online concerns and study plans change around U.S. visa, travel, and work policies.
+
+Indian students are a focus when the data allow us to identify them.
+
+This page establishes enrollment trends to compare with those discussions.
+
+Later analysis can examine whether the patterns move together or with a lag.
+
+These campus counts describe changes, not their causes or a national trend.
+""")
     with st.expander("Data & sources"):
         st.dataframe(df.drop(columns=["period", "measure", "source_definition"]),
                      hide_index=True, width="stretch")
         st.markdown("\n".join(f"- [{k}]({u})" for k, u in SOURCES.items()))
 
 with section_tabs[1]:
-    chapter(2, "Campuses", "", "campuses")
+    snapshot_years = sorted(st.multiselect(
+        "Fall years for this snapshot (up to four)", all_years, default=default_pair,
+        max_selections=4, key="snapshot_years"))
+    if not snapshot_years:
+        st.info("Select at least one Fall year.")
+    else:
+        first_year, snapshot_year = snapshot_years[0], snapshot_years[-1]
+        snapshot_df = df[df.year.isin(snapshot_years)]
+        chapter(2, f"Fall {snapshot_year} snapshot", "", "glance")
+        st.plotly_chart(snapshot_bars(snapshot_df, snapshot_year), width="stretch", key="fall_snapshot_chart")
+        st.caption("Published campuses only · not a national total")
+        if len(snapshot_years) >= 2:
+            overall = changes(snapshot_df, first_year, snapshot_year)
+            if not overall.empty:
+                india = changes(snapshot_df, first_year, snapshot_year, country="India")
+                ug = changes(snapshot_df, first_year, snapshot_year, level="Undergraduate")
+                grad = changes(snapshot_df, first_year, snapshot_year, level="Graduate")
+                levels = ug.merge(grad, on=["institution", "label"], suffixes=("_ug", "_grad"))
+                lost_grad = -levels.loc[levels.diff_grad < 0, "diff_grad"].sum()
+                lost_ug = -levels.loc[levels.diff_ug < 0, "diff_ug"].sum()
+                n_down = int((overall.pct < -1).sum())
+                worst = overall.sort_values("pct").iloc[0]
+                st.subheader(f"Fall {first_year} → Fall {snapshot_year}")
+                sentences = [f"International enrollment fell by more than 1% at {n_down} of {len(overall)} "
+                             "comparable campuses."]
+                if worst.pct < 0:
+                    sentences.append(f"{worst.label} had the largest decline, falling {abs(worst.pct):.1f}% "
+                                     f"from {worst.c_start:,} to {worst.c_end:,} students.")
+                elif worst.pct > 0:
+                    sentences.append(f"{worst.label} had the smallest increase, rising {worst.pct:.1f}% "
+                                     f"from {worst.c_start:,} to {worst.c_end:,} students.")
+                else:
+                    sentences.append(f"{worst.label} had no change, with {worst.c_end:,} students in both years.")
+                if india.empty:
+                    sentences.append("None of the selected campuses reported India enrollment for both years.")
+                elif len(india) == 1:
+                    row = india.iloc[0]
+                    movement = "fell" if row.pct < 0 else "rose" if row.pct > 0 else "was unchanged"
+                    amount = f" by {abs(row.pct):.1f}%" if row.pct else ""
+                    sentences.append(f"Enrollment from India at {row.label} {movement}{amount}.")
+                else:
+                    n_india_down = int((india.pct < 0).sum())
+                    sentences.append(f"Enrollment from India fell at {n_india_down} of {len(india)} "
+                                     "campuses that reported it in both years.")
+                if lost_grad + lost_ug:
+                    sentences.append(f"Graduate students accounted for {lost_grad / (lost_grad + lost_ug):.0%} "
+                                     "of the enrollment losses in published level counts "
+                                     f"({lost_grad:,} graduate and {lost_ug:,} undergraduate).")
+                elif levels.empty:
+                    sentences.append("None of the selected campuses reported both study levels in both years.")
+                else:
+                    sentences.append("The published undergraduate and graduate counts showed no enrollment losses.")
+                st.markdown("\n".join(f"- {sentence}" for sentence in sentences))
+            else:
+                st.info("Choose two years reported by the same university to see a comparison.")
+
+with section_tabs[2]:
+    chapter(3, "Campuses", "", "campuses")
     compare = st.checkbox("Compare Fall years", value=True, key="campus_compare")
     if compare:
         campus_years = sorted(st.multiselect(
@@ -537,7 +607,7 @@ with section_tabs[1]:
         start_year, end_year = campus_years[0], campus_years[-1]
         campus_df = df[df.year.isin(campus_years)]
         if len(campus_years) == 1:
-            st.plotly_chart(snapshot_bars(campus_df, end_year), width="stretch")
+            st.plotly_chart(snapshot_bars(campus_df, end_year), width="stretch", key="campus_snapshot_chart")
         elif len(campus_years) <= 4:
             st.plotly_chart(campus_comparison_bars(campus_df, campus_years), width="stretch")
         else:
@@ -569,39 +639,29 @@ with section_tabs[1]:
         available = set(fall_headcounts(campus_df, end_year).institution)
         detail_options = [school for school in selected_schools if school in available]
         if detail_options:
-            detail_schools = st.multiselect(
-                "Universities to break down", detail_options,
-                default=detail_options[:min(2, len(detail_options))],
-                format_func=SHORT.get, key="explorer_campuses")
-            for offset in range(0, len(detail_schools), 2):
-                batch = detail_schools[offset:offset + 2]
-                for col, inst in zip(st.columns(len(batch)), batch):
-                    with col:
-                        st.markdown(f"**{SHORT[inst]}**")
-                        selected_count = value(campus_df, inst, end_year)
-                        if len(campus_years) >= 2 and has_series(
-                                campus_df, inst, start_year=start_year, end_year=end_year):
-                            previous_count = value(campus_df, inst, start_year)
-                            difference = selected_count - previous_count
-                            direction = "up" if difference > 0 else "down" if difference < 0 else "unchanged"
-                            change_text = f"{direction} {abs(difference):,}" if difference else "unchanged"
-                            if difference and previous_count:
-                                change_text += f" ({abs(100 * difference / previous_count):.1f}%)"
-                            st.write(
-                                f"Fall {end_year}: {selected_count:,} international students, "
-                                f"{change_text} from Fall {start_year}."
-                            )
-                            splits = available_splits(campus_df, inst, start_year, end_year)
-                            split = st.selectbox("Break down by", splits, format_func=SPLITS.get,
-                                                 key=f"explorer_split_{inst}_{start_year}_{end_year}")
-                            parts = decompose(campus_df, inst, split, start_year, end_year)
-                            st.plotly_chart(change_bars(parts), width="stretch")
-                            st.caption(f"Fall {start_year} → {end_year} · right = gain, left = loss")
-                        elif len(campus_years) >= 2:
-                            st.write(f"Fall {end_year}: {selected_count:,} international students.")
-                            st.info("No total in both selected endpoint years for this campus.")
-                        else:
-                            st.write(f"Fall {end_year}: {selected_count:,} international students.")
+            for index, inst in enumerate(detail_options):
+                selected_count = value(campus_df, inst, end_year)
+                comparable = len(campus_years) >= 2 and has_series(
+                    campus_df, inst, start_year=start_year, end_year=end_year)
+                heading = f"{SHORT[inst]} · Fall {end_year}: {selected_count:,} students"
+                if comparable:
+                    previous_count = value(campus_df, inst, start_year)
+                    difference = selected_count - previous_count
+                    heading += f" · {difference:+,} ({100 * difference / previous_count:+.1f}%) vs {start_year}"
+                with st.expander(heading, expanded=index == 0):
+                    if comparable:
+                        st.write(f"Fall {end_year}: {selected_count:,} international students, "
+                                 f"{difference:+,} from Fall {start_year}.")
+                        splits = available_splits(campus_df, inst, start_year, end_year)
+                        split = st.selectbox("Break down by", splits, format_func=SPLITS.get,
+                                             key=f"explorer_split_{inst}_{start_year}_{end_year}")
+                        parts = decompose(campus_df, inst, split, start_year, end_year)
+                        st.plotly_chart(change_bars(parts), width="stretch")
+                        st.caption(f"Fall {start_year} → {end_year} · right = gain, left = loss")
+                    elif len(campus_years) >= 2:
+                        st.info("This campus has no total in both selected endpoint years.")
+                    else:
+                        st.write(f"Fall {end_year}: {selected_count:,} international students.")
         else:
             st.info(f"No selected campus reports a Fall {end_year} total.")
 
@@ -622,8 +682,8 @@ with section_tabs[1]:
                     f'from the headcounts above, so it is not charted. <a href="{SOURCES["dearborn"]}">UM-Dearborn report</a></div>',
                     unsafe_allow_html=True)
 
-with section_tabs[2]:
-    chapter(3, "By study level", "", "levels")
+with section_tabs[3]:
+    chapter(4, "By study level", "", "levels")
     level_years = sorted(st.multiselect(
         "Fall years for this chart", all_years, default=default_pair, key="level_years"))
     study_level = st.radio("Study level", ["Graduate", "Undergraduate"],
@@ -637,30 +697,23 @@ with section_tabs[2]:
             (level_df.academic_level == study_level)].empty]
         if not level_schools:
             st.info(f"No selected university publishes {study_level.lower()} counts for these years.")
-        else:
-            compare_schools = st.multiselect(
-                "Universities to compare", level_schools,
-                default=level_schools[:min(2, len(level_schools))],
-                format_func=SHORT.get, key=f"level_trend_schools_{study_level}")
-            if not compare_schools:
-                st.info("Select at least one university.")
-            elif len(level_years) == 1:
-                fig = level_snapshot_bars(
-                    level_df[level_df.institution.isin(compare_schools)],
-                    level_years[0], study_level)
-                if fig is None:
-                    st.info(f"No {study_level.lower()} counts for this selection.")
-                else:
-                    st.plotly_chart(fig, width="stretch")
-                    st.caption(f"Fall {level_years[0]} · reported headcounts")
+        elif len(level_years) == 1:
+            fig = level_snapshot_bars(
+                level_df[level_df.institution.isin(level_schools)],
+                level_years[0], study_level)
+            if fig is None:
+                st.info(f"No {study_level.lower()} counts for this selection.")
             else:
-                st.plotly_chart(level_year_lines(level_df, level_years, compare_schools, study_level),
-                                width="stretch")
-                st.caption(f"Each line shows {study_level.lower()} students at one university. "
-                           "Higher means more students; gaps mean no published count.")
+                st.plotly_chart(fig, width="stretch")
+                st.caption(f"Fall {level_years[0]} · reported headcounts")
+        else:
+            st.plotly_chart(level_year_lines(level_df, level_years, level_schools, study_level),
+                            width="stretch")
+            st.caption(f"Each line shows {study_level.lower()} students at one selected university. "
+                       "Higher means more students; gaps mean no published count.")
 
-with section_tabs[3]:
-    chapter(4, "Students from India", "", "india")
+with section_tabs[4]:
+    chapter(5, "Students from India", "", "india")
     india_years = sorted(st.multiselect(
         "Fall years for India charts", all_years, default=default_pair, key="india_years"))
     change_tab, share_tab, contribution_tab, history_tab = st.tabs(
@@ -717,15 +770,15 @@ with section_tabs[3]:
         elif not india_schools:
             st.info("No India counts for these years and universities.")
         else:
-            school = st.selectbox("University for contributions", india_schools,
-                                  format_func=SHORT.get, key="india_contribution_school")
-            fig = india_contribution_bars(india_df, school, india_years)
-            if fig is None:
-                st.info("This campus needs two selected years with both India and total counts.")
-            else:
-                st.plotly_chart(fig, width="stretch")
-                st.caption("Each interval uses adjacent selected years with published counts. "
-                           "India change + other-country change = total change.")
+            st.caption("Each interval uses adjacent selected years with published counts. "
+                       "India change + other-country change = total change.")
+            for index, school in enumerate(india_schools):
+                with st.expander(SHORT[school], expanded=index == 0):
+                    fig = india_contribution_bars(india_df, school, india_years)
+                    if fig is None:
+                        st.info("This campus needs two selected years with both India and total counts.")
+                    else:
+                        st.plotly_chart(fig, width="stretch")
     with history_tab:
         india_history_years = sorted(st.multiselect(
             "Fall years for India history", all_years, default=all_years[-5:],
@@ -744,8 +797,8 @@ with section_tabs[3]:
         else:
             st.info("Select at least one Fall year.")
 
-with section_tabs[4]:
-    chapter(5, "Year trends", "", "history")
+with section_tabs[5]:
+    chapter(6, "Year trends", "", "history")
     trend_years = sorted(st.multiselect(
         "Fall years for trends", all_years, default=all_years[-5:],
         key="trend_years"))
@@ -756,26 +809,16 @@ with section_tabs[4]:
         indexed = st.toggle("Index each campus to its first selected year",
                             value=True, key="trend_indexed")
         st.plotly_chart(trends(trend_df, indexed, trend_years[0]), width="stretch")
-        st.caption("Only selected Fall years are shown · index = 100 at each campus's first selected year")
+        st.caption("Only selected Fall years are shown · index = 100 at each campus's first selected year · hover for counts")
 
         level_campuses = [school for school in selected_schools if
-                          trend_df[(trend_df.institution == school) &
-                                   (trend_df.academic_level == "Undergraduate")].year.nunique() >= 2]
+                          len(level_history_years(trend_df, school)) >= 2]
         if level_campuses:
             with st.expander("Undergraduate and graduate over time, by campus"):
-                area_schools = st.multiselect(
-                    "Campuses for level trends", level_campuses,
-                    default=level_campuses[:min(2, len(level_campuses))],
-                    format_func=SHORT.get, key="level_campuses")
-                for offset in range(0, len(area_schools), 2):
-                    batch = area_schools[offset:offset + 2]
-                    for col, inst in zip(st.columns(len(batch)), batch):
-                        with col:
-                            st.markdown(f"**{SHORT[inst]}**")
-                            scopes = ["All countries"] + (["India"] if has_series(
-                                trend_df, inst, "India", "Undergraduate",
-                                trend_years[0], trend_years[-1]) else [])
-                            country = st.radio("Country scope", scopes, horizontal=True,
-                                               key=f"level_scope_{inst}")
-                            st.plotly_chart(level_area(trend_df, inst, country),
-                                             width="stretch")
+                for index, inst in enumerate(level_campuses):
+                    with st.expander(SHORT[inst], expanded=index == 0):
+                        scopes = ["All countries"] + (["India"] if
+                            len(level_history_years(trend_df, inst, "India")) >= 2 else [])
+                        country = st.radio("Country scope", scopes, horizontal=True,
+                                           key=f"level_scope_{inst}")
+                        st.plotly_chart(level_area(trend_df, inst, country), width="stretch")
