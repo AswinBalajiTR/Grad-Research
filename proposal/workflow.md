@@ -1,17 +1,17 @@
 # Project workflow
 
-This flowchart shows how the project connects Trump administration policy events, news coverage, online discussion, and international-student mobility indicators. The main period of interest is 2025–2026, with particular attention to Indian students.
+This flowchart connects U.S. policy announcements, news coverage, online discussion, and international-student mobility indicators. The study period is 2025–2026, with particular attention to Indian students. Events first enter a candidate list; each source, date, policy stage, and affected student or work pathway must be checked before an event is used in analysis.
 
 ```mermaid
 flowchart TD
-    A["Research question<br/>How do Trump administration policies affect online discussions and stated study plans of international students, especially Indian students?"]
+    A["Research question<br/>How do online discussions and stated study plans change around U.S. policy announcements affecting international students, especially Indian students?"]
 
-    A --> B["Build verified policy timeline<br/>Official announcements, rules, effective dates, and policy status"]
+    A --> B["Build and verify policy timeline<br/>Primary sources, announcement dates, policy stage, affected visas"]
     B --> C["Select student-relevant events<br/>Visa interviews and screening • travel and entry • student status • OPT/CPT and work pathways"]
-    C --> D["Set collection window for each event<br/>Before announcement → announcement week → later discussion"]
+    C --> D["Set collection window for each event<br/>Baseline → anticipation → immediate → extended"]
 
     D --> E["Collect news coverage<br/>News API / GDELT + education news outlets"]
-    D --> F["Collect public discussions<br/>Reddit • X • YouTube comments • accessible student forums"]
+    D --> F["Collect public discussions<br/>Reddit • YouTube comments • other accessible public sources"]
     D --> G["Collect context data<br/>Visa issuance • enrollment • other available mobility indicators"]
 
     E --> H["Create a structured dataset<br/>Text • date • source • URL/ID • policy event • collection window"]
@@ -36,7 +36,9 @@ flowchart TD
     I --> S["Compare discussion patterns with later aggregate indicators"]
     Q --> S
 
-    S --> T["Project outputs<br/>Verified policy timeline • source and category breakdown<br/>discussion trends • stated-plan trends • carefully qualified conclusions"]
+    S --> T["Project outputs<br/>Source-verified policy timeline • source and category breakdown<br/>discussion trends • stated-plan trends • carefully qualified conclusions"]
 ```
 
 **Classification rule:** A post expressing worry about a visa is coded as a concern, but it is not coded as a decision to delay or withdraw unless the writer explicitly states that plan. News coverage, student experiences, and general public comments remain identifiable as separate source types.
+
+**Policy verification gate:** The event collector and its LLM produce candidates, not verified policy facts. Check the primary source for the announcement date, whether the item is proposed or final, affected visa classes, and direct relevance to international students. Check any earlier news signal against the linked article before using it to set an anticipation window. Keep the event source URL and verification notes with the timeline. The analysis windows end at the fixed study stop date, October 1, 2026.
