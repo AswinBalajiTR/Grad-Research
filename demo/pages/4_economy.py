@@ -392,15 +392,15 @@ with T["International students"]:
             fig = go.Figure()
             xmax = 0
             for y in picked:
-                per = county_exposure(y)[0].reindex(top)
+                pct = county_exposure(y)[0].reindex(top) / 10  # per 1,000 residents -> % of residents
                 intl = EXP[(EXP.unit_type == "county") & (EXP.measure == "intl_enrollment")
                            & (EXP.period == f"{y}-fall")].set_index("unit_id")["value"].reindex(top)
-                xmax = max(xmax, per.max())
-                fig.add_trace(go.Bar(x=per.values, y=labels, orientation="h", name=f"Fall {y}",
+                xmax = max(xmax, pct.max())
+                fig.add_trace(go.Bar(x=pct.values, y=labels, orientation="h", name=f"Fall {y}",
                                      marker=dict(color=year_color[y], line=dict(color=P["mid"], width=1)),
-                                     text=per.values, texttemplate="%{x:.1f}", textposition="outside",
+                                     text=pct.values, texttemplate="%{x:.1f}%", textposition="outside",
                                      cliponaxis=False, customdata=intl.fillna(0).astype(int).values,
-                                     hovertemplate=f"%{{y}}<br>Fall {y}: %{{x:.1f}} per 1,000 residents<br>"
+                                     hovertemplate=f"%{{y}}<br>Fall {y}: %{{x:.1f}}% of residents<br>"
                                                    f"%{{customdata:,}} international students<extra></extra>"))
             fig.update_layout(barmode="group", bargap=0.25, bargroupgap=0.05,
                               height=max(400, (10 + 14 * len(picked)) * len(top) + 160),
@@ -408,8 +408,8 @@ with T["International students"]:
                               title=f"Most dependent counties (ranked by fall {picked[-1]})",
                               legend=dict(orientation="h", yanchor="bottom", y=1.0, x=1, xanchor="right",
                                           traceorder="reversed"),
-                              xaxis=dict(title="International students per 1,000 residents", gridcolor=P["grid"],
-                                         range=[0, xmax * 1.2]))
+                              xaxis=dict(title="International students as % of county residents", gridcolor=P["grid"],
+                                         ticksuffix="%", range=[0, xmax * 1.2]))
             show(fig, "county_bar")
 
         with st.expander("Table"):
@@ -439,7 +439,9 @@ with T["Student flows"]:
         else:
             st.markdown("#### Visa issued → arrival → enrolled")
             stages = [s for s in STAGES if s in raw]
-            shown = st.pills("Show", stages, selection_mode="multi", default=stages, key="flow_stages")
+            # SEVIS is off by default; it is a running total on its own axis, added when needed.
+            shown = st.pills("Show", stages, selection_mode="multi", default=[s for s in stages if s != STAGES[2]],
+                             key="flow_stages")
             shown = [s for s in stages if s in (shown or [])]  # keep the funnel order whatever the click order
             if not shown:
                 st.info("Pick at least one measure.")
@@ -749,7 +751,7 @@ with T["Data & notes"]:
 #### Notes and caveats
 - **IPEDS** enrollment is available for fall 2022 and fall 2023 only; fall 2024 and fall 2025 are not
   published yet, so the enrollment decline itself is not visible here. Students on OPT are not counted.
-- **County dependence** is international students per 1,000 residents, for each fall from 2021 to 2023
+- **County dependence** is international students as a % of county residents, for each fall from 2021 to 2023
   (fall 2021 is a pre-study baseline and appears only in that chart).
 - **Zillow ZORI** is a smoothed index of asking rents; small towns may have no ZIP coverage.
 - **QCEW** is in the dataset browser only. BLS suppresses cells that would reveal one employer, which hides
