@@ -294,8 +294,12 @@ def campus_comparison_bars(df, years):
                      key=lambda school: counts[years[-1]].get(school, 0))
     labels = [SHORT[school] for school in schools]
     fig = go.Figure()
-    colors = {1: [BLUE], 2: [NEUTRAL, BLUE], 3: [NEUTRAL, AQUA, BLUE],
-              4: [NEUTRAL, AQUA, ORANGE, BLUE]}[len(years)]
+    # Bright, distinct year colors remain legible on the dashboard's dark theme.
+    colors = {
+        2: ["#F4A261", "#2EC4B6"],
+        3: ["#9D7BEA", "#F4A261", "#2EC4B6"],
+        4: ["#9D7BEA", "#E76F91", "#F4A261", "#2EC4B6"],
+    }[len(years)]
     for year, color in zip(years, colors):
         fig.add_trace(go.Bar(
             x=[counts[year].get(school) for school in schools], y=labels, name=f"Fall {year}",
@@ -500,7 +504,7 @@ default_pair = [year for year in (2024, 2025) if year in all_years]
 if len(default_pair) < 2:
     default_pair = all_years[-2:]
 section_tabs = st.tabs([
-    "Research context", "Fall snapshot", "Campuses", "By level", "India", "Year trends",
+    "Research context", "Campuses", "By level", "India", "Year trends",
 ])
 
 with section_tabs[0]:
@@ -527,63 +531,6 @@ with section_tabs[0]:
         st.markdown("\n".join(f"- [{k}]({u})" for k, u in SOURCES.items()))
 
 with section_tabs[1]:
-    snapshot_years = sorted(st.multiselect(
-        "Fall years for this snapshot (up to four)", all_years, default=default_pair,
-        max_selections=4, key="snapshot_years"))
-    if not snapshot_years:
-        st.info("Select at least one Fall year.")
-    else:
-        first_year, snapshot_year = snapshot_years[0], snapshot_years[-1]
-        snapshot_df = df[df.year.isin(snapshot_years)]
-        st.subheader(f"Fall {snapshot_year}")
-        st.plotly_chart(snapshot_bars(snapshot_df, snapshot_year), width="stretch", key="fall_snapshot_chart")
-        st.caption("Published campuses only · not a national total")
-        if len(snapshot_years) >= 2:
-            overall = changes(snapshot_df, first_year, snapshot_year)
-            if not overall.empty:
-                india = changes(snapshot_df, first_year, snapshot_year, country="India")
-                ug = changes(snapshot_df, first_year, snapshot_year, level="Undergraduate")
-                grad = changes(snapshot_df, first_year, snapshot_year, level="Graduate")
-                levels = ug.merge(grad, on=["institution", "label"], suffixes=("_ug", "_grad"))
-                lost_grad = -levels.loc[levels.diff_grad < 0, "diff_grad"].sum()
-                lost_ug = -levels.loc[levels.diff_ug < 0, "diff_ug"].sum()
-                n_down = int((overall.pct < -1).sum())
-                worst = overall.sort_values("pct").iloc[0]
-                st.subheader(f"Fall {first_year} → Fall {snapshot_year}")
-                sentences = [f"International enrollment fell by more than 1% at {n_down} of {len(overall)} "
-                             "comparable campuses."]
-                if worst.pct < 0:
-                    sentences.append(f"{worst.label} had the largest decline, falling {abs(worst.pct):.1f}% "
-                                     f"from {worst.c_start:,} to {worst.c_end:,} students.")
-                elif worst.pct > 0:
-                    sentences.append(f"{worst.label} had the smallest increase, rising {worst.pct:.1f}% "
-                                     f"from {worst.c_start:,} to {worst.c_end:,} students.")
-                else:
-                    sentences.append(f"{worst.label} had no change, with {worst.c_end:,} students in both years.")
-                if india.empty:
-                    sentences.append("None of the selected campuses reported India enrollment for both years.")
-                elif len(india) == 1:
-                    row = india.iloc[0]
-                    movement = "fell" if row.pct < 0 else "rose" if row.pct > 0 else "was unchanged"
-                    amount = f" by {abs(row.pct):.1f}%" if row.pct else ""
-                    sentences.append(f"Enrollment from India at {row.label} {movement}{amount}.")
-                else:
-                    n_india_down = int((india.pct < 0).sum())
-                    sentences.append(f"Enrollment from India fell at {n_india_down} of {len(india)} "
-                                     "campuses that reported it in both years.")
-                if lost_grad + lost_ug:
-                    sentences.append(f"Graduate students accounted for {lost_grad / (lost_grad + lost_ug):.0%} "
-                                     "of the enrollment losses in published level counts "
-                                     f"({lost_grad:,} graduate and {lost_ug:,} undergraduate).")
-                elif levels.empty:
-                    sentences.append("None of the selected campuses reported both study levels in both years.")
-                else:
-                    sentences.append("The published undergraduate and graduate counts showed no enrollment losses.")
-                st.markdown("\n".join(f"- {sentence}" for sentence in sentences))
-            else:
-                st.info("Choose two years reported by the same university to see a comparison.")
-
-with section_tabs[2]:
     campus_years = sorted(st.multiselect(
         "Fall years", all_years, default=default_pair, key="campus_years"))
 
@@ -668,7 +615,7 @@ with section_tabs[2]:
                     f'from the headcounts above, so it is not charted. <a href="{SOURCES["dearborn"]}">UM-Dearborn report</a></div>',
                     unsafe_allow_html=True)
 
-with section_tabs[3]:
+with section_tabs[2]:
     level_years = sorted(st.multiselect(
         "Fall years for this chart", all_years, default=default_pair, key="level_years"))
     study_level = st.radio("Study level", ["Graduate", "Undergraduate"],
@@ -697,7 +644,7 @@ with section_tabs[3]:
             st.caption(f"Each line shows {study_level.lower()} students at one selected university. "
                        "Higher means more students; gaps mean no published count.")
 
-with section_tabs[4]:
+with section_tabs[3]:
     india_years = sorted(st.multiselect(
         "Fall years for India charts", all_years, default=default_pair, key="india_years"))
     change_tab, share_tab, contribution_tab, history_tab = st.tabs(
@@ -781,7 +728,7 @@ with section_tabs[4]:
         else:
             st.info("Select at least one Fall year.")
 
-with section_tabs[5]:
+with section_tabs[4]:
     trend_years = sorted(st.multiselect(
         "Fall years for trends", all_years, default=all_years[-5:],
         key="trend_years"))
