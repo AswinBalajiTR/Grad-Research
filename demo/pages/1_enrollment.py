@@ -467,6 +467,7 @@ st.markdown("""
   .block-container {padding-top: 2rem; max-width: 1150px;}
   div[data-testid="stMetric"] {border: 1px solid rgba(128,128,128,.25); border-radius: 12px; padding: 14px 18px;}
   div[data-testid="stMetricValue"] {font-size: 1.7rem;}
+  .context-intro {font-size: 1.1rem; line-height: 1.6; max-width: 58rem;}
   .takeaway {border-left: 4px solid #2a78d6; padding: .5rem 1rem; margin: .5rem 0 1rem; background: rgba(42,120,214,.07);
              border-radius: 0 8px 8px 0;}
 </style>
@@ -503,8 +504,10 @@ section_tabs = st.tabs([
 ])
 
 with section_tabs[0]:
-    st.write("Explore published Fall enrollment counts at selected universities. "
-             "The counts include new and continuing students and do not show why enrollment changed.")
+    st.markdown(
+        '<p class="context-intro">Explore published Fall enrollment counts at selected universities. '
+        'The counts include new and continuing students and do not show why enrollment changed.</p>',
+        unsafe_allow_html=True)
     with st.expander("Data & sources"):
         st.dataframe(df.drop(columns=["period", "measure", "source_definition"]),
                      hide_index=True, width="stretch")
