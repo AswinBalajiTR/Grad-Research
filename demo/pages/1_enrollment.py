@@ -504,10 +504,23 @@ section_tabs = st.tabs([
 ])
 
 with section_tabs[0]:
-    st.markdown(
-        '<p class="context-intro">Explore published Fall enrollment counts at selected universities. '
-        'The counts include new and continuing students and do not show why enrollment changed.</p>',
-        unsafe_allow_html=True)
+    st.markdown("""
+<div class="context-intro">
+  <p>Imagine a student deciding whether to begin a degree in the United States. An admission
+  offer is only part of the decision. Visa appointments, travel rules, and the possibility of
+  working after graduation can all affect when and where they choose to study. Students may
+  discuss those uncertainties online long before universities publish their enrollment numbers.</p>
+
+  <p>Our study follows both sides of that story: what students say around policy changes, and
+  what happens to international enrollment over time. This page shows the enrollment side.
+  You can compare selected universities by fall year, study level, and, where schools report it,
+  students from India.</p>
+
+  <p>These are fall headcounts of new <em>and</em> continuing students. They show where numbers
+  rose or fell, but they cannot tell us why. The patterns give us a starting point for asking
+  how enrollment and student discussion might move together.</p>
+</div>
+""", unsafe_allow_html=True)
     with st.expander("Data & sources"):
         st.dataframe(df.drop(columns=["period", "measure", "source_definition"]),
                      hide_index=True, width="stretch")
