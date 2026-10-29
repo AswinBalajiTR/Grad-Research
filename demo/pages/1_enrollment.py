@@ -41,7 +41,6 @@ FONT = dict(family="Inter, system-ui, sans-serif", size=13)
 
 
 
-@st.cache_data
 def load() -> pd.DataFrame:
     rows = make_rows()
     validate(rows)
@@ -507,9 +506,8 @@ if df.empty:
     st.info("The selected universities have no published Fall counts.")
     st.stop()
 all_years = sorted(int(year) for year in df.year.unique())
-default_pair = [year for year in (2024, 2025) if year in all_years]
-if len(default_pair) < 2:
-    default_pair = all_years[-2:]
+default_pair = all_years[-2:]
+india_default_pair = [year for year in (2024, 2025) if year in all_years]
 section_tabs = st.tabs([
     "Research context", "Campuses", "By level", "India", "Year trends",
 ])
@@ -655,7 +653,7 @@ with section_tabs[2]:
 
 with section_tabs[3]:
     india_years = sorted(st.multiselect(
-        "Fall years for India charts", all_years, default=default_pair, key="india_years"))
+        "Fall years for India charts", all_years, default=india_default_pair, key="india_years"))
     change_tab, share_tab, contribution_tab, history_tab = st.tabs(
         ["Change", "India share", "Contribution", "History"])
     india_df = df[df.year.isin(india_years)]
