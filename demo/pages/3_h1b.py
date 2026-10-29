@@ -109,18 +109,18 @@ else:
             .sum()
         )
         with chart_tabs[0]:
-            st.caption("Monthly LCA decisions · dashed lines mark H-1B and post-graduation work policy events (unverified)")
+            st.caption("Monthly LCA decisions · dashed lines mark all policy timeline events (unverified)")
             fig = px.line(monthly, x="month", y="_filings", markers=True, labels={"_filings": "Filings"})
             if POLICY_EVENTS_PATH.exists() and not monthly.empty:
                 events = pd.read_csv(POLICY_EVENTS_PATH, encoding="utf-8-sig")
                 events["event_date"] = pd.to_datetime(events["event_date"], errors="coerce")
-                events = events.loc[
-                    events["topic"].eq("H-1B / work after graduation")
-                    & events["event_date"].between(monthly["month"].min(), monthly["month"].max() + pd.offsets.MonthEnd(1))
-                ]
+                events = events.dropna(subset=["event_date"])
                 top = max(float(monthly["_filings"].max()) * 1.05, 1)
                 for day, day_events in events.groupby("event_date"):
-                    titles = "<br>".join(day_events["title"].fillna("Policy event").astype(str))
+                    titles = "<br>".join(
+                        f"{row.topic if pd.notna(row.topic) else 'Other / unassigned'}: {row.title if pd.notna(row.title) else 'Policy event'}"
+                        for row in day_events.itertuples()
+                    )
                     fig.add_trace(go.Scatter(
                         x=[day] * 25,
                         y=[top * step / 24 for step in range(25)],
@@ -131,6 +131,14 @@ else:
                         hovertemplate=f"<b>{day:%d %b %Y}</b><br>{titles}<extra></extra>",
                     ))
                 fig.update_yaxes(range=[0, top])
+                if not events.empty:
+                    fig.update_xaxes(range=[
+                        min(pd.Timestamp(monthly["month"].min()), pd.Timestamp(events["event_date"].min())),
+                        max(
+                            pd.Timestamp(monthly["month"].max()) + pd.offsets.MonthEnd(1),
+                            pd.Timestamp(events["event_date"].max()) + pd.Timedelta(days=7),
+                        ),
+                    ])
             st.plotly_chart(
                 fig,
                 use_container_width=True,
