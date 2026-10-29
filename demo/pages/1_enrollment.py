@@ -740,4 +740,3 @@ with st.expander("Data & sources"):
     st.dataframe(df.drop(columns=["period", "measure", "source_definition"]),
                  hide_index=True, width="stretch")
     st.markdown("\n".join(f"- [{k}]({u})" for k, u in SOURCES.items()))
-
