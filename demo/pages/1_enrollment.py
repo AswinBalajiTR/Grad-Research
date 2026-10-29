@@ -30,6 +30,13 @@ SCHOOL_COLORS = {"Ohio University": BLUE, "MIT": ORANGE, "University of Hawaiʻi
                  "University of Michigan–Ann Arbor": "#7955b3",
                  "University of Illinois Springfield": YELLOW,
                  "University of New Mexico": "#e87ba4", "UC Berkeley": "#008300"}
+POP_YEAR_COLORS = {
+    2: ["#FF4F81", "#22D3EE"],
+    3: ["#FF4F81", "#FFD166", "#22D3EE"],
+    4: ["#AD7CFF", "#FF4F81", "#FFD166", "#22D3EE"],
+}
+POP_CAMPUS_COLORS = ["#FF4F81", "#22D3EE", "#FFD166", "#AD7CFF",
+                     "#A8E64A", "#FF9650", "#35D6B0"]
 FONT = dict(family="Inter, system-ui, sans-serif", size=13)
 
 
@@ -294,12 +301,7 @@ def campus_comparison_bars(df, years):
                      key=lambda school: counts[years[-1]].get(school, 0))
     labels = [SHORT[school] for school in schools]
     fig = go.Figure()
-    # One warm color family keeps the year comparison calm and chronological.
-    colors = {
-        2: ["#B97450", "#F1C27D"],
-        3: ["#A76249", "#D59460", "#F1C27D"],
-        4: ["#955946", "#B97450", "#DDA36B", "#F1C27D"],
-    }[len(years)]
+    colors = POP_YEAR_COLORS[len(years)]
     for year, color in zip(years, colors):
         fig.add_trace(go.Bar(
             x=[counts[year].get(school) for school in schools], y=labels, name=f"Fall {year}",
@@ -316,7 +318,7 @@ def campus_comparison_bars(df, years):
 def campus_comparison_lines(df, years):
     """Keep comparisons readable when many Fall years are selected."""
     fig = go.Figure()
-    for school, color in SCHOOL_COLORS.items():
+    for school, color in zip(SCHOOL_COLORS, POP_CAMPUS_COLORS):
         rows = df[
             (df.institution == school) & df.year.isin(years)
             & (df.country == "All countries") & (df.academic_level == "All levels")
