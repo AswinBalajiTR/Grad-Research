@@ -470,31 +470,36 @@ def level_history_years(df, inst, country="All countries") -> set[int]:
 
 st.markdown("""
 <style>
-  .block-container {padding-top: 2rem; max-width: 1150px;}
+  .block-container {padding-top: 2.25rem; padding-bottom: 4rem; max-width: 1120px;}
+  @media (max-width: 900px) { .block-container h1 {font-size: 2.25rem;} }
   div[data-testid="stMetric"] {border: 1px solid rgba(128,128,128,.25); border-radius: 12px; padding: 14px 18px;}
   div[data-testid="stMetricValue"] {font-size: 1.7rem;}
   .context-intro {font-size: 1.1rem; line-height: 1.6; max-width: 58rem;}
-  .takeaway {border-left: 4px solid #2a78d6; padding: .5rem 1rem; margin: .5rem 0 1rem; background: rgba(42,120,214,.07);
+  .takeaway {border-left: 4px solid #22D3EE; padding: .5rem 1rem; margin: .5rem 0 1rem; background: rgba(34,211,238,.07);
              border-radius: 0 8px 8px 0;}
 </style>
 """, unsafe_allow_html=True)
 
-with st.sidebar:
-    st.subheader("University selection")
-    selected_schools = st.multiselect(
-        "Universities to compare", list(SCHOOL_COLORS), default=list(SCHOOL_COLORS),
-        format_func=SHORT.get, key="enrollment_universities")
-    st.caption("Applies to every enrollment view.")
-    with st.expander("About these data"):
-        st.markdown("- **Measure:** fall international headcount\n"
-                    "- **Includes:** new and continuing students\n"
-                    "- **Source:** university tables\n"
-                    "- **Limits:** not new arrivals or causal proof")
+# ── Header and filter shared by every enrollment tab ──
+st.title("International enrollment")
+subtitle, controls = st.columns([3, 1], vertical_alignment="center")
+with subtitle:
+    st.caption("Fall headcounts at selected universities")
+with controls:
+    selected_count = sum(st.session_state.get(f"enrollment_school_{index}", True)
+                         for index in range(len(SCHOOL_COLORS)))
+    selected_schools = []
+    with st.popover(f"Schools · {selected_count}", use_container_width=True):
+        st.caption("Show these universities in every enrollment tab")
+        choice_columns = st.columns(2)
+        for index, school in enumerate(SCHOOL_COLORS):
+            with choice_columns[index % 2]:
+                if st.checkbox(SHORT[school], value=True, key=f"enrollment_school_{index}"):
+                    selected_schools.append(school)
 
 # ── Opening ──
-st.title("International enrollment")
 if not selected_schools:
-    st.info("Select at least one university in the sidebar to see the charts.")
+    st.info("Choose at least one university using the control above.")
     st.stop()
 
 df = load().loc[lambda rows: rows.institution.isin(selected_schools)]
@@ -528,6 +533,8 @@ with section_tabs[0]:
 </div>
 """, unsafe_allow_html=True)
     with st.expander("Data & sources"):
+        st.markdown("**Measure:** fall international headcount from each university's published tables. "
+                    "These are not new arrivals or evidence of a policy effect.")
         st.dataframe(df.drop(columns=["period", "measure", "source_definition"]),
                      hide_index=True, width="stretch")
         st.markdown("\n".join(f"- [{k}]({u})" for k, u in SOURCES.items()))
