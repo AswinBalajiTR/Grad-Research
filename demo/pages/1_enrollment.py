@@ -498,10 +498,11 @@ all_years = sorted(int(year) for year in df.year.unique())
 default_pair = [year for year in (2024, 2025) if year in all_years]
 if len(default_pair) < 2:
     default_pair = all_years[-2:]
-section = st.selectbox(
-    "View", ["Fall snapshot", "Campuses", "By level", "India", "Year trends", "About"])
+section_tabs = st.tabs([
+    "Research context", "Fall snapshot", "Campuses", "By level", "India", "Year trends",
+])
 
-if section == "About":
+with section_tabs[0]:
     st.write("Explore published Fall enrollment counts at selected universities. "
              "The counts include new and continuing students and do not show why enrollment changed.")
     with st.expander("Data & sources"):
@@ -509,7 +510,7 @@ if section == "About":
                      hide_index=True, width="stretch")
         st.markdown("\n".join(f"- [{k}]({u})" for k, u in SOURCES.items()))
 
-if section == "Fall snapshot":
+with section_tabs[1]:
     snapshot_years = sorted(st.multiselect(
         "Fall years for this snapshot (up to four)", all_years, default=default_pair,
         max_selections=4, key="snapshot_years"))
@@ -566,7 +567,7 @@ if section == "Fall snapshot":
             else:
                 st.info("Choose two years reported by the same university to see a comparison.")
 
-if section == "Campuses":
+with section_tabs[2]:
     campus_years = sorted(st.multiselect(
         "Fall years", all_years, default=default_pair, key="campus_years"))
 
@@ -651,7 +652,7 @@ if section == "Campuses":
                     f'from the headcounts above, so it is not charted. <a href="{SOURCES["dearborn"]}">UM-Dearborn report</a></div>',
                     unsafe_allow_html=True)
 
-if section == "By level":
+with section_tabs[3]:
     level_years = sorted(st.multiselect(
         "Fall years for this chart", all_years, default=default_pair, key="level_years"))
     study_level = st.radio("Study level", ["Graduate", "Undergraduate"],
@@ -680,7 +681,7 @@ if section == "By level":
             st.caption(f"Each line shows {study_level.lower()} students at one selected university. "
                        "Higher means more students; gaps mean no published count.")
 
-if section == "India":
+with section_tabs[4]:
     india_years = sorted(st.multiselect(
         "Fall years for India charts", all_years, default=default_pair, key="india_years"))
     change_tab, share_tab, contribution_tab, history_tab = st.tabs(
@@ -764,7 +765,7 @@ if section == "India":
         else:
             st.info("Select at least one Fall year.")
 
-if section == "Year trends":
+with section_tabs[5]:
     trend_years = sorted(st.multiselect(
         "Fall years for trends", all_years, default=all_years[-5:],
         key="trend_years"))
