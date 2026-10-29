@@ -23,7 +23,7 @@ python3 -m pip install -r requirements.txt
 streamlit run demo/app.py
 ```
 
-The dashboard reads local files on startup. The YouTube and H-1B refresh buttons start their collectors. The committed Reddit summary at `data/reddit/processed/reddit_theme_counts.csv` has aggregate theme counts without usernames or comment text. These counts describe reviewed comments, not a representative student sample or policy effects. The locally generated H-1B CSV belongs at `data/h1b/processed/h1b_filings_2025_to_latest.csv`.
+The dashboard reads local files on startup. The YouTube refresh button starts its collector. The H-1B page checks the Department of Labor disclosure page automatically in the background, at most once per day while the app is running, and imports a new release when one appears. The first import can take several minutes; later visits show the existing local CSV during updates. The committed Reddit summary at `data/reddit/processed/reddit_theme_counts.csv` has aggregate theme counts without usernames or comment text. These counts describe reviewed comments, not a representative student sample or policy effects. The locally generated H-1B CSV belongs at `data/h1b/processed/h1b_filings_2025_to_latest.csv`.
 
 ## Reddit
 
@@ -55,6 +55,6 @@ python3 code/university/historical_international_eda.py
 python3 code/university/university_intake_eda.py
 ```
 
-The YouTube collector writes to `data/youtube/processed/`. The H-1B collector caches DOL downloads in `data/h1b/raw/` and writes the processed CSV to `data/h1b/processed/`. For a local USCIS export, use `--source uscis --input data/h1b/raw/uscis_h1b_fy2025.csv`. The historical university script uses the committed source-linked table in `data/university/interim/` and writes charts to `data/university/outputs/`. The intake script needs `data/university/interim/intake_observations.csv`, which is not included here.
+The YouTube collector writes to `data/youtube/processed/`. The H-1B collector caches DOL downloads in `data/h1b/raw/` and writes the processed CSV to `data/h1b/processed/`. It reads official DOL LCA disclosure spreadsheets, not a live H-1B API; updates depend on DOL releases and the app being opened while online. For a local USCIS export, use `--source uscis --input data/h1b/raw/uscis_h1b_fy2025.csv`. The historical university script uses the committed source-linked table in `data/university/interim/` and writes charts to `data/university/outputs/`. The intake script needs `data/university/interim/intake_observations.csv`, which is not included here.
 
 These sources are descriptive and do not establish policy effects.

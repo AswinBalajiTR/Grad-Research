@@ -3,22 +3,33 @@ from __future__ import annotations
 import plotly.express as px
 import pandas as pd
 import streamlit as st
-from dashboard_common import H1B_PATH, load_data, run_collector, find_col, compact_number, annualized_wage
+from dashboard_common import H1B_PATH, load_data, find_col, compact_number, annualized_wage
+from h1b_refresh import refresh_manager
 
 st.title("H-1B filings")
 st.caption("Employer filings · 2025 onward")
-with st.sidebar:
-    refresh = st.button("Refresh H-1B data", use_container_width=True)
-    st.caption("Manual refresh · may take minutes")
-if refresh:
-    with st.spinner("Downloading and preparing H-1B disclosures..."):
-        ok, message = run_collector(["code/h1b/collect_h1b.py", "--source", "dol"], timeout=7200)
-    (st.success if ok else st.error)("H-1B refresh completed" if ok else "H-1B refresh failed")
-    if message:
-        st.code(message)
+manager = refresh_manager()
+manager.ensure_started()
+loaded_mtime = H1B_PATH.stat().st_mtime_ns if H1B_PATH.exists() else None
+
+
+@st.fragment(run_every="30s")
+def refresh_notice() -> None:
+    manager.ensure_started()
+    if H1B_PATH.exists() and H1B_PATH.stat().st_mtime_ns != loaded_mtime:
+        st.rerun(scope="app")
+    running, error = manager.status()
+    if running and loaded_mtime is None:
+        st.info("Preparing the latest DOL H-1B data automatically. This first download may take a few minutes.")
+    elif error and loaded_mtime is None:
+        st.warning("The DOL download is temporarily unavailable. The app will try again automatically.")
+
+
+refresh_notice()
 h1b = load_data(H1B_PATH)
 if h1b.empty:
-    st.warning("No H-1B data are loaded.")
+    if not manager.status()[1]:
+        st.info("H-1B data will appear here when the first download finishes.")
 else:
     view = h1b.copy()
     state_col = find_col(view, ["employer_state", "state", "worksite_state"])
@@ -31,11 +42,6 @@ else:
     decision_col = find_col(view, ["decision_date", "date"])
     if decision_col:
         view[decision_col] = pd.to_datetime(view[decision_col], errors="coerce")
-        earliest_decision = view[decision_col].min()
-        if pd.notna(earliest_decision) and earliest_decision > pd.Timestamp("2025-01-31"):
-            st.warning(
-                f"Current H-1B file begins {earliest_decision.date()}. Click Refresh H-1B data to add the corrected FY2025 Q2 and Q3 files."
-            )
 
     with st.expander("Filters"):
         f1, f2, f3 = st.columns(3)
