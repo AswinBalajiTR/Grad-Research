@@ -294,11 +294,11 @@ def campus_comparison_bars(df, years):
                      key=lambda school: counts[years[-1]].get(school, 0))
     labels = [SHORT[school] for school in schools]
     fig = go.Figure()
-    # Bright, distinct year colors remain legible on the dashboard's dark theme.
+    # One warm color family keeps the year comparison calm and chronological.
     colors = {
-        2: ["#F4A261", "#2EC4B6"],
-        3: ["#9D7BEA", "#F4A261", "#2EC4B6"],
-        4: ["#9D7BEA", "#E76F91", "#F4A261", "#2EC4B6"],
+        2: ["#B97450", "#F1C27D"],
+        3: ["#A76249", "#D59460", "#F1C27D"],
+        4: ["#955946", "#B97450", "#DDA36B", "#F1C27D"],
     }[len(years)]
     for year, color in zip(years, colors):
         fig.add_trace(go.Bar(
