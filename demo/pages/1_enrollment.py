@@ -473,7 +473,6 @@ st.markdown("""
   @media (max-width: 900px) { .block-container h1 {font-size: 2.25rem;} }
   div[data-testid="stMetric"] {border: 1px solid rgba(128,128,128,.25); border-radius: 12px; padding: 14px 18px;}
   div[data-testid="stMetricValue"] {font-size: 1.7rem;}
-  .context-intro {font-size: 1.1rem; line-height: 1.6; max-width: 58rem;}
   .takeaway {border-left: 4px solid #22D3EE; padding: .5rem 1rem; margin: .5rem 0 1rem; background: rgba(34,211,238,.07);
              border-radius: 0 8px 8px 0;}
 </style>
@@ -509,35 +508,10 @@ all_years = sorted(int(year) for year in df.year.unique())
 default_pair = all_years[-2:]
 india_default_pair = [year for year in (2024, 2025) if year in all_years]
 section_tabs = st.tabs([
-    "Research context", "Campuses", "By level", "India", "Year trends",
+    "Campuses", "By level", "India", "Year trends",
 ])
 
 with section_tabs[0]:
-    st.markdown("""
-<div class="context-intro">
-  <p>Imagine a student deciding whether to begin a degree in the United States. An admission
-  offer is only part of the decision. Visa appointments, travel rules, and the possibility of
-  working after graduation can all affect when and where they choose to study. Students may
-  discuss those uncertainties online long before universities publish their enrollment numbers.</p>
-
-  <p>Our study follows both sides of that story: what students say around policy changes, and
-  what happens to international enrollment over time. This page shows the enrollment side.
-  You can compare selected universities by fall year, study level, and, where schools report it,
-  students from India.</p>
-
-  <p>These are fall headcounts of new <em>and</em> continuing students. They show where numbers
-  rose or fell, but they cannot tell us why. The patterns give us a starting point for asking
-  how enrollment and student discussion might move together.</p>
-</div>
-""", unsafe_allow_html=True)
-    with st.expander("Data & sources"):
-        st.markdown("**Measure:** fall international headcount from each university's published tables. "
-                    "These are not new arrivals or evidence of a policy effect.")
-        st.dataframe(df.drop(columns=["period", "measure", "source_definition"]),
-                     hide_index=True, width="stretch")
-        st.markdown("\n".join(f"- [{k}]({u})" for k, u in SOURCES.items()))
-
-with section_tabs[1]:
     campus_years = sorted(st.multiselect(
         "Fall years", all_years, default=default_pair, key="campus_years"))
 
@@ -622,7 +596,7 @@ with section_tabs[1]:
                     f'from the headcounts above, so it is not charted. <a href="{SOURCES["dearborn"]}">UM-Dearborn report</a></div>',
                     unsafe_allow_html=True)
 
-with section_tabs[2]:
+with section_tabs[1]:
     level_years = sorted(st.multiselect(
         "Fall years for this chart", all_years, default=default_pair, key="level_years"))
     study_level = st.radio("Study level", ["Graduate", "Undergraduate"],
@@ -651,7 +625,7 @@ with section_tabs[2]:
             st.caption(f"Each line shows {study_level.lower()} students at one selected university. "
                        "Higher means more students; gaps mean no published count.")
 
-with section_tabs[3]:
+with section_tabs[2]:
     india_years = sorted(st.multiselect(
         "Fall years for India charts", all_years, default=india_default_pair, key="india_years"))
     change_tab, share_tab, contribution_tab, history_tab = st.tabs(
@@ -735,7 +709,7 @@ with section_tabs[3]:
         else:
             st.info("Select at least one Fall year.")
 
-with section_tabs[4]:
+with section_tabs[3]:
     trend_years = sorted(st.multiselect(
         "Fall years for trends", all_years, default=all_years[-5:],
         key="trend_years"))
@@ -759,3 +733,11 @@ with section_tabs[4]:
                         country = st.radio("Country scope", scopes, horizontal=True,
                                            key=f"level_scope_{inst}")
                         st.plotly_chart(level_area(trend_df, inst, country), width="stretch")
+
+with st.expander("Data & sources"):
+    st.markdown("**Measure:** fall international headcount from each university's published tables. "
+                "These are not new arrivals or evidence of a policy effect.")
+    st.dataframe(df.drop(columns=["period", "measure", "source_definition"]),
+                 hide_index=True, width="stretch")
+    st.markdown("\n".join(f"- [{k}]({u})" for k, u in SOURCES.items()))
+
