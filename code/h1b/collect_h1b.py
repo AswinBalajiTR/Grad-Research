@@ -5,15 +5,62 @@ from __future__ import annotations
 
 import argparse
 import io
+import json
+import os
 import re
 import sys
+import tempfile
+from datetime import datetime, timedelta, timezone
+from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urljoin, urlparse
 
 import pandas as pd
 import requests
 
 
 DATA_ROOT = Path(__file__).resolve().parents[2] / "data/h1b"
+PERFORMANCE_URL = "https://www.dol.gov/agencies/eta/foreign-labor/performance"
+STATE_PATH = DATA_ROOT / "processed/refresh_state.json"
+CHECK_INTERVAL = timedelta(hours=24)
+
+
+class DownloadLinks(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.hrefs: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag == "a":
+            href = dict(attrs).get("href")
+            if href:
+                self.hrefs.append(href)
+
+
+def discover_dol_files() -> list[tuple[int, str, list[str]]]:
+    """Use the newest cumulative LCA disclosure for each fiscal year."""
+    response = requests.get(PERFORMANCE_URL, timeout=30)
+    response.raise_for_status()
+    links = DownloadLinks()
+    links.feed(response.text)
+    latest: dict[int, tuple[int, str, str]] = {}
+    for href in links.hrefs:
+        url = urljoin(PERFORMANCE_URL, href)
+        if urlparse(url).hostname not in {"dol.gov", "www.dol.gov"}:
+            continue
+        filename = Path(urlparse(url).path).name
+        # DOL's FY2026 link has a published spelling error: "Dislclosure".
+        match = re.fullmatch(r"LCA_Di[a-z]*closure_Data_FY(\d{4})_Q([1-4])\.xlsx", filename, re.I)
+        if not match:
+            continue
+        year, quarter = map(int, match.groups())
+        if year < 2025:
+            continue
+        if year not in latest or quarter > latest[year][0]:
+            latest[year] = (quarter, filename, url)
+    if not latest or 2025 not in latest:
+        raise RuntimeError("Could not find current LCA disclosure links on the DOL performance page")
+    return [(year, filename, [url]) for year, (_, filename, url) in sorted(latest.items())]
 
 USCIS_FY2025_URL = (
     "https://www.uscis.gov/sites/default/files/document/data/"
@@ -64,6 +111,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input", help="Local CSV/XLSX exported from the official source")
     parser.add_argument("--source-url", help="Override the official download URL")
     parser.add_argument("--output", default=str(DATA_ROOT / "processed/h1b_filings_2025_to_latest.csv"))
+    parser.add_argument("--auto", action="store_true", help="Check DOL once daily and rebuild only for a new release")
     return parser.parse_args()
 
 
@@ -208,7 +256,22 @@ def normalize_dol(frame: pd.DataFrame, fiscal_year: int = 2025) -> pd.DataFrame:
 
 def main() -> int:
     args = parse_args()
+    output = Path(args.output)
+    selected_files = DOL_LATEST_FILES
     try:
+        if args.source == "dol" and not args.input and not args.source_url:
+            state = json.loads(STATE_PATH.read_text()) if STATE_PATH.exists() else {}
+            checked = datetime.fromisoformat(state["checked_at"]) if state.get("checked_at") else None
+            if args.auto and output.exists() and checked and datetime.now(timezone.utc) - checked < CHECK_INTERVAL:
+                print("H-1B data already checked within the last 24 hours")
+                return 0
+            selected_files = discover_dol_files()
+            filenames = [filename for _, filename, _ in selected_files]
+            if args.auto and output.exists() and filenames == state.get("files"):
+                STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+                STATE_PATH.write_text(json.dumps({"checked_at": datetime.now(timezone.utc).isoformat(), "files": filenames}))
+                print("No new DOL LCA disclosure files")
+                return 0
         if args.source == "uscis":
             frame = read_source(args.input, args.source_url or USCIS_FY2025_URL, excel=False)
             result = normalize_uscis(frame)
@@ -218,7 +281,7 @@ def main() -> int:
                 result = normalize_dol(frame, 2025)
             else:
                 yearly = []
-                for fiscal_year, filename, source_urls in DOL_LATEST_FILES:
+                for fiscal_year, filename, source_urls in selected_files:
                     frame = read_dol_file(filename, source_urls)
                     yearly.append(normalize_dol(frame, fiscal_year))
                 result = pd.concat(yearly, ignore_index=True, sort=False)
@@ -237,9 +300,19 @@ def main() -> int:
             )
         return 2
 
-    output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
-    result.to_csv(output, index=False)
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", dir=output.parent, delete=False) as temporary:
+        temporary_path = Path(temporary.name)
+    try:
+        result.to_csv(temporary_path, index=False)
+        os.replace(temporary_path, output)
+    finally:
+        temporary_path.unlink(missing_ok=True)
+    if args.source == "dol" and not args.input and not args.source_url:
+        STATE_PATH.write_text(json.dumps({
+            "checked_at": datetime.now(timezone.utc).isoformat(),
+            "files": [filename for _, filename, _ in selected_files],
+        }))
     print(f"Saved {len(result):,} {args.source.upper()} rows from 2025 through the latest available period to {output}")
     return 0
 

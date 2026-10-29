@@ -253,8 +253,7 @@ lost_grad = -levels.loc[levels.diff_grad < 0, "diff_grad"].sum()
 lost_ug = -levels.loc[levels.diff_ug < 0, "diff_ug"].sum()
 
 
-def chapter(num, title, lede, anchor):
-    st.markdown(f'<p class="kicker">Part {num}</p>', unsafe_allow_html=True)
+def chapter(title, lede, anchor):
     st.header(title, anchor=anchor, divider="gray")
     st.markdown(f'<p class="lede">{lede}</p>', unsafe_allow_html=True)
 
@@ -296,7 +295,7 @@ st.markdown(
     "India separately, that group shrank faster than international students overall.</p>",
     unsafe_allow_html=True)
 
-chapter(1, "The question", "", "question")
+chapter("The question", "", "question")
 q1, q2 = st.columns([1.4, 1], gap="large")
 with q1:
     st.markdown("""
@@ -323,7 +322,7 @@ so these campuses are a set of case studies, not a national estimate.
     st.caption(f"Campuses: {', '.join(overall.label.sort_values())}.")
 
 # ── 2. Glance ──
-chapter(2, "Fall 2025 at a glance",
+chapter("Fall 2025 at a glance",
         "Four numbers summarize what the university tables show.", "glance")
 worst = overall.sort_values("pct").iloc[0]
 k = st.columns(4)
@@ -338,7 +337,7 @@ k[3].metric("Graduate share of lost seats", f"{lost_grad / (lost_grad + lost_ug)
             help="Across campuses that publish an undergraduate/graduate split; only declines are counted.")
 
 # ── 3. Campuses ──
-chapter(3, "Not every campus moved the same way",
+chapter("Not every campus moved the same way",
         f"The decline was uneven. {', '.join(overall[overall.pct < -1].sort_values('pct').label)} lost "
         f"international students, while {', '.join(overall[overall.pct.abs() <= 1].label)} held roughly steady.",
         "campuses")
@@ -371,7 +370,7 @@ if splits == ["total"]:
     st.caption(f"{SHORT[inst]} publishes only a campus-wide international total.")
 
 # ── 4. Levels ──
-chapter(4, "Graduate seats took most of the hit",
+chapter("Graduate seats took most of the hit",
         "Where universities split their counts by level, most of the students lost were graduate students, "
         "the group the project's OPT and post-study employment themes speak to most directly.", "levels")
 unit = st.segmented_control("Show change as", ["Percent", "Students"], default="Percent",
@@ -384,7 +383,7 @@ st.caption("New Mexico's undergraduate international count rose while its gradua
            "Ohio's undergraduates fell faster in percent terms but lost fewer students.")
 
 # ── 5. India ──
-chapter(5, "Indian students fell faster than the overall total",
+chapter("Indian students fell faster than the overall total",
         "Indian students are the project's main subgroup. Three campuses publish India-specific counts, "
         "and at all three the India series dropped more steeply than total international enrollment, "
         "even at Berkeley, where the total barely moved.", "india")
@@ -415,7 +414,7 @@ st.caption("Indexed to Fall 2021 = 100 so campuses of different sizes share one 
            "Berkeley's 2024 value comes from its 2024 report; its 2025 report repeats an older baseline.")
 
 # ── 6. History ──
-chapter(6, "Is 2025 unusual? The long view",
+chapter("Is 2025 unusual? The long view",
         "One year can be noise. Indexing each campus to its own starting year shows whether Fall 2025 "
         "breaks a recovery or continues a trend. The campuses that declined in 2025 had peaked between "
         "2022 and 2024, so Fall 2025 extends a turn that was already under way at some of them.", "history")
@@ -437,7 +436,7 @@ with st.expander("Undergraduate and graduate over time, by campus"):
     st.plotly_chart(level_area(df, inst, country), width="stretch")
 
 # ── 7. Next ──
-chapter(7, "What comes next",
+chapter("What comes next",
         "This page establishes <i>when</i> and <i>where</i> enrollment moved. The next steps test whether "
         "student discourse moved with it.", "next")
 n1, n2, n3 = st.columns(3, gap="medium")

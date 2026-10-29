@@ -25,9 +25,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA = PROJECT_ROOT / "data/university/interim/historical_international_enrollment.csv"
 OUT = PROJECT_ROOT / "data/university/outputs/historical_international_eda"
 YEARS_OHIO = list(range(2019, 2026))
-YEARS_MIT = list(range(2016, 2026))
-YEARS_HILO = list(range(2011, 2026))
-YEARS_MICHIGAN = list(range(2019, 2026))
+YEARS_MIT = list(range(2016, 2027))
+YEARS_HILO = list(range(2011, 2027))
+YEARS_MICHIGAN = list(range(2019, 2027))
 YEARS_NEW_MEXICO = list(range(2021, 2026))
 YEARS_BERKELEY = list(range(2021, 2026))
 
@@ -37,10 +37,12 @@ SOURCES = {
     "ohio_grad": "https://www.ohio.edu/iea/student-data/grad7yearenroll",
     "mit": "https://registrar.mit.edu/stats-reports/international-enrollment/all",
     "hilo": "https://hilo.hawaii.edu/international/YearToYearStatistics.php",
+    "hilo_2026": "https://hilo.hawaii.edu/international/statistics.php",
     "dearborn": "https://umdearborn.edu/news/look-fall-2025-enrollment",
     "michigan_2019": "https://obp.umich.edu/wp-content/uploads/pubdata/michiganreports/Section%20245%20Report%20Card%20Fall%202021.pdf",
     "michigan_2020_2022": "https://obp.umich.edu/wp-content/uploads/pubdata/mandatoryreports/Section%20245%20Report%20Card%20Fall%202022.pdf",
     "michigan_2023_2025": "https://obp.umich.edu/wp-content/uploads/pubdata/mandatoryreports/Section_241_Report_Card_Fall_2025.pdf",
+    "michigan_2026": "https://obp.umich.edu/wp-content/uploads/pubdata/factsfigures/enrollment_umaa_2026.pdf",
     "uis_2022_2023": "https://www.uis.edu/news/mid-semester-enrollment-retention-management-division-updates",
     "uis_2024": "https://www.uis.edu/news/university-illinois-springfield-enrollment-remains-stable-fall-semester-2024",
     "uis_2025": "https://www.uis.edu/news/uis-sees-growth-freshman-enrollment-fall-2025",
@@ -68,18 +70,18 @@ OHIO = {
 }
 
 MIT = {
-    "All levels": [3365, 3413, 3411, 3387, 3274, 3489, 3513, 3505, 3455, 3475],
-    "Undergraduate": [457, 521, 506, 472, 448, 481, 530, 505, 529, 529],
-    "Graduate": [2908, 2892, 2905, 2915, 2826, 3008, 2983, 3000, 2926, 2946],
+    "All levels": [3365, 3413, 3411, 3387, 3274, 3489, 3513, 3505, 3455, 3475, 3364],
+    "Undergraduate": [457, 521, 506, 472, 448, 481, 530, 505, 529, 529, 506],
+    "Graduate": [2908, 2892, 2905, 2915, 2826, 3008, 2983, 3000, 2926, 2946, 2858],
 }
 
-HILO = [278, 263, 281, 274, 269, 251, 256, 247, 256, 198, 219, 220, 231, 227, 229]
+HILO = [278, 263, 281, 274, 269, 251, 256, 247, 256, 198, 219, 220, 231, 227, 229, 234]
 
 # Ann Arbor only. Each year's count comes from the latest of the selected
 # official performance report cards; older editions sometimes revise a count.
 MICHIGAN = {
-    "Undergraduate": [2437, 2392, 2737, 2866, 2801, 2762, 2658],
-    "Graduate": [4804, 4378, 5138, 6014, 6027, 5905, 5478],
+    "Undergraduate": [2437, 2392, 2737, 2866, 2801, 2762, 2658, 2778],
+    "Graduate": [4804, 4378, 5138, 6014, 6027, 5905, 5478, 4784],
 }
 MICHIGAN["All levels"] = [sum(MICHIGAN[level][i] for level in ("Undergraduate", "Graduate"))
                           for i in range(len(YEARS_MICHIGAN))]
@@ -119,16 +121,20 @@ def make_rows() -> list[dict]:
     for level, values in MIT.items():
         add("MIT", YEARS_MIT, values, level, "All countries", SOURCES["mit"],
             "MIT Registrar international enrollment; academic year labeled by its starting fall.")
-    add("University of Hawaiʻi at Hilo", YEARS_HILO, HILO, "All levels", "All countries", SOURCES["hilo"],
-        "International Student Services fall international enrollment total.")
+    for year, count in zip(YEARS_HILO, HILO):
+        add("University of Hawaiʻi at Hilo", [year], [count], "All levels", "All countries",
+            SOURCES["hilo_2026" if year == 2026 else "hilo"],
+            "International Student Services fall international enrollment total.")
     for level, values in MICHIGAN.items():
         for year, count in zip(YEARS_MICHIGAN, values):
             url = (SOURCES["michigan_2019"] if year == 2019 else
                    SOURCES["michigan_2020_2022"] if year <= 2022 else
-                   SOURCES["michigan_2023_2025"])
+                   SOURCES["michigan_2023_2025"] if year <= 2025 else
+                   SOURCES["michigan_2026"])
             add("University of Michigan–Ann Arbor", [year], [count], level, "All countries", url,
-                "Official fall geographic-origin international enrollment, Ann Arbor only; "
-                "latest selected report card per year. Includes continuing students.")
+                "Official fall international enrollment, Ann Arbor only; includes continuing students. "
+                + ("Graduate includes 4,684 graduate plus 100 professional students."
+                   if year == 2026 and level == "Graduate" else ""))
     for year, count in zip((2022, 2023, 2024, 2025), (645, 1005, 957, 715)):
         url = SOURCES["uis_2022_2023"] if year <= 2023 else SOURCES[f"uis_{year}"]
         add("University of Illinois Springfield", [year], [count], "All levels", "All countries", url,
@@ -202,7 +208,7 @@ def pct(a, b):
 
 def write_csv(path, rows):
     with path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
 
@@ -262,7 +268,7 @@ def plot_trends(rows):
         ax.annotate(str(vals[-1]["count"]), (vals[-1]["year"], vals[-1]["count"]), xytext=(5, 4),
                     textcoords="offset points", fontsize=9)
     fig.suptitle("Fall international enrollment at seven universities", fontsize=15)
-    fig.text(.5, .01, "Total enrolled students; definitions and campus sizes differ. The 2025 point is descriptive.",
+    fig.text(.5, .01, "Total enrolled students; definitions and campus sizes differ. Fall 2026 is available for three campuses.",
              ha="center", fontsize=9)
     fig.tight_layout(rect=(0, .03, 1, .96))
     fig.savefig(OUT / "historical_trends.png", dpi=180)
@@ -304,7 +310,7 @@ def plot_indexed(rows):
     ax.axhline(100, color="#777777", linewidth=1, linestyle="--")
     ax.set_title("International enrollment relative to each university's Fall 2019 level", loc="left")
     ax.set_ylabel("Index (2019 = 100)")
-    ax.set_xticks(list(range(2019, 2026)))
+    ax.set_xticks(list(range(2019, 2027)))
     ax.grid(axis="y", alpha=.2)
     ax.legend(frameon=False)
     fig.text(.5, .015, "Equal baseline aids trend comparison; student counts and source definitions still differ.",
@@ -369,12 +375,22 @@ def write_report(summary):
 
 Ohio, U-M Ann Arbor, Illinois Springfield, New Mexico, and UC Berkeley had falling international totals in 2025, though the size of the declines varied. MIT and UH Hilo were approximately flat. India counts fell faster than all-country totals at Ohio, New Mexico, and Berkeley. These are contrasting institutional patterns, not a national estimate.
 
+## Newly available Fall 2026 counts
+
+| University | Fall 2025 | Fall 2026 | Change |
+|---|---:|---:|---:|
+| MIT | 3,475 | 3,364 | -111 (-3.2%) |
+| UH Hilo | 229 | 234 | +5 (+2.2%) |
+| U-M Ann Arbor | 8,136 | 7,562 | -574 (-7.1%) |
+
+MIT's registrar publishes 506 undergraduate and 2,858 graduate international students for 2026–27. UH Hilo's International Student Services reports 234 in Fall 2026. U-M Ann Arbor's 2026 enrollment report counts 2,778 international undergraduates, 4,684 graduate students, and 100 professional students. This dataset combines the latter two as 4,784 to match the earlier Ann Arbor graduate series. Ohio, Illinois Springfield, New Mexico, and Berkeley do not yet have a comparable published 2026 international headcount in the sources reviewed here, so their 2026 series remain blank.
+
 ## How to read this for the project
 
 - These series count *all enrolled international students* in fall, including continuing students. They do not measure new student arrivals or individual visa outcomes.
 - Ohio, New Mexico, and Berkeley now have India-specific historical series. Ohio also has an India undergraduate/graduate split.
 - The [Michigan–Dearborn fall 2025 announcement]({SOURCES['dearborn']}) reports a 44% decline in **new** international enrollment and 144 expected international students unable to enroll. This is a different measure and is excluded from the total-enrollment trend chart.
-- U-M Ann Arbor's official performance report cards supply a 2019–2025 series. The 2025 report card counts 8,136 international students; the [International Center annual report](https://internationalcenter.umich.edu/sites/default/files/info/2025_Annual_Report.pdf) gives 8,091. This dataset uses the performance report cards consistently and does not blend the two definitions.
+- U-M Ann Arbor's official performance report cards supply a 2019–2025 series, extended with the 2026 enrollment report. The 2025 report card counts 8,136 international students; the [International Center annual report](https://internationalcenter.umich.edu/sites/default/files/info/2025_Annual_Report.pdf) gives 8,091. This dataset uses the report-card series and matching enrollment categories consistently.
 - Illinois Springfield's all-level series runs from 2022–2025. Its 2025 total of 715 is derived from the university's published 638 international graduate and 77 international undergraduate students. The 2024 components also reconcile to its published total of 957.
 - New Mexico's all-level series includes exchange/guest, intensive English, and certificate students, while its undergraduate and graduate rows do not. Its 2025 report's India change column says -56 for 2024–2025, but the annual country tables show 134 in 2024 and 99 in 2025, a change of -35. This dataset uses the annual counts.
 - Berkeley's 2025 report repeats the **2023** India count of 1,000 in its column labeled 2024. Its actual 2024 report shows 896. This dataset uses 896 for 2024 and 779 for 2025. Berkeley includes other nonimmigrant visa types as well as F-1/J-1 students.
@@ -386,8 +402,8 @@ Ohio, U-M Ann Arbor, Illinois Springfield, New Mexico, and UC Berkeley had falli
 - [Ohio University, seven-year international total and country]({SOURCES['ohio_total']})
 - [Ohio University, undergraduate]({SOURCES['ohio_ug']}) and [graduate]({SOURCES['ohio_grad']})
 - [MIT Registrar, international enrollment by level]({SOURCES['mit']})
-- [UH Hilo, year-to-year international enrollment]({SOURCES['hilo']})
-- [U-M Ann Arbor report cards for 2019]({SOURCES['michigan_2019']}), [2020–2022]({SOURCES['michigan_2020_2022']}), and [2023–2025]({SOURCES['michigan_2023_2025']}). Older report cards occasionally give different numbers for the same year; this series uses the selected report card listed in each CSV row.
+- [UH Hilo, year-to-year international enrollment]({SOURCES['hilo']}) and [Fall 2026 statistics]({SOURCES['hilo_2026']})
+- [U-M Ann Arbor report cards for 2019]({SOURCES['michigan_2019']}), [2020–2022]({SOURCES['michigan_2020_2022']}), [2023–2025]({SOURCES['michigan_2023_2025']}), and [2026 enrollment report]({SOURCES['michigan_2026']}). Older report cards occasionally give different numbers for the same year; this series uses the selected report listed in each CSV row.
 - [Illinois Springfield, 2022–2023 totals]({SOURCES['uis_2022_2023']}), [2024 total]({SOURCES['uis_2024']}), and [2024–2025 level comparison]({SOURCES['uis_2025']})
 - [New Mexico, 2025 report with five-year enrollment and level tables]({SOURCES['unm_2025']}) and [2024 country table]({SOURCES['unm_2024']})
 - [Berkeley, 2025 report with historical enrollment trend]({SOURCES['berkeley_2025']}) and [2024 country table]({SOURCES['berkeley_2024']})

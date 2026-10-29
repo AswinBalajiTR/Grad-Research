@@ -30,11 +30,17 @@ SCHOOL_COLORS = {"Ohio University": BLUE, "MIT": ORANGE, "University of Hawaiʻi
                  "University of Michigan–Ann Arbor": "#7955b3",
                  "University of Illinois Springfield": YELLOW,
                  "University of New Mexico": "#e87ba4", "UC Berkeley": "#008300"}
+POP_YEAR_COLORS = {
+    2: ["#FF4F81", "#22D3EE"],
+    3: ["#FF4F81", "#FFD166", "#22D3EE"],
+    4: ["#AD7CFF", "#FF4F81", "#FFD166", "#22D3EE"],
+}
+POP_CAMPUS_COLORS = ["#FF4F81", "#22D3EE", "#FFD166", "#AD7CFF",
+                     "#A8E64A", "#FF9650", "#35D6B0"]
 FONT = dict(family="Inter, system-ui, sans-serif", size=13)
 
 
 
-@st.cache_data
 def load() -> pd.DataFrame:
     rows = make_rows()
     validate(rows)
@@ -294,8 +300,7 @@ def campus_comparison_bars(df, years):
                      key=lambda school: counts[years[-1]].get(school, 0))
     labels = [SHORT[school] for school in schools]
     fig = go.Figure()
-    colors = {1: [BLUE], 2: [NEUTRAL, BLUE], 3: [NEUTRAL, AQUA, BLUE],
-              4: [NEUTRAL, AQUA, ORANGE, BLUE]}[len(years)]
+    colors = POP_YEAR_COLORS[len(years)]
     for year, color in zip(years, colors):
         fig.add_trace(go.Bar(
             x=[counts[year].get(school) for school in schools], y=labels, name=f"Fall {year}",
@@ -312,7 +317,7 @@ def campus_comparison_bars(df, years):
 def campus_comparison_lines(df, years):
     """Keep comparisons readable when many Fall years are selected."""
     fig = go.Figure()
-    for school, color in SCHOOL_COLORS.items():
+    for school, color in zip(SCHOOL_COLORS, POP_CAMPUS_COLORS):
         rows = df[
             (df.institution == school) & df.year.isin(years)
             & (df.country == "All countries") & (df.academic_level == "All levels")
@@ -462,42 +467,37 @@ def level_history_years(df, inst, country="All countries") -> set[int]:
 
 # ── Page ─────────────────────────────────────────────────────────────────────
 
-def chapter(num, title, lede, anchor):
-    st.markdown(f'<p class="kicker">Part {num}</p>', unsafe_allow_html=True)
-    st.header(title, anchor=anchor, divider="gray")
-    if lede:
-        st.markdown(f'<p class="lede">{lede}</p>', unsafe_allow_html=True)
-
-
 st.markdown("""
 <style>
-  .block-container {padding-top: 3.5rem; max-width: 1150px;}
+  .block-container {padding-top: 2.25rem; padding-bottom: 4rem; max-width: 1120px;}
+  @media (max-width: 900px) { .block-container h1 {font-size: 2.25rem;} }
   div[data-testid="stMetric"] {border: 1px solid rgba(128,128,128,.25); border-radius: 12px; padding: 14px 18px;}
   div[data-testid="stMetricValue"] {font-size: 1.7rem;}
-  .kicker {letter-spacing: .08em; text-transform: uppercase; font-size: .78rem; opacity: .65; margin: 1.6rem 0 -.6rem;}
-  .lede {font-size: 1.08rem; line-height: 1.6; max-width: 62rem; opacity: .9;}
-  .takeaway {border-left: 4px solid #2a78d6; padding: .5rem 1rem; margin: .5rem 0 1rem; background: rgba(42,120,214,.07);
+  .takeaway {border-left: 4px solid #22D3EE; padding: .5rem 1rem; margin: .5rem 0 1rem; background: rgba(34,211,238,.07);
              border-radius: 0 8px 8px 0;}
 </style>
 """, unsafe_allow_html=True)
 
-with st.sidebar:
-    st.subheader("University selection")
-    selected_schools = st.multiselect(
-        "Universities to compare", list(SCHOOL_COLORS), default=list(SCHOOL_COLORS),
-        format_func=SHORT.get, key="enrollment_universities")
-    st.caption("Applies to every enrollment tab. Choose Fall years within each tab.")
-    with st.expander("About these data"):
-        st.markdown("- **Measure:** fall international headcount\n"
-                    "- **Includes:** new and continuing students\n"
-                    "- **Source:** university tables\n"
-                    "- **Limits:** not new arrivals or causal proof")
+# ── Header and filter shared by every enrollment tab ──
+st.title("International enrollment")
+subtitle, controls = st.columns([3, 1], vertical_alignment="center")
+with subtitle:
+    st.caption("Fall headcounts at selected universities")
+with controls:
+    selected_count = sum(st.session_state.get(f"enrollment_school_{index}", True)
+                         for index in range(len(SCHOOL_COLORS)))
+    selected_schools = []
+    with st.popover(f"Schools · {selected_count}", use_container_width=True):
+        st.caption("Show these universities in every enrollment tab")
+        choice_columns = st.columns(2)
+        for index, school in enumerate(SCHOOL_COLORS):
+            with choice_columns[index % 2]:
+                if st.checkbox(SHORT[school], value=True, key=f"enrollment_school_{index}"):
+                    selected_schools.append(school)
 
 # ── Opening ──
-st.markdown('<p class="kicker">International student mobility</p>', unsafe_allow_html=True)
-st.title("International enrollment")
 if not selected_schools:
-    st.info("Select at least one university in the sidebar to see the charts.")
+    st.info("Choose at least one university using the control above.")
     st.stop()
 
 df = load().loc[lambda rows: rows.institution.isin(selected_schools)]
@@ -505,101 +505,15 @@ if df.empty:
     st.info("The selected universities have no published Fall counts.")
     st.stop()
 all_years = sorted(int(year) for year in df.year.unique())
-default_pair = [year for year in (2024, 2025) if year in all_years]
-if len(default_pair) < 2:
-    default_pair = all_years[-2:]
-st.caption(f"{len(selected_schools)} selected universities · choose Fall years within each tab")
-
+default_pair = all_years[-2:]
+india_default_pair = [year for year in (2024, 2025) if year in all_years]
 section_tabs = st.tabs([
-    "Research context", "Fall snapshot", "Campuses", "By level", "India", "Year trends",
+    "Campuses", "By level", "India", "Year trends",
 ])
 
 with section_tabs[0]:
-    chapter(1, "Enrollment's role in the study", "", "context")
-    st.markdown("""
-The study asks how students' online concerns and study plans change around U.S. visa, travel, and work policies.
-
-Indian students are a focus when the data allow us to identify them.
-
-This page establishes enrollment trends to compare with those discussions.
-
-Later analysis can examine whether the patterns move together or with a lag.
-
-These campus counts describe changes, not their causes or a national trend.
-""")
-    with st.expander("Data & sources"):
-        st.dataframe(df.drop(columns=["period", "measure", "source_definition"]),
-                     hide_index=True, width="stretch")
-        st.markdown("\n".join(f"- [{k}]({u})" for k, u in SOURCES.items()))
-
-with section_tabs[1]:
-    snapshot_years = sorted(st.multiselect(
-        "Fall years for this snapshot (up to four)", all_years, default=default_pair,
-        max_selections=4, key="snapshot_years"))
-    if not snapshot_years:
-        st.info("Select at least one Fall year.")
-    else:
-        first_year, snapshot_year = snapshot_years[0], snapshot_years[-1]
-        snapshot_df = df[df.year.isin(snapshot_years)]
-        chapter(2, f"Fall {snapshot_year} snapshot", "", "glance")
-        st.plotly_chart(snapshot_bars(snapshot_df, snapshot_year), width="stretch", key="fall_snapshot_chart")
-        st.caption("Published campuses only · not a national total")
-        if len(snapshot_years) >= 2:
-            overall = changes(snapshot_df, first_year, snapshot_year)
-            if not overall.empty:
-                india = changes(snapshot_df, first_year, snapshot_year, country="India")
-                ug = changes(snapshot_df, first_year, snapshot_year, level="Undergraduate")
-                grad = changes(snapshot_df, first_year, snapshot_year, level="Graduate")
-                levels = ug.merge(grad, on=["institution", "label"], suffixes=("_ug", "_grad"))
-                lost_grad = -levels.loc[levels.diff_grad < 0, "diff_grad"].sum()
-                lost_ug = -levels.loc[levels.diff_ug < 0, "diff_ug"].sum()
-                n_down = int((overall.pct < -1).sum())
-                worst = overall.sort_values("pct").iloc[0]
-                st.subheader(f"Fall {first_year} → Fall {snapshot_year}")
-                sentences = [f"International enrollment fell by more than 1% at {n_down} of {len(overall)} "
-                             "comparable campuses."]
-                if worst.pct < 0:
-                    sentences.append(f"{worst.label} had the largest decline, falling {abs(worst.pct):.1f}% "
-                                     f"from {worst.c_start:,} to {worst.c_end:,} students.")
-                elif worst.pct > 0:
-                    sentences.append(f"{worst.label} had the smallest increase, rising {worst.pct:.1f}% "
-                                     f"from {worst.c_start:,} to {worst.c_end:,} students.")
-                else:
-                    sentences.append(f"{worst.label} had no change, with {worst.c_end:,} students in both years.")
-                if india.empty:
-                    sentences.append("None of the selected campuses reported India enrollment for both years.")
-                elif len(india) == 1:
-                    row = india.iloc[0]
-                    movement = "fell" if row.pct < 0 else "rose" if row.pct > 0 else "was unchanged"
-                    amount = f" by {abs(row.pct):.1f}%" if row.pct else ""
-                    sentences.append(f"Enrollment from India at {row.label} {movement}{amount}.")
-                else:
-                    n_india_down = int((india.pct < 0).sum())
-                    sentences.append(f"Enrollment from India fell at {n_india_down} of {len(india)} "
-                                     "campuses that reported it in both years.")
-                if lost_grad + lost_ug:
-                    sentences.append(f"Graduate students accounted for {lost_grad / (lost_grad + lost_ug):.0%} "
-                                     "of the enrollment losses in published level counts "
-                                     f"({lost_grad:,} graduate and {lost_ug:,} undergraduate).")
-                elif levels.empty:
-                    sentences.append("None of the selected campuses reported both study levels in both years.")
-                else:
-                    sentences.append("The published undergraduate and graduate counts showed no enrollment losses.")
-                st.markdown("\n".join(f"- {sentence}" for sentence in sentences))
-            else:
-                st.info("Choose two years reported by the same university to see a comparison.")
-
-with section_tabs[2]:
-    chapter(3, "Campuses", "", "campuses")
-    compare = st.checkbox("Compare Fall years", value=True, key="campus_compare")
-    if compare:
-        campus_years = sorted(st.multiselect(
-            "Fall years for this chart", all_years, default=default_pair,
-            key="campus_years"))
-    else:
-        campus_years = [st.selectbox(
-            "Fall year for this chart", all_years[::-1],
-            key="campus_snapshot_year")]
+    campus_years = sorted(st.multiselect(
+        "Fall years", all_years, default=default_pair, key="campus_years"))
 
     if not campus_years:
         st.info("Select at least one Fall year to see campuses.")
@@ -639,7 +553,7 @@ with section_tabs[2]:
         available = set(fall_headcounts(campus_df, end_year).institution)
         detail_options = [school for school in selected_schools if school in available]
         if detail_options:
-            for index, inst in enumerate(detail_options):
+            for inst in detail_options:
                 selected_count = value(campus_df, inst, end_year)
                 comparable = len(campus_years) >= 2 and has_series(
                     campus_df, inst, start_year=start_year, end_year=end_year)
@@ -648,7 +562,7 @@ with section_tabs[2]:
                     previous_count = value(campus_df, inst, start_year)
                     difference = selected_count - previous_count
                     heading += f" · {difference:+,} ({100 * difference / previous_count:+.1f}%) vs {start_year}"
-                with st.expander(heading, expanded=index == 0):
+                with st.expander(heading):
                     if comparable:
                         st.write(f"Fall {end_year}: {selected_count:,} international students, "
                                  f"{difference:+,} from Fall {start_year}.")
@@ -682,8 +596,7 @@ with section_tabs[2]:
                     f'from the headcounts above, so it is not charted. <a href="{SOURCES["dearborn"]}">UM-Dearborn report</a></div>',
                     unsafe_allow_html=True)
 
-with section_tabs[3]:
-    chapter(4, "By study level", "", "levels")
+with section_tabs[1]:
     level_years = sorted(st.multiselect(
         "Fall years for this chart", all_years, default=default_pair, key="level_years"))
     study_level = st.radio("Study level", ["Graduate", "Undergraduate"],
@@ -712,10 +625,9 @@ with section_tabs[3]:
             st.caption(f"Each line shows {study_level.lower()} students at one selected university. "
                        "Higher means more students; gaps mean no published count.")
 
-with section_tabs[4]:
-    chapter(5, "Students from India", "", "india")
+with section_tabs[2]:
     india_years = sorted(st.multiselect(
-        "Fall years for India charts", all_years, default=default_pair, key="india_years"))
+        "Fall years for India charts", all_years, default=india_default_pair, key="india_years"))
     change_tab, share_tab, contribution_tab, history_tab = st.tabs(
         ["Change", "India share", "Contribution", "History"])
     india_df = df[df.year.isin(india_years)]
@@ -797,8 +709,7 @@ with section_tabs[4]:
         else:
             st.info("Select at least one Fall year.")
 
-with section_tabs[5]:
-    chapter(6, "Year trends", "", "history")
+with section_tabs[3]:
     trend_years = sorted(st.multiselect(
         "Fall years for trends", all_years, default=all_years[-5:],
         key="trend_years"))
@@ -822,3 +733,10 @@ with section_tabs[5]:
                         country = st.radio("Country scope", scopes, horizontal=True,
                                            key=f"level_scope_{inst}")
                         st.plotly_chart(level_area(trend_df, inst, country), width="stretch")
+
+with st.expander("Data & sources"):
+    st.markdown("**Measure:** fall international headcount from each university's published tables. "
+                "These are not new arrivals or evidence of a policy effect.")
+    st.dataframe(df.drop(columns=["period", "measure", "source_definition"]),
+                 hide_index=True, width="stretch")
+    st.markdown("\n".join(f"- [{k}]({u})" for k, u in SOURCES.items()))

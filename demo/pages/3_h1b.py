@@ -1,24 +1,38 @@
 """H-1B filing analysis adapted from Aswin's dashboard."""
 from __future__ import annotations
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
 import streamlit as st
-from dashboard_common import H1B_PATH, load_data, run_collector, find_col, compact_number, annualized_wage
+from dashboard_common import DATA_ROOT, H1B_PATH, load_data, find_col, compact_number, annualized_wage
+from h1b_refresh import refresh_manager
+
+POLICY_EVENTS_PATH = DATA_ROOT / "policy_timeline/policy_events_to_verify.csv"
 
 st.title("H-1B filings")
 st.caption("Employer filings · 2025 onward")
-with st.sidebar:
-    refresh = st.button("Refresh H-1B data", use_container_width=True)
-    st.caption("Manual refresh · may take minutes")
-if refresh:
-    with st.spinner("Downloading and preparing H-1B disclosures..."):
-        ok, message = run_collector(["code/h1b/collect_h1b.py", "--source", "dol"], timeout=7200)
-    (st.success if ok else st.error)("H-1B refresh completed" if ok else "H-1B refresh failed")
-    if message:
-        st.code(message)
+manager = refresh_manager()
+manager.ensure_started()
+loaded_mtime = H1B_PATH.stat().st_mtime_ns if H1B_PATH.exists() else None
+
+
+@st.fragment(run_every="30s")
+def refresh_notice() -> None:
+    manager.ensure_started()
+    if H1B_PATH.exists() and H1B_PATH.stat().st_mtime_ns != loaded_mtime:
+        st.rerun(scope="app")
+    running, error = manager.status()
+    if running and loaded_mtime is None:
+        st.info("Preparing the latest DOL H-1B data automatically. This first download may take a few minutes.")
+    elif error and loaded_mtime is None:
+        st.warning("The DOL download is temporarily unavailable. The app will try again automatically.")
+
+
+refresh_notice()
 h1b = load_data(H1B_PATH)
 if h1b.empty:
-    st.warning("No H-1B data are loaded.")
+    if not manager.status()[1]:
+        st.info("H-1B data will appear here when the first download finishes.")
 else:
     view = h1b.copy()
     state_col = find_col(view, ["employer_state", "state", "worksite_state"])
@@ -31,11 +45,6 @@ else:
     decision_col = find_col(view, ["decision_date", "date"])
     if decision_col:
         view[decision_col] = pd.to_datetime(view[decision_col], errors="coerce")
-        earliest_decision = view[decision_col].min()
-        if pd.notna(earliest_decision) and earliest_decision > pd.Timestamp("2025-01-31"):
-            st.warning(
-                f"Current H-1B file begins {earliest_decision.date()}. Click Refresh H-1B data to add the corrected FY2025 Q2 and Q3 files."
-            )
 
     with st.expander("Filters"):
         f1, f2, f3 = st.columns(3)
@@ -90,7 +99,7 @@ else:
     plausible_wages = annual_wages.loc[annual_wages.between(10_000, 2_000_000)]
     m5.metric("Median wage", f"${plausible_wages.median():,.0f}" if len(plausible_wages) else "n.a.")
 
-    chart_tabs = st.tabs(["Filings", "Outcomes", "States", "Occupations", "Wages"])
+    chart_tabs = st.tabs(["Filings", "States", "Occupations", "Wages"])
 
     if decision_col:
         monthly = (
@@ -100,42 +109,38 @@ else:
             .sum()
         )
         with chart_tabs[0]:
-            st.caption("Monthly LCA decisions · not student hires")
+            st.caption("Monthly LCA decisions · dashed lines mark all policy timeline events (unverified)")
+            fig = px.line(monthly, x="month", y="_filings", markers=True, labels={"_filings": "Filings"})
+            if POLICY_EVENTS_PATH.exists() and not monthly.empty:
+                events = pd.read_csv(POLICY_EVENTS_PATH, encoding="utf-8-sig")
+                events["event_date"] = pd.to_datetime(events["event_date"], errors="coerce")
+                events = events.dropna(subset=["event_date"])
+                top = max(float(monthly["_filings"].max()) * 1.05, 1)
+                for day, day_events in events.groupby("event_date"):
+                    titles = "<br>".join(
+                        f"{row.topic if pd.notna(row.topic) else 'Other / unassigned'}: {row.title if pd.notna(row.title) else 'Policy event'}"
+                        for row in day_events.itertuples()
+                    )
+                    fig.add_trace(go.Scatter(
+                        x=[day] * 25,
+                        y=[top * step / 24 for step in range(25)],
+                        mode="lines",
+                        name="Policy event",
+                        showlegend=False,
+                        line=dict(color="rgba(255, 184, 46, 0.75)", width=1.5, dash="dash"),
+                        hovertemplate=f"<b>{day:%d %b %Y}</b><br>{titles}<extra></extra>",
+                    ))
+                fig.update_yaxes(range=[0, top])
+                if not events.empty:
+                    fig.update_xaxes(range=[
+                        min(pd.Timestamp(monthly["month"].min()), pd.Timestamp(events["event_date"].min())),
+                        max(
+                            pd.Timestamp(monthly["month"].max()) + pd.offsets.MonthEnd(1),
+                            pd.Timestamp(events["event_date"].max()) + pd.Timedelta(days=7),
+                        ),
+                    ])
             st.plotly_chart(
-                px.line(monthly, x="month", y="_filings", markers=True, labels={"_filings": "Filings"}),
-                use_container_width=True,
-            )
-
-    if decision_col and status_col:
-        status_values = view[status_col].fillna("").astype(str).str.upper()
-        status_group = pd.Series("Other", index=view.index)
-        status_group.loc[status_values.str.contains("CERTIFIED")] = "Certified"
-        status_group.loc[status_values.str.contains("DENIED")] = "Denied"
-        status_group.loc[status_values.str.contains("WITHDRAWN") & ~status_values.str.contains("CERTIFIED")] = "Withdrawn"
-        outcome_month = (
-            view.assign(
-                month=view[decision_col].dt.to_period("M").dt.to_timestamp(),
-                outcome=status_group,
-                _filings=weights,
-            )
-            .dropna(subset=["month"])
-            .groupby(["month", "outcome"], as_index=False)["_filings"]
-            .sum()
-        )
-        outcome_month["share"] = outcome_month["_filings"] / outcome_month.groupby("month")["_filings"].transform("sum")
-        with chart_tabs[1]:
-            st.caption("Certified · denied · withdrawn")
-            st.plotly_chart(
-                px.area(
-                    outcome_month,
-                    x="month",
-                    y="share",
-                    color="outcome",
-                    groupnorm=None,
-                    range_y=[0, 1],
-                    color_discrete_map={"Certified": "#238B45", "Denied": "#C0392B", "Withdrawn": "#D4A017", "Other": "#7F8C8D"},
-                    labels={"share": "Share of monthly filings"},
-                ),
+                fig,
                 use_container_width=True,
             )
 
@@ -148,7 +153,7 @@ else:
         )
         state_summary["share"] = state_summary["_filings"] / state_summary["_filings"].sum()
         top_five_share = state_summary.head(5)["share"].sum()
-        with chart_tabs[2]:
+        with chart_tabs[1]:
             st.caption(f"Top five states · {top_five_share:.1%} of filings")
             st.plotly_chart(
                 px.choropleth(
@@ -172,7 +177,7 @@ else:
             .nlargest(20, "_filings")
         )
         occupation_summary["share"] = occupation_summary["_filings"] / total if total else 0
-        with chart_tabs[3]:
+        with chart_tabs[2]:
             st.plotly_chart(
                 px.bar(
                     occupation_summary,
@@ -199,7 +204,7 @@ else:
         )
         wage_summary["upper"] = wage_summary["p75"] - wage_summary["median"]
         wage_summary["lower"] = wage_summary["median"] - wage_summary["p25"]
-        with chart_tabs[4]:
+        with chart_tabs[3]:
             st.caption("Dots = median wage · lines = middle 50%")
             st.plotly_chart(
                 px.scatter(
