@@ -13,6 +13,6 @@ page = st.navigation([
     st.Page(str(DEMO_ROOT / "pages/1_enrollment.py"), title="Enrollment"),
     st.Page(str(DEMO_ROOT / "pages/2_discourse.py"), title="Reddit"),
     st.Page(str(DEMO_ROOT / "pages/3_h1b.py"), title="H-1B"),
-    st.Page(str(DEMO_ROOT / "pages/4_economy.py"), title="Economy & policy"),
+    st.Page(str(DEMO_ROOT / "pages/4_economy.py"), title="Economy & Policy"),
 ])
 page.run()

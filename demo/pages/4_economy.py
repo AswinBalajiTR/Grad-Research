@@ -230,10 +230,10 @@ def download(df, name, label="Download CSV"):
 
 EVENTS = load_events()
 
-st.title("International students and local economies, 2022 onward")
+st.title("Policies and Economy")
 
 
-TAB_NAMES = ["International students", "Student flows", "Rents near campus", "University jobs", "Policy events",
+TAB_NAMES = ["Policy events", "International students", "Student flows", "Rents near campus", "University jobs",
              "Data & notes"]
 T = dict(zip(TAB_NAMES, st.tabs(TAB_NAMES)))
 
@@ -664,15 +664,36 @@ with T["University jobs"]:
 # ================================================================= Policy events
 with T["Policy events"]:
     ev = EVENTS
-    st.caption("From the policy timeline (unverified).")
     order = sorted(ev.topic.unique())
-    # Two charts over the same dates with the same plot width, so a date sits at the same place
-    # in both: monthly student visas issued (events as dotted lines), then the events by topic.
-    x_range = [pd.Timestamp(START), pd.Timestamp(END)]
+    # The events by topic and the monthly visa chart share dates and plot width, so a date sits at
+    # the same place in both. Both start in 2025, the policy period being analysed.
+    x_range = [pd.Timestamp("2025-01-01"), pd.Timestamp(END)]
     frame = dict(margin=dict(l=190, r=20, t=50, b=10), xaxis=dict(range=x_range, showgrid=False))
+
+    fig = go.Figure()
+    for topic in order:
+        e = ev[ev.topic == topic]
+        fig.add_trace(go.Scatter(
+            x=e.event_date, y=[topic] * len(e), mode="markers", name=topic, showlegend=False,
+            marker=dict(size=12, color=P["ink2"], line=dict(width=2, color=P["mid"])),
+            customdata=e.title.map(wrap), hovertemplate="%{x|%d %b %Y}<br>%{customdata}<extra></extra>"))
+    fig.update_layout(height=120 + 45 * len(order), hovermode="closest", **frame,
+                      title=dict(text="Policy events by topic", font=dict(size=15)),
+                      yaxis=dict(categoryorder="array", categoryarray=order[::-1], automargin=False,
+                                 gridcolor=P["grid"]))
+    show(fig, "ev_timeline")
+    cnt = ev.groupby([ev.event_date.dt.to_period("Q").astype(str), "topic"]).size().rename("events").reset_index()
+    fig = px.bar(cnt, x="event_date", y="events", color="topic", color_discrete_sequence=P["series"],
+                 category_orders={"topic": order, "event_date": sorted(cnt.event_date.unique())},
+                 labels={"event_date": "Quarter", "events": "Events", "topic": "Topic"})
+    fig.update_traces(marker_line=dict(color=P["mid"], width=2))
+    fig.update_layout(height=360, title="Events per quarter", margin=dict(l=10, r=10, t=40, b=10),
+                      yaxis=dict(gridcolor=P["grid"]), legend=dict(orientation="h", y=-0.2))
+    show(fig, "ev_count")
+
     if VISA is not None:
         ev_country = st.selectbox("Visas issued to students from", list(COUNTRIES), index=1, key="ev_country")
-        visas = stage_series(ev_country)[STAGES[0]].dropna()
+        visas = stage_series(ev_country)[STAGES[0]].dropna().loc[x_range[0]:]
         top = visas.max() * 1.05
         fig = go.Figure()
         by_day = ev.groupby("event_date").apply(lambda g: "<br>".join(wrap(f"• {t}: {s}") for t, s in zip(g.topic, g.title)))
@@ -696,28 +717,8 @@ with T["Policy events"]:
         show(fig, "ev_visas")
         st.caption(f"Actual counts, {visas.index.min():%b %Y} to {visas.index.max():%b %Y} (the latest month the "
                    "State Department has posted). Visas peak each May–July before the fall term. Hover a dotted "
-                   "line to see the policies announced that day; the chart below lists them by topic on the same dates.")
+                   "line to see the policies announced that day. Earlier years are in Student flows.")
 
-    fig = go.Figure()
-    for topic in order:
-        e = ev[ev.topic == topic]
-        fig.add_trace(go.Scatter(
-            x=e.event_date, y=[topic] * len(e), mode="markers", name=topic, showlegend=False,
-            marker=dict(size=12, color=P["ink2"], line=dict(width=2, color=P["mid"])),
-            customdata=e.title.map(wrap), hovertemplate="%{x|%d %b %Y}<br>%{customdata}<extra></extra>"))
-    fig.update_layout(height=120 + 45 * len(order), hovermode="closest", **frame,
-                      title=dict(text="Policy events by topic", font=dict(size=15)),
-                      yaxis=dict(categoryorder="array", categoryarray=order[::-1], automargin=False,
-                                 gridcolor=P["grid"]))
-    show(fig, "ev_timeline")
-    cnt = ev.groupby([ev.event_date.dt.to_period("Q").astype(str), "topic"]).size().rename("events").reset_index()
-    fig = px.bar(cnt, x="event_date", y="events", color="topic", color_discrete_sequence=P["series"],
-                 category_orders={"topic": order, "event_date": sorted(cnt.event_date.unique())},
-                 labels={"event_date": "Quarter", "events": "Events", "topic": "Topic"})
-    fig.update_traces(marker_line=dict(color=P["mid"], width=2))
-    fig.update_layout(height=360, title="Events per quarter", margin=dict(l=10, r=10, t=40, b=10),
-                      yaxis=dict(gridcolor=P["grid"]), legend=dict(orientation="h", y=-0.2))
-    show(fig, "ev_count")
     with st.expander("Table: policy events"):
         st.dataframe(ev[["event_date", "topic", "title", "source", "doc_type", "url"]].sort_values("event_date"),
                      width="stretch", hide_index=True,
