@@ -1,0 +1,341 @@
+event_id,post_id,comment_id,model_sentiment,audited_sentiment,reason
+event_03_20250528,1kxvmu8,muuk0ez,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muupgg7,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,mv0ofh9,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muuxsrs,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_03_20250528,1kxvmu8,muudmxy,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muswv0v,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,musynb6,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,musyy8m,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muu1stg,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muu39tc,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muv8vx5,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muxmzqy,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muxof59,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muxq4om,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muxqb85,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_03_20250528,1kxvmu8,muxqwc8,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muy0k02,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muv8os4,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muv8r78,negative,unclassifiable,Targeted audit: no interpretable policy reaction
+event_03_20250528,1kxvmu8,musw5g0,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muv8j1i,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muzhssv,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,musw2b4,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,mutagyg,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muup8zc,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muvg21e,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_03_20250528,1kxvmu8,muxgif0,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muxhbwq,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muxglja,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muupcwy,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muux1pk,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muxoz7p,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muxpule,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muxs5we,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muxt5iz,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muxu1gh,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muxsg1z,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muxsnbw,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muxr77s,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,mutepzu,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muuxlyu,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muy3484,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,mutx0ua,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_03_20250528,1kxvmu8,muu081a,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_03_20250528,1kxvmu8,muu6zhb,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muv71u5,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muujk9a,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,mut25g7,positive,negative,Targeted audit: expressed concern or criticism of the policy or its direct effects
+event_03_20250528,1kxvmu8,mutbcpk,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muts242,negative,positive,Targeted audit: argues in favor of restricting Chinese students
+event_03_20250528,1kxvmu8,muus88o,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,muxlv2k,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_03_20250528,1kxvmu8,mutt2r3,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_03_20250528,1kxvmu8,mut7kvz,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muttuxf,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muti4wi,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,mwvhj7n,negative,positive,Targeted audit: expressed approval of the restriction
+event_03_20250528,1kxvmu8,muty3nr,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,muv5kp9,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_03_20250528,1kxvmu8,mv11q9l,positive,unclassifiable,Targeted audit: brief reply lacks enough context to identify the reaction target
+event_03_20250528,1kxvmu8,mv8mlde,negative,positive,Targeted audit: explicit approval of the policy or its direct effects
+event_05_20250604,1l3mpgm,mw2caic,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mw2fjy5,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_05_20250604,1l3mpgm,mw2h3nh,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_05_20250604,1l3mpgm,mw2bwr3,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_05_20250604,1l3mpgm,mw2kmk0,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,mw2ny67,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mw2kvb1,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,mw2nzqw,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_05_20250604,1l3mpgm,mw61i20,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mw2p612,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,mw2rb3c,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mw2srce,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,mw2xfhu,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mw2thbl,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,mw2umtt,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_05_20250604,1l3mpgm,mw2xh27,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mw318ub,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mw2uuqw,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_05_20250604,1l3mpgm,mw2xiii,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mw31yuz,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_05_20250604,1l3mpgm,mw3kjds,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mwh6x0n,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,mw4jody,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mw3o22d,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mw9idpq,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mw4nshi,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,mw4ntrw,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,mw4smuu,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,mw9f52b,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mwk1kh8,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mw9f8g9,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_05_20250604,1l3mpgm,mwvp92r,positive,negative,Targeted audit: expressed concern or criticism of the policy or its direct effects
+event_05_20250604,1l3mpgm,mwwj6zl,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mx98aim,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mwamo0c,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mwxl1x7,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_05_20250604,1l3mpgm,mx44iit,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,mx60mpf,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,n8hybls,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_05_20250604,1l3mpgm,mxf69o3,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,mxfv0k8,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,mxkouwd,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,ne83yf1,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,neqt43z,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,nesz6i1,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mypw7yw,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,mytwbt1,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,nbmhpcm,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,n65kz7n,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_05_20250604,1l3mpgm,n72nape,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_05_20250604,1l3mpgm,nbro6fd,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_05_20250604,1l3mpgm,ne8idmu,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3mpgm,nqvb1ga,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l3qt1p,mx7ugfo,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_05_20250604,1l4ev99,mxnpu5k,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,mzwk9u8,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,mzvwpas,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_06_20250618,1lkxi2b,mzwhl4q,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_06_20250618,1lkxi2b,mzxyzkr,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_06_20250618,1lkxi2b,n0p6ea7,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_06_20250618,1lkxi2b,mzx9pnc,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_06_20250618,1lkxi2b,n0dk59u,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,n0bvri1,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,n0ep2ch,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_06_20250618,1lkxi2b,mzwnace,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_06_20250618,1lkxi2b,mzxv6tb,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_06_20250618,1lkxi2b,mzylzhs,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_06_20250618,1lkxi2b,n02r7pc,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_06_20250618,1lkxi2b,n0663lt,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_06_20250618,1lkxi2b,n007fpo,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,n01rm9c,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_06_20250618,1lkxi2b,mzwhzsr,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_06_20250618,1lkxi2b,mzyh98z,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,mzy1f77,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_06_20250618,1lkxi2b,mzy3wm8,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_06_20250618,1lkxi2b,n023nyd,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_06_20250618,1lkxi2b,n03lxn7,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,n0m9chw,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,n0msq9o,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_06_20250618,1lkxi2b,n0duyix,negative,positive,Targeted audit: expressed approval of the restriction
+event_06_20250618,1lkxi2b,n0e3lsd,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_06_20250618,1lkxi2b,mzxwdkq,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,mzy11rg,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,n10qsqr,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_06_20250618,1lkxi2b,mzyt0zs,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,mzz675z,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_06_20250618,1lkxi2b,mzydp3g,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,mzydkdb,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,mzyg6r2,positive,negative,Targeted audit: expressed concern or criticism of the policy or its direct effects
+event_06_20250618,1lkxi2b,mzz0z5w,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_06_20250618,1lkxi2b,mzz2olm,negative,positive,Targeted audit: explicit approval of the policy or its direct effects
+event_06_20250618,1lkxi2b,n01d10h,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_06_20250618,1lkxi2b,n03mgt9,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,n079e87,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_06_20250618,1lkxi2b,n07f7yv,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5d7fcy,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5eb0n1,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_08_20250725,1maa5z4,n5o1rhh,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_08_20250725,1maa5z4,n5pqijh,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5pqohq,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_08_20250725,1maa5z4,n5p8yk4,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5qrung,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5idpf8,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5ieit6,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_08_20250725,1maa5z4,n5deymy,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5diwz0,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5djp4x,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_08_20250725,1maa5z4,n5i89y7,positive,unclassifiable,Targeted audit: brief reply lacks enough context to identify the reaction target
+event_08_20250725,1maa5z4,n5de7ys,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_08_20250725,1maa5z4,n5e2iex,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_08_20250725,1maa5z4,n5ds4cm,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_08_20250725,1maa5z4,n5en63b,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5galca,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5hwnvx,negative,neutral,"Targeted audit: question, factual discussion, or unrelated reaction without an expressed policy stance"
+event_08_20250725,1maa5z4,n5hhler,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_08_20250725,1maa5z4,n5lchce,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_08_20250725,1maa5z4,n63mzxt,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_08_20250725,1maa5z4,n65eior,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_08_20250725,1maa5z4,n5j9v9i,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5q8ugg,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_08_20250725,1maa5z4,n5gysuk,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5h1jtg,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5jgc4m,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n5hrshx,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_08_20250725,1maa5z4,n5jg8z1,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_08_20250725,1maa5z4,n61ruwp,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_08_20250725,1maa5z4,n673ate,negative,positive,Targeted audit: expressed support for the restriction
+event_09_20250828,1u9p3tb,ostlwyd,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,ostk0zj,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oslm6lc,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_09_20250828,1u9p3tb,ossislr,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_09_20250828,1u9p3tb,oxyjsum,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_09_20250828,1u9p3tb,oslnnpl,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oskbmdt,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,osnryhu,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,ot5xzzl,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_09_20250828,1u9p3tb,oxkyc1f,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_09_20250828,1u9p3tb,oxl0g9o,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_09_20250828,1u9p3tb,osrwxaf,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_09_20250828,1u9p3tb,oszqvu1,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oxl9i4l,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_09_20250828,1u9p3tb,oxlahzb,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_09_20250828,1u9p3tb,oy2uojp,positive,neutral,Targeted audit: no expressed reaction to the policy or its direct effects
+event_09_20250828,1u9p3tb,oy1ex08,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oxzpg3n,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oxzpntn,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oy5ldhj,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy5uv1c,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy5c835,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oy5ibwa,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_09_20250828,1u9p3tb,oy8s8ke,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy28jca,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oy52tgx,negative,neutral,"Targeted audit: factual reply, question, advice, or unrelated discussion without policy sentiment"
+event_09_20250828,1u9p3tb,oy52oqa,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy56ezo,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oy88pe1,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy51nkv,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy474vo,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy51ch6,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy4kuuv,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oy66nkt,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy7jnb9,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy6f22s,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oy6mh3p,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy6mj6r,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy6ls5a,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oy6mwy3,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy6yrs3,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy6n1rr,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oy7nuwk,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy7pmba,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy7lmxw,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy7uigk,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oy7uo94,positive,neutral,"Targeted audit: procedural answer, reassurance, or thanks without a policy stance"
+event_09_20250828,1u9p3tb,oy88hdy,positive,neutral,Targeted audit: factual answer or thanks without policy reaction
+event_09_20250828,1u9p3tb,oya3dw5,positive,neutral,Targeted audit: factual answer or thanks without policy reaction
+event_09_20250828,1u9p3tb,oy8n0cr,positive,neutral,Targeted audit: factual answer or thanks without policy reaction
+event_09_20250828,1u9p3tb,oya97xu,positive,neutral,Targeted audit: factual answer or thanks without policy reaction
+event_09_20250828,1u9p3tb,oycfvgo,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oyda218,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oydakfw,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oyein6w,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oylgnbk,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oym5mc2,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,oyp1utj,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,ozhul1g,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,ozaujgj,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,p3v8ugv,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,p4ga6vi,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,p4tf7mt,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,p5yfe4v,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,p5zynlb,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_09_20250828,1u9p3tb,p9kjexx,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_13_20250919,1nlimos,nf6kzjn,negative,neutral,"Targeted audit: question, factual scenario, or procedural answer without expressed policy evaluation"
+event_13_20250919,1nlimos,nf6zpoo,negative,positive,Targeted audit: expressed support for restricting H-1B employment
+event_13_20250919,1nlimos,nf70tgy,positive,neutral,"Targeted audit: unrelated proposed tax, factual quotation, or brief reply without a clear reaction to this policy"
+event_13_20250919,1nlimos,nf9dbp4,negative,positive,Targeted audit: expressed support for restricting H-1B employment
+event_13_20250919,1nlimos,nf7e8p0,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf9k062,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf9948w,positive,neutral,"Targeted audit: unrelated proposed tax, factual quotation, or brief reply without a clear reaction to this policy"
+event_13_20250919,1nlimos,nf9aygi,positive,neutral,"Targeted audit: unrelated proposed tax, factual quotation, or brief reply without a clear reaction to this policy"
+event_13_20250919,1nlimos,nf9keb0,positive,neutral,"Targeted audit: unrelated proposed tax, factual quotation, or brief reply without a clear reaction to this policy"
+event_13_20250919,1nlimos,nf98bvy,positive,neutral,"Targeted audit: unrelated proposed tax, factual quotation, or brief reply without a clear reaction to this policy"
+event_13_20250919,1nlimos,nf9cwmu,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nfa946b,positive,neutral,"Targeted audit: unrelated proposed tax, factual quotation, or brief reply without a clear reaction to this policy"
+event_13_20250919,1nlimos,nf6790o,positive,neutral,"Targeted audit: unrelated proposed tax, factual quotation, or brief reply without a clear reaction to this policy"
+event_13_20250919,1nlimos,nf73avx,positive,neutral,"Targeted audit: unrelated proposed tax, factual quotation, or brief reply without a clear reaction to this policy"
+event_13_20250919,1nlimos,nf6980y,positive,neutral,Targeted audit: factual explanation or brief reply without an expressed reaction
+event_13_20250919,1nlimos,nf6av3h,positive,neutral,Targeted audit: factual explanation or brief reply without an expressed reaction
+event_13_20250919,1nlimos,nfctnr7,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nfng6ei,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf6xqgh,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf7iqaz,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf6ta8j,negative,positive,Targeted audit: expressed support for restricting H-1B employment
+event_13_20250919,1nlimos,nf6wkqj,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf7udib,positive,neutral,Targeted audit: factual explanation or brief reply without an expressed reaction
+event_13_20250919,1nlimos,nf7son7,positive,neutral,Targeted audit: factual explanation or brief reply without an expressed reaction
+event_13_20250919,1nlimos,nf9k8qa,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf6rl8x,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf620s7,positive,neutral,Targeted audit: factual explanation or brief reply without an expressed reaction
+event_13_20250919,1nlimos,nf6ypp0,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf6cau3,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf6ibh1,positive,negative,Targeted audit: explicit criticism of the restriction as unlawful
+event_13_20250919,1nlimos,nf6o80q,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf6chlp,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf90k0h,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf662td,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf6pbgt,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf69bbk,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nfbq571,positive,neutral,Targeted audit: factual explanation or brief reply without an expressed reaction
+event_13_20250919,1nlimos,nfjyov0,positive,neutral,"Targeted audit: factual correction, thanks, or practical travel advice without policy opinion"
+event_13_20250919,1nlimos,nfcewbg,positive,neutral,"Targeted audit: factual correction, thanks, or practical travel advice without policy opinion"
+event_13_20250919,1nlimos,nf6xg4i,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf72bwg,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf7h827,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf9p77z,positive,neutral,"Targeted audit: factual correction, thanks, or practical travel advice without policy opinion"
+event_13_20250919,1nlimos,nf760rq,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf7hqd2,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nfb3dgx,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nfdhcjn,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf7l31m,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf7n028,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf9lyff,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nfdjppe,positive,neutral,"Targeted audit: factual correction, thanks, or practical travel advice without policy opinion"
+event_13_20250919,1nlimos,nff3qt1,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nfbh45f,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf6ef2e,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf71nk5,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf6dvsm,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf9iunc,negative,neutral,"Targeted audit: question, factual advice, unrelated argument, or unclear reply without policy judgment"
+event_13_20250919,1nlimos,nf6fw1g,positive,neutral,"Targeted audit: factual correction, thanks, or practical travel advice without policy opinion"
+event_13_20250919,1nlimos,nf6g5xu,positive,neutral,"Targeted audit: factual correction, thanks, or practical travel advice without policy opinion"
+event_13_20250919,1nlimos,nf6iwdk,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_13_20250919,1nlimos,nf9jx7f,positive,neutral,"Targeted audit: brief, factual, or unrelated reply without a clear reaction to the studied policy"
+event_13_20250919,1nlimos,nf9qb38,positive,neutral,"Targeted audit: brief, factual, or unrelated reply without a clear reaction to the studied policy"
+event_13_20250919,1nlimos,nfhswwt,positive,negative,Targeted audit: agrees with criticism of the policy causing offshoring
+event_13_20250919,1nlimos,nf73fke,positive,neutral,"Targeted audit: brief, factual, or unrelated reply without a clear reaction to the studied policy"
+event_13_20250919,1nlimos,nf73pxs,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_13_20250919,1nlimos,nf6tpqq,positive,neutral,"Targeted audit: brief, factual, or unrelated reply without a clear reaction to the studied policy"
+event_13_20250919,1nlimos,nfbbs8r,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"
+event_13_20250919,1nlimos,nf727hg,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"
+event_13_20250919,1nlimos,nf7v35u,negative,positive,Targeted audit: expressed support for the restriction
+event_13_20250919,1nlimos,nf8ozlm,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_13_20250919,1nlimos,nf7qj8z,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"
+event_13_20250919,1nlimos,nf7tob0,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"
+event_13_20250919,1nlimos,nf80i6e,positive,negative,Targeted audit: explicit stress about the policy consequence
+event_13_20250919,1nlimos,nfdnyp7,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"
+event_13_20250919,1obpnih,nkhfzmk,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"
+event_13_20250919,1obpnih,nkhjdwh,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"
+event_13_20250919,1obpnih,nkl4aze,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"
+event_13_20250919,1obpnih,nkio9bm,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"
+event_14_20250924,1ptw6ky,nvk8aho,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"
+event_14_20250924,1ptw6ky,nw3tdaw,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"
+event_18_20251216,1pofqav,nug8v9x,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_18_20251216,1pofqav,nv1qpod,positive,neutral,"Targeted audit: praises an individual entry experience, not the studied restriction"
+event_18_20251216,1pofqav,nuhh0yr,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"
+event_18_20251216,1pofqav,nuj9jkc,negative,neutral,"Targeted audit: factual, procedural, or unrelated statement without an expressed stance on this policy"
+event_18_20251216,1pofqav,nv1kuu2,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"
+event_18_20251216,1pofqav,nvmq4d5,positive,neutral,"Targeted audit: factual, procedural, unrelated, or brief reply without clear policy opinion"

@@ -1,0 +1,27 @@
+{
+  "total_collected_comments": 2810,
+  "unique_policy_linked_posts": 19,
+  "policy_events": 9,
+  "usable_text_comments": 2539,
+  "removed_deleted_or_empty": 271,
+  "earlier_labels_preserved": 189,
+  "earlier_targeted_audits": 32,
+  "new_model_labels_before_audit": 2372,
+  "new_targeted_audit_corrections": 340,
+  "final_sentiment_counts": {
+    "negative": 525,
+    "neutral": 1920,
+    "unclassifiable": 333,
+    "positive": 32
+  },
+  "final_label_provenance_counts": {
+    "prior_model": 157,
+    "targeted_audit": 372,
+    "local_model": 2032,
+    "removed_or_empty": 249
+  },
+  "model": "qwen2.5:7b via local Ollama",
+  "label_definition": "Author reaction to the policy or its direct effects; factual information, advice, and questions without an expressed policy stance are neutral. Removed or empty text is unclassifiable.",
+  "audit_definition": "AI-assisted targeted inspection of provisional labels; corrections are documented per comment and are not a claim of human review.",
+  "limitations": "Labels may still be wrong; collected Reddit comments are not representative of students or public opinion."
+}

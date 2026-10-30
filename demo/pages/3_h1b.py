@@ -91,13 +91,15 @@ else:
     elif status_col:
         status_upper = view[status_col].fillna("").astype(str).str.upper()
         decided = status_upper.ne("")
-        certification_rate = status_upper.str.contains("CERTIFIED").sum() / decided.sum() if decided.sum() else 0
-        m4.metric("Certification share", f"{certification_rate:.1%}")
+        certification_rate = status_upper.eq("CERTIFIED").sum() / decided.sum() if decided.sum() else 0
+        m4.metric("Certified LCA share", f"{certification_rate:.1%}")
     else:
         m4.metric("Filtered rows", compact_number(len(view)))
     annual_wages = annualized_wage(view)
     plausible_wages = annual_wages.loc[annual_wages.between(10_000, 2_000_000)]
     m5.metric("Median wage", f"${plausible_wages.median():,.0f}" if len(plausible_wages) else "n.a.")
+    if status_col and not (approval_col and denial_col):
+        st.caption("Certified LCA share excludes withdrawn cases. A DOL certification is not a USCIS H-1B petition or visa approval.")
 
     chart_tabs = st.tabs(["Filings", "States", "Occupations", "Wages"])
 

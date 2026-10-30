@@ -22,14 +22,29 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "code/university"))
 from historical_international_eda import SOURCES, make_rows, validate  # noqa: E402
+from dashboard_common import DATA_ROOT, load_data
+
+EXPANDED_STOCK = DATA_ROOT / "university/interim/historical_international_enrollment_expansion.csv"
+EXPANDED_INTAKE = DATA_ROOT / "university/interim/new_intake_observations.csv"
+GWU_AUDIT = DATA_ROOT / "university/interim/gwu_2011_2026_audit.csv"
 
 # Categorical slots in fixed order; DROP/GAIN are the diverging poles.
 BLUE, ORANGE, AQUA, YELLOW = "#2a78d6", "#eb6834", "#1baf7a", "#eda100"
 DROP, GAIN, NEUTRAL = "#e34948", "#2a78d6", "#9a9893"
-SCHOOL_COLORS = {"Ohio University": BLUE, "MIT": ORANGE, "University of Hawaiʻi at Hilo": AQUA,
+SCHOOL_COLORS = {"Ohio University": BLUE, "MIT": ORANGE,
                  "University of Michigan–Ann Arbor": "#7955b3",
                  "University of Illinois Springfield": YELLOW,
                  "University of New Mexico": "#e87ba4", "UC Berkeley": "#008300"}
+SCHOOL_COLORS.update({
+    "Arizona State University": "#b25142", "George Washington University": "#bd9631",
+    "Michigan State University": "#146750", "University of Illinois Chicago": "#4d83a8",
+    "University of Minnesota Twin Cities": "#b0617e", "University of Minnesota system": "#656d75",
+    "University of Southern California": "#b34147", "University of Texas at Austin": "#b66325",
+})
+DEFAULT_SCHOOLS = set(SCHOOL_COLORS) - {
+    "University of Minnesota system",
+    "University of Southern California", "University of Texas at Austin",
+}
 POP_YEAR_COLORS = {
     2: ["#FF4F81", "#22D3EE"],
     3: ["#FF4F81", "#FFD166", "#22D3EE"],
@@ -44,7 +59,50 @@ FONT = dict(family="Inter, system-ui, sans-serif", size=13)
 def load() -> pd.DataFrame:
     rows = make_rows()
     validate(rows)
-    return pd.DataFrame(rows)
+    latest = pd.DataFrame(rows)
+    expanded = load_data(EXPANDED_STOCK)
+    if expanded.empty:
+        return latest
+    key = ["institution", "year", "period", "measure", "academic_level", "country"]
+    combined = pd.concat([expanded, latest], ignore_index=True)
+    # The current main-branch source wins when an older expansion row overlaps it.
+    combined = combined.drop_duplicates(key, keep="last")
+    combined["year"] = pd.to_numeric(combined.year, errors="raise").astype(int)
+    combined["count"] = pd.to_numeric(combined["count"], errors="raise").astype(int)
+    return combined
+
+
+def load_intake() -> pd.DataFrame:
+    rows = load_data(EXPANDED_INTAKE)
+    if rows.empty:
+        return rows
+    rows["reporting_year"] = pd.to_numeric(rows.reporting_year, errors="raise").astype(int)
+    rows["value"] = pd.to_numeric(rows.value, errors="raise").astype(int)
+    key = ["source_id", "institution", "reporting_year", "period", "cohort",
+           "academic_level", "country", "metric"]
+    if rows.duplicated(key).any():
+        raise ValueError("Duplicate new-intake observations")
+    return rows
+
+
+def paired_intake(rows: pd.DataFrame) -> pd.DataFrame:
+    """Compare identical source-defined intake cohorts in 2024 and 2025."""
+    intake_metrics = {"enrolled", "registered", "new_enrolled", "new_registered",
+                      "new_transfer_enrolled", "new_or_transfer_enrolled"}
+    selected = rows[rows.metric.isin(intake_metrics) & rows.reporting_year.isin([2024, 2025])
+                    & rows.country.eq("All countries")]
+    key = ["source_id", "institution", "period", "cohort", "academic_level", "metric"]
+    paired = selected.pivot(index=key, columns="reporting_year", values="value").dropna()
+    if paired.empty:
+        return pd.DataFrame()
+    out = paired.rename(columns={2024: "count_2024", 2025: "count_2025"}).reset_index()
+    out["count_2024"] = out.count_2024.astype(int)
+    out["count_2025"] = out.count_2025.astype(int)
+    out["change"] = out.count_2025 - out.count_2024
+    out["percent_change"] = (100 * out.change / out.count_2024).round(1)
+    source = selected[selected.reporting_year == 2025][key +
+        ["source_url", "definition_note", "quality_flag"]]
+    return out.merge(source, on=key, validate="one_to_one").sort_values("percent_change")
 
 
 def value(df, school, year, country="All countries", level="All levels") -> int:
@@ -64,7 +122,13 @@ def base_layout(fig, height=380, **kw):
 
 SHORT = {"University of Michigan–Ann Arbor": "U-M Ann Arbor", "UC Berkeley": "UC Berkeley", "MIT": "MIT",
          "University of New Mexico": "New Mexico", "Ohio University": "Ohio University",
-         "University of Illinois Springfield": "Illinois Springfield", "University of Hawaiʻi at Hilo": "UH Hilo"}
+         "University of Illinois Springfield": "Illinois Springfield"}
+SHORT.update({
+    "Arizona State University": "Arizona State", "George Washington University": "GWU",
+    "Michigan State University": "Michigan State", "University of Illinois Chicago": "Illinois Chicago",
+    "University of Minnesota Twin Cities": "Minnesota Twin Cities", "University of Minnesota system": "Minnesota system",
+    "University of Southern California": "USC", "University of Texas at Austin": "UT Austin",
+})
 UG_COLOR, GRAD_COLOR, ALL_COLOR, INDIA_COLOR = ORANGE, BLUE, NEUTRAL, AQUA
 
 
@@ -317,7 +381,8 @@ def campus_comparison_bars(df, years):
 def campus_comparison_lines(df, years):
     """Keep comparisons readable when many Fall years are selected."""
     fig = go.Figure()
-    for school, color in zip(SCHOOL_COLORS, POP_CAMPUS_COLORS):
+    for index, school in enumerate(SCHOOL_COLORS):
+        color = POP_CAMPUS_COLORS[index % len(POP_CAMPUS_COLORS)]
         rows = df[
             (df.institution == school) & df.year.isin(years)
             & (df.country == "All countries") & (df.academic_level == "All levels")
@@ -411,32 +476,27 @@ def india_contribution_bars(df, school, years):
     return fig
 
 
-def trends(df, indexed, start_year, country="All countries"):
+def trends(df, start_year, country="All countries"):
     fig = go.Figure()
+    years = sorted(int(year) for year in df.loc[df.year >= start_year, "year"].unique())
     for school, color in SCHOOL_COLORS.items():
         s = df[(df.institution == school) & (df.country == country)
-               & (df.academic_level == "All levels") & (df.year >= start_year)].sort_values("year")
+               & (df.academic_level == "All levels") & (df.year >= start_year)]
         if s.empty:
             continue
-        y = 100 * s["count"] / s["count"].iloc[0] if indexed else s["count"]
+        counts = s.set_index("year")["count"].reindex(years)
         fig.add_trace(go.Scatter(
-            x=s["year"], y=y, name=SHORT[school], mode="lines+markers",
+            x=years, y=counts, name=SHORT[school], mode="lines+markers", connectgaps=False,
             line=dict(color=color, width=2.5), marker=dict(size=8, line=dict(color="white", width=2)),
-            customdata=s["count"],
-            hovertemplate=f"<b>{school}</b><br>Fall %{{x}}: %{{customdata:,}} students"
-                          + ("<br>Index: %{y:.1f}" if indexed else "") + "<extra></extra>",
+            hovertemplate=f"<b>{school}</b><br>Fall %{{x}}: %{{y:,}} students<extra></extra>",
         ))
-    latest_year = int(df.year.max())
-    fig.add_vrect(x0=latest_year - .5, x1=latest_year + .5, fillcolor=DROP, opacity=.08, line_width=0)
-    if indexed:
-        fig.add_hline(y=100, line=dict(color=NEUTRAL, width=1, dash="dash"))
     fig = base_layout(fig, height=520, hovermode="x unified",
                       margin=dict(l=10, r=10, t=20, b=130),
                       legend=dict(orientation="h", x=0, y=-.16, xanchor="left", yanchor="top",
                                   font=dict(size=11)))
     fig.update_xaxes(dtick=1)
-    fig.update_yaxes(title="Index (first visible year = 100)" if indexed else "International students",
-                     rangemode="normal" if indexed else "tozero")
+    fig.update_yaxes(title="Students from India" if country == "India" else "International students",
+                     rangemode="tozero")
     return fig
 
 
@@ -480,19 +540,18 @@ st.markdown("""
 
 # ── Header and filter shared by every enrollment tab ──
 st.title("International enrollment")
-subtitle, controls = st.columns([3, 1], vertical_alignment="center")
-with subtitle:
-    st.caption("Fall headcounts at selected universities")
+_, controls = st.columns([3, 1], vertical_alignment="center")
 with controls:
-    selected_count = sum(st.session_state.get(f"enrollment_school_{index}", True)
-                         for index in range(len(SCHOOL_COLORS)))
+    selected_count = sum(st.session_state.get(f"enrollment_school_{school}", school in DEFAULT_SCHOOLS)
+                         for school in SCHOOL_COLORS)
     selected_schools = []
     with st.popover(f"Schools · {selected_count}", use_container_width=True):
-        st.caption("Show these universities in every enrollment tab")
+        st.caption("Show these campuses in the fall headcount tabs. New intake has a separate selector.")
         choice_columns = st.columns(2)
         for index, school in enumerate(SCHOOL_COLORS):
             with choice_columns[index % 2]:
-                if st.checkbox(SHORT[school], value=True, key=f"enrollment_school_{index}"):
+                if st.checkbox(SHORT[school], value=school in DEFAULT_SCHOOLS,
+                               key=f"enrollment_school_{school}"):
                     selected_schools.append(school)
 
 # ── Opening ──
@@ -505,15 +564,18 @@ if df.empty:
     st.info("The selected universities have no published Fall counts.")
     st.stop()
 all_years = sorted(int(year) for year in df.year.unique())
-default_pair = all_years[-2:]
+recent_years = [year for year in range(2021, 2026) if year in all_years]
+default_pair = [year for year in (2024, 2025) if year in all_years]
+if len(default_pair) < 2:
+    default_pair = all_years[-2:]
 india_default_pair = [year for year in (2024, 2025) if year in all_years]
 section_tabs = st.tabs([
-    "Campuses", "By level", "India", "Year trends",
+    "Campuses", "By level", "India", "Year trends", "New intake",
 ])
 
 with section_tabs[0]:
     campus_years = sorted(st.multiselect(
-        "Fall years", all_years, default=default_pair, key="campus_years"))
+        "Fall years", all_years, default=recent_years or default_pair, key="campus_years"))
 
     if not campus_years:
         st.info("Select at least one Fall year to see campuses.")
@@ -690,19 +752,28 @@ with section_tabs[2]:
                     if fig is None:
                         st.info("This campus needs two selected years with both India and total counts.")
                     else:
+                        if len(india_years) == 2:
+                            first, last = india_years
+                            india_delta = value(india_df, school, last, "India") - value(india_df, school, first, "India")
+                            total_delta = value(india_df, school, last) - value(india_df, school, first)
+                            other_delta = total_delta - india_delta
+                            st.write(f"Fall {first} to Fall {last}: {total_delta:+,} international students overall "
+                                     f"({india_delta:+,} from India; {other_delta:+,} from other countries).")
                         st.plotly_chart(fig, width="stretch")
     with history_tab:
+        india_available_years = sorted(int(year) for year in df.loc[
+            (df.country == "India") & (df.academic_level == "All levels"), "year"].unique())
         india_history_years = sorted(st.multiselect(
-            "Fall years for India history", all_years, default=all_years[-5:],
-            key="india_history_years"))
+            "Fall years for India history", india_available_years, default=india_available_years[-5:],
+            key="india_history_count_years"))
         if india_history_years:
             history_df = df[df.year.isin(india_history_years)]
             if history_df[history_df.country == "India"].empty:
                 st.info("No India counts for these years and universities.")
             else:
-                st.plotly_chart(trends(history_df, True, india_history_years[0],
+                st.plotly_chart(trends(history_df, india_history_years[0],
                                        country="India"), width="stretch")
-                st.caption("Index: first selected year reported by each campus = 100 · hover for counts")
+                st.caption("Students from India in each selected Fall year · gaps mean no published count")
                 if "UC Berkeley" in selected_schools:
                     with st.expander("Berkeley source note"):
                         st.caption("Berkeley's 2024 value uses its 2024 report; its 2025 report repeats an older baseline.")
@@ -711,16 +782,14 @@ with section_tabs[2]:
 
 with section_tabs[3]:
     trend_years = sorted(st.multiselect(
-        "Fall years for trends", all_years, default=all_years[-5:],
+        "Fall years for trends", all_years, default=recent_years or all_years[-5:],
         key="trend_years"))
     if not trend_years:
         st.info("Select at least one Fall year.")
     else:
         trend_df = df[df.year.isin(trend_years)]
-        indexed = st.toggle("Index each campus to its first selected year",
-                            value=True, key="trend_indexed")
-        st.plotly_chart(trends(trend_df, indexed, trend_years[0]), width="stretch")
-        st.caption("Only selected Fall years are shown · index = 100 at each campus's first selected year · hover for counts")
+        st.plotly_chart(trends(trend_df, trend_years[0]), width="stretch")
+        st.caption("International students in each selected Fall year · gaps mean no published count")
 
         level_campuses = [school for school in selected_schools if
                           len(level_history_years(trend_df, school)) >= 2]
@@ -734,9 +803,74 @@ with section_tabs[3]:
                                            key=f"level_scope_{inst}")
                         st.plotly_chart(level_area(trend_df, inst, country), width="stretch")
 
+with section_tabs[4]:
+    st.subheader("New international student intake")
+    intake = load_intake()
+    if intake.empty:
+        st.info("The expanded new-intake file is not available.")
+    else:
+        paired = paired_intake(intake)
+        st.caption(f"{intake.institution.nunique()} universities · {len(intake)} source-linked observations · "
+                   f"{len(paired)} matched 2024–2025 cohort pairs. New students and enrolled-student "
+                   "headcounts are separate measures.")
+        change_tab, explorer_tab = st.tabs(["2024–2025 changes", "All observations"])
+        with change_tab:
+            campus_options = ["All universities", *sorted(paired.institution.unique())]
+            intake_campus = st.selectbox("University", campus_options, key="intake_change_campus")
+            shown = paired if intake_campus == "All universities" else paired[
+                paired.institution == intake_campus]
+            level_options = ["All levels and cohorts", *sorted(shown.academic_level.unique())]
+            intake_level = st.selectbox("Academic level", level_options, key="intake_change_level")
+            if intake_level != "All levels and cohorts":
+                shown = shown[shown.academic_level == intake_level]
+            if shown.empty:
+                st.info("No paired intake observations for this selection.")
+            else:
+                shown = shown.copy()
+                shown["label"] = shown.institution + " · " + shown.academic_level + " · " + shown.metric
+                if shown.label.duplicated().any():
+                    shown["label"] += " · " + shown.cohort
+                shown = shown.sort_values("percent_change", ascending=False)
+                fig = go.Figure(go.Bar(
+                    x=shown.percent_change, y=shown.label, orientation="h",
+                    marker_color=[DROP if v < 0 else GAIN for v in shown.percent_change],
+                    text=[f"{v:+.1f}%" for v in shown.percent_change], textposition="outside",
+                    customdata=shown[["count_2024", "count_2025", "change"]].to_numpy(),
+                    hovertemplate="<b>%{y}</b><br>2024: %{customdata[0]:,}<br>2025: %{customdata[1]:,}"
+                                  "<br>Change: %{customdata[2]:+,}<extra></extra>",
+                ))
+                fig.add_vline(x=0, line_color=NEUTRAL, line_width=1)
+                fig = base_layout(fig, height=max(350, 54 * len(shown) + 80))
+                fig.update_xaxes(ticksuffix="%", showgrid=True)
+                fig.update_yaxes(showgrid=False)
+                st.plotly_chart(fig, width="stretch")
+                st.dataframe(shown[["institution", "cohort", "academic_level", "metric", "period",
+                                    "count_2024", "count_2025", "change", "percent_change",
+                                    "source_url", "definition_note", "quality_flag"]],
+                             column_config={"source_url": st.column_config.LinkColumn("Source")},
+                             hide_index=True, width="stretch")
+                if any(shown.period != "Fall"):
+                    st.caption("Cincinnati's annual registration series does not specify a fall term.")
+        with explorer_tab:
+            all_campus = st.selectbox("University in full intake dataset",
+                                      sorted(intake.institution.unique()), key="intake_all_campus")
+            rows = intake[intake.institution == all_campus].sort_values(
+                ["reporting_year", "cohort", "academic_level", "metric"])
+            st.caption(f"{len(rows)} observations, {rows.reporting_year.min()}–{rows.reporting_year.max()}")
+            st.dataframe(rows[["reporting_year", "period", "cohort", "academic_level", "country",
+                               "metric", "value", "source_url", "definition_note", "quality_flag"]],
+                         column_config={"source_url": st.column_config.LinkColumn("Source")},
+                         hide_index=True, width="stretch")
+        st.info("University intake definitions vary, including international address and nonresident status. "
+                "Do not add overlapping levels or infer a visa-policy effect from these changes.")
+
 with st.expander("Data & sources"):
     st.markdown("**Measure:** fall international headcount from each university's published tables. "
-                "These are not new arrivals or evidence of a policy effect.")
-    st.dataframe(df.drop(columns=["period", "measure", "source_definition"]),
-                 hide_index=True, width="stretch")
-    st.markdown("\n".join(f"- [{k}]({u})" for k, u in SOURCES.items()))
+                "These are not new arrivals or evidence of a policy effect. The University of Minnesota "
+                "system total overlaps with its campus counts and must not be added to them.")
+    st.dataframe(df[["institution", "year", "academic_level", "country", "count",
+                     "source_url", "source_definition"]], hide_index=True, width="stretch",
+                 column_config={"source_url": st.column_config.LinkColumn("Source")})
+    if GWU_AUDIT.exists():
+        st.download_button("Download GWU 2011–2026 source audit", GWU_AUDIT.read_bytes(),
+                           file_name=GWU_AUDIT.name, mime="text/csv")
