@@ -163,9 +163,13 @@ else:
                     locations=state_col,
                     locationmode="USA-states",
                     color="share",
+                    custom_data=["_filings"],
                     scope="usa",
                     color_continuous_scale="Blues",
                     labels={"share": "Share of filings", state_col: "State"},
+                ).update_coloraxes(colorbar_tickformat=".0%").update_traces(
+                    hovertemplate="<b>%{location}</b><br>Filings: %{customdata[0]:,.0f}"
+                                  "<br>Share of filtered filings: %{z:.1%}<extra></extra>"
                 ),
                 use_container_width=True,
             )
