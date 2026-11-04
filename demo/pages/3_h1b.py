@@ -5,34 +5,14 @@ import plotly.graph_objects as go
 import pandas as pd
 import streamlit as st
 from dashboard_common import DATA_ROOT, H1B_PATH, load_data, find_col, compact_number, annualized_wage
-from h1b_refresh import refresh_manager
 
 POLICY_EVENTS_PATH = DATA_ROOT / "policy_timeline/policy_events_to_verify.csv"
 
 st.title("H-1B filings")
 st.caption("Employer filings · 2025 onward")
-manager = refresh_manager()
-manager.ensure_started()
-loaded_mtime = H1B_PATH.stat().st_mtime_ns if H1B_PATH.exists() else None
-
-
-@st.fragment(run_every="30s")
-def refresh_notice() -> None:
-    manager.ensure_started()
-    if H1B_PATH.exists() and H1B_PATH.stat().st_mtime_ns != loaded_mtime:
-        st.rerun(scope="app")
-    running, error = manager.status()
-    if running and loaded_mtime is None:
-        st.info("Preparing the latest DOL H-1B data automatically. This first download may take a few minutes.")
-    elif error and loaded_mtime is None:
-        st.warning("The DOL download is temporarily unavailable. The app will try again automatically.")
-
-
-refresh_notice()
 h1b = load_data(H1B_PATH)
 if h1b.empty:
-    if not manager.status()[1]:
-        st.info("H-1B data will appear here when the first download finishes.")
+    st.info("H-1B data is not available yet.")
 else:
     view = h1b.copy()
     state_col = find_col(view, ["employer_state", "state", "worksite_state"])

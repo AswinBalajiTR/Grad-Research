@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import re
-import subprocess
 import sys
 from pathlib import Path
 
@@ -29,18 +28,6 @@ def load_data(path: Path) -> pd.DataFrame:
     if path.exists() and path.stat().st_size:
         return read_csv_path(str(path), path.stat().st_mtime_ns)
     return pd.DataFrame()
-
-
-def run_collector(arguments: list[str], timeout: int = 7200) -> tuple[bool, str]:
-    try:
-        result = subprocess.run(
-            [sys.executable, *arguments], cwd=PROJECT_ROOT, text=True,
-            capture_output=True, timeout=timeout, check=False,
-        )
-    except subprocess.TimeoutExpired:
-        return False, "Collector timed out."
-    message = "\n".join(part.strip() for part in (result.stdout, result.stderr) if part.strip())
-    return result.returncode == 0, message[-2500:]
 
 
 def compact_number(value: float | int) -> str:

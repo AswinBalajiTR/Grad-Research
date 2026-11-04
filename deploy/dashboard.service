@@ -1,0 +1,13 @@
+[Unit]
+Description=International Student Research dashboard (Streamlit)
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/Grad-Research
+ExecStart=/home/ubuntu/Grad-Research/.venv/bin/streamlit run demo/app.py --server.address 127.0.0.1 --server.port 8501 --server.headless true --browser.gatherUsageStats false
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
