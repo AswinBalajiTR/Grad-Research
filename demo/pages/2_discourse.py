@@ -186,15 +186,17 @@ with reddit_tab:
                     "date": "Date", "full_policy": "Policy", "comments": "Total",
                     **{key: label for key, label in SENTIMENT_LABELS.items()},
                 })
+                table.columns.name = None  # otherwise to_html emits an extra "sentiment" header cell
                 st.markdown("""
 <style>
 .reddit-policy-table-wrap {overflow-x: auto; width: 100%;}
-.reddit-policy-table {border-collapse: collapse; width: 100%; table-layout: fixed;}
+.reddit-policy-table {border-collapse: collapse; width: 100%; min-width: 760px; table-layout: fixed;}
 .reddit-policy-table th, .reddit-policy-table td {padding: .55rem .65rem; border-bottom: 1px solid rgba(128,128,128,.3); vertical-align: top;}
-.reddit-policy-table th {text-align: left;}
-.reddit-policy-table th:nth-child(2), .reddit-policy-table td:nth-child(2) {width: 46%; white-space: normal; overflow-wrap: anywhere;}
+.reddit-policy-table th {text-align: left; resize: horizontal; overflow: hidden; width: 95px;}
+.reddit-policy-table th:nth-child(1) {width: 110px;}
+.reddit-policy-table th:nth-child(2) {width: auto;}
+.reddit-policy-table td:nth-child(2) {white-space: normal; overflow-wrap: anywhere;}
 .reddit-policy-table td:not(:nth-child(2)) {white-space: nowrap;}
-@media (max-width: 800px) {.reddit-policy-table {min-width: 800px;}}
 </style>
 <div class="reddit-policy-table-wrap">
 """ + table.to_html(index=False, escape=True, border=0, classes="reddit-policy-table") + "</div>",
