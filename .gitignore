@@ -7,6 +7,7 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
+.streamlit/secrets.toml
 # Large downloads and generated research outputs.
 /data/reddit/raw/
 /data/reddit/interim/
