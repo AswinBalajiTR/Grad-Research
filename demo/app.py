@@ -19,8 +19,7 @@ def app_password() -> str | None:
         return None
 
 
-password = app_password()
-if password and not st.session_state.get("authenticated"):
+def login() -> None:
     st.title("International Student Research")
     with st.form("login"):
         entered = st.text_input("Password", type="password")
@@ -29,13 +28,18 @@ if password and not st.session_state.get("authenticated"):
                 st.session_state.authenticated = True
                 st.rerun()
             st.error("Incorrect password.")
-    st.stop()
 
-page = st.navigation([
-    st.Page(str(DEMO_ROOT / "pages/0_research.py"), title="Research question", default=True),
-    st.Page(str(DEMO_ROOT / "pages/1_enrollment.py"), title="Enrollment & new intake"),
-    st.Page(str(DEMO_ROOT / "pages/2_discourse.py"), title="Reddit sentiment"),
-    st.Page(str(DEMO_ROOT / "pages/3_h1b.py"), title="H-1B"),
-    st.Page(str(DEMO_ROOT / "pages/4_economy.py"), title="Economy & policy"),
-])
+
+password = app_password()
+if password and not st.session_state.get("authenticated"):
+    # Login is the only registered page, so page URLs can't bypass it and no sidebar shows.
+    page = st.navigation([st.Page(login, title="Log in")], position="hidden")
+else:
+    page = st.navigation([
+        st.Page(str(DEMO_ROOT / "pages/0_research.py"), title="Research question", default=True),
+        st.Page(str(DEMO_ROOT / "pages/1_enrollment.py"), title="Enrollment & new intake"),
+        st.Page(str(DEMO_ROOT / "pages/2_discourse.py"), title="Reddit sentiment"),
+        st.Page(str(DEMO_ROOT / "pages/3_h1b.py"), title="H-1B"),
+        st.Page(str(DEMO_ROOT / "pages/4_economy.py"), title="Economy & policy"),
+    ])
 page.run()
